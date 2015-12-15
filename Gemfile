@@ -4,7 +4,7 @@ ruby '2.1.4'
 
 
 gem 'paperclip'
-gem 'aws-sdk'
+gem 'aws-sdk', '< 2.0'
 
 gem 'rails', '~> 4.1.7'
 
