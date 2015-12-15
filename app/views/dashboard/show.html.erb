@@ -87,7 +87,7 @@
 				<% @players.each do |player| %>
 					<li>
 					<%= link_to player_path(player) do %>
-						<%= image_tag(gravatar_url(player, size: 24)) %>
+								<%= player_avatar_tiny(player) %>
 						<%= player.name %>
 					<% end %>
 					</li>

@@ -11,10 +11,18 @@ module ApplicationHelper
   end
 
   def player_avatar(player)
-    if player.avatar
+    if player.avatar.exists?
       image_tag(player.avatar.url(:thumb))
     else
       image_tag(gravatar_url(player, size: 80))
+    end
+  end
+
+  def player_avatar_tiny(player)
+    if player.avatar.exists?
+      image_tag(player.avatar.url(:tiny))
+    else
+      image_tag(gravatar_url(player, size: 24))
     end
   end
 end
