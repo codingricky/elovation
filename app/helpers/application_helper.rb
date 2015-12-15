@@ -9,4 +9,12 @@ module ApplicationHelper
   def format_time(time)
     "#{time_ago_in_words(time)} ago"
   end
+
+  def player_avatar(player)
+    if @player.avatar
+      image_tag(player.avatar.url(:thumb))
+    else
+      image_tag(gravatar_url(player, size: 80))
+    end
+  end
 end

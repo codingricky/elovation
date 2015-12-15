@@ -2,6 +2,10 @@ source 'https://rubygems.org'
 
 ruby '2.1.4'
 
+
+gem 'paperclip'
+gem 'aws-sdk'
+
 gem 'rails', '~> 4.1.7'
 
 gem 'pg'
