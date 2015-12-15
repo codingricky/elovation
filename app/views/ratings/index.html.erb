@@ -17,7 +17,7 @@
       </thead>
 
       <tbody>
-        <%= render partial: 'games/rating', collection: @game.all_ratings %>
+        <%= render partial: 'games/rating', collection: @game.all_ratings, locals: {game:  @game} %>
       </tbody>
     </table>
   </div>

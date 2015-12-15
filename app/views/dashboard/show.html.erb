@@ -47,6 +47,35 @@
 		  </li>
 		<% end %>
 		</ul>
+
+
+		<ul>
+		<% unless @games.empty? %>
+					<% first = @games.first %>
+				<div class="row-fluid">
+					<div class="span6">
+						<h2>Current rankings for <%= first.name %></h2>
+						<table>
+							<thead>
+							<tr>
+								<th>Player</th>
+								<th>Rating</th>
+								<th><abbr title='Wins'>W</abbr></th>
+								<th><abbr title='Losses'>L</abbr></th>
+								<% if first.allow_ties %>
+										<th><abbr title='Ties'>T</abbr></th>
+								<% end %>
+							</tr>
+							</thead>
+
+							<tbody>
+							<%= render partial: 'games/rating', collection: first.all_ratings, locals: {game: first} %>
+							</tbody>
+						</table>
+					</div>
+				</div>
+		<% end %>
+		</ul>
 	</div>
 
 	<div class='span4'>
