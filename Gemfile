@@ -1,12 +1,15 @@
 source 'https://rubygems.org'
 
-ruby '2.1.4'
+ruby '2.2.3'
 
+
+gem 'omniauth-google-oauth2'
+gem 'devise'
 
 gem 'paperclip'
 gem 'aws-sdk', '< 2.0'
 
-gem 'rails', '~> 4.1.7'
+gem 'rails', '~> 4.2.5'
 
 gem 'pg'
 

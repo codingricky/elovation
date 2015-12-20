@@ -8,7 +8,7 @@ describe DashboardController do
 
       get :show
 
-      assigns(:players).should == [player]
+      assigns(:users).should == [player]
       assigns(:games).should == [game]
     end
   end

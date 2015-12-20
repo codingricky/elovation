@@ -24,7 +24,7 @@ module Rater
 
       if winning_teams.size > 1
         first_rating, second_rating = winning_teams
-          .map(&:players)
+          .map(&:users)
           .map(&:first)
           .map{ |player| player.ratings.find_or_create(game) }
 

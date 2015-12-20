@@ -87,8 +87,8 @@
 				<% @players.each do |player| %>
 					<li>
 					<%= link_to player_path(player) do %>
-								<%= player_avatar_tiny(player) %>
-						<%= player.name %>
+						  <%= player_avatar_tiny(player) %>
+						  <%= player.name %>
 					<% end %>
 					</li>
 				<% end %>
