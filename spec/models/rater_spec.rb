@@ -259,13 +259,13 @@ describe Rater do
       end
 
       it "returns the same result regardless of team order" do
-        game.rater.update_ratings(game, [team1, team2, team3, team4])
+        game.rater.update_ratings(game, [team1, team2, team3])
         old_ratings = game.ratings.map(&:value)
 
         game.ratings.destroy_all
         game.reload
 
-        game.rater.update_ratings(game, [team4, team2, team3, team1])
+        game.rater.update_ratings(game, [team2, team3, team1])
         game.ratings.map(&:value).should == old_ratings
       end
     end
