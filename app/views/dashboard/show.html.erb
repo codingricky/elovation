@@ -13,9 +13,7 @@
   		    	<li class='rating-type'><%= game.rating_type %> – <%= game.allow_ties ? 'Ties allowed' : 'No ties' %></li>
             <li class='num-players'><%= game.players.length %> players</li>
             <li class='games-played'><%= game.results.length %> games played</li>
-
-		    	</ul>
-
+			</ul>
           <% result = game.recent_results.limit(1).first %>
           <% if result %>
             <div class='recent-result'>
@@ -48,10 +46,9 @@
 		<% end %>
 		</ul>
 
-
-		<ul>
 		<% unless @games.empty? %>
 					<% first = @games.first %>
+			  <%= link_to "Add Result", new_game_result_path(first), class: "btn btn-primary" %>
 
 		<div class="row-fluid">
 					<div class="span6">

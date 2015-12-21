@@ -6,7 +6,7 @@ class ResultsController < ApplicationController
     response = ResultService.create(@game, params[:result])
 
     if response.success?
-      redirect_to game_path(@game)
+      redirect_to dashboard_path
     else
       @result = response.result
       render :new
