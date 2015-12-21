@@ -1,17 +1,21 @@
-<tr>
-	<td>
-	  <div class='player'>
-			<%= player_avatar_tiny(rating.player) %>
+<% cache('ratings') do %>
 
-		<%= link_to rating.player.name, player_game_path(rating.player, game) %>
-	  </div>
-	</td>
+    <tr>
+      <td>
+        <div class='player'>
+          <%= player_avatar_tiny(rating.player) %>
 
-	<td><%= rating.value %></td>
-  <td><%= rating.player.total_wins(rating.game) %></td>
-  <td><%= rating.player.results.for_game(rating.game).losses.size %></td>
-  <% if game.allow_ties %>
-      <td><%= rating.player.total_ties(rating.game) %></td>
-  <% end %>
+          <%= link_to rating.player.name, player_game_path(rating.player, game) %>
+        </div>
+      </td>
 
-</tr>
+      <td><%= rating.value %></td>
+      <td><%= rating.player.total_wins(rating.game) %></td>
+      <td><%= rating.player.results.for_game(rating.game).losses.size %></td>
+      <% if game.allow_ties %>
+          <td><%= rating.player.total_ties(rating.game) %></td>
+      <% end %>
+
+    </tr>
+
+<% end %>
