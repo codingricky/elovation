@@ -5,6 +5,8 @@ ruby '2.2.3'
 
 gem 'omniauth-google-oauth2'
 gem 'devise'
+gem 'puma'
+
 
 gem 'paperclip'
 gem 'aws-sdk', '< 2.0'
