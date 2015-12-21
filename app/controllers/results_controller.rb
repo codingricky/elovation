@@ -1,5 +1,6 @@
 class ResultsController < ApplicationController
   before_action :set_game
+  before_action :authenticate_user!
 
 
   def create

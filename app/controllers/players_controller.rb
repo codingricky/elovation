@@ -1,5 +1,6 @@
 class PlayersController < ApplicationController
   before_action :set_player, only: [:edit, :destroy, :show, :update]
+  before_action :authenticate_user!
 
   def create
     @player = Player.new(player_params)
