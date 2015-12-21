@@ -52,7 +52,8 @@
 		<ul>
 		<% unless @games.empty? %>
 					<% first = @games.first %>
-				<div class="row-fluid">
+
+		<div class="row-fluid">
 					<div class="span6">
 						<h2>Current rankings for <%= first.name %></h2>
 						<table>
@@ -74,6 +75,7 @@
 						</table>
 					</div>
 				</div>
+
 		<% end %>
 		</ul>
 	</div>

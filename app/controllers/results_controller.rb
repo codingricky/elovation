@@ -1,9 +1,6 @@
 class ResultsController < ApplicationController
-  before_action :set_game, :expire_ratings
+  before_action :set_game
 
-  def expire_ratings
-    expire_fragment('ratings')
-  end
 
   def create
     response = ResultService.create(@game, params[:result])
