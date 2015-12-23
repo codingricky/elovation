@@ -1,4 +1,6 @@
 class PlayerGamesController < ApplicationController
+  before_action :authenticate_user!
+
   def show
     @player = Player.find(params[:player_id])
     @game = Game.find(params[:id])
