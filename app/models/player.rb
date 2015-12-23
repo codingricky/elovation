@@ -72,5 +72,14 @@ class Player < ActiveRecord::Base
     results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).to_a.count { |r| !r.tie? }
   end
 
+  def streak(game)
+    results_array = results.where(game_id: game).order("created_at DESC").to_a.chunk do |result|
+      result.winners.include?(self)
+    end.collect{|e, a| {:is_winner => e, :size => a.size}}
+
+    return 0 if results_array.empty?
+
+    results_array.first[:is_winner] ? results_array.first[:size] : 0
+  end
 
 end

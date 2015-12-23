@@ -14,6 +14,8 @@
       <% if game.allow_ties %>
           <td><%= rating.player.total_ties(rating.game) %></td>
       <% end %>
+      <td><%= rating.player.results.for_game(rating.game).size %></td>
+      <td><%= rating.player.streak(rating.game) %></td>
 
     </tr>
 
