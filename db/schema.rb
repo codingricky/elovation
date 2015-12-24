@@ -17,10 +17,10 @@ ActiveRecord::Schema.define(version: 20151220112512) do
   enable_extension "plpgsql"
 
   create_table "games", force: :cascade do |t|
-    t.string   "name",                           null: false
+    t.string   "name",                           limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "rating_type"
+    t.string   "rating_type",                    limit: 255
     t.integer  "min_number_of_teams"
     t.integer  "max_number_of_teams"
     t.integer  "min_number_of_players_per_team"
@@ -29,27 +29,16 @@ ActiveRecord::Schema.define(version: 20151220112512) do
   end
 
   create_table "players", force: :cascade do |t|
-    t.string   "name",                                null: false
+    t.string   "name",                limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email"
-    t.string   "avatar_file_name"
-    t.string   "avatar_content_type"
+    t.string   "email",               limit: 255
+    t.integer  "avatar"
+    t.string   "avatar_file_name",    limit: 255
+    t.string   "avatar_content_type", limit: 255
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
-    t.string   "encrypted_password",     default: "", null: false
-    t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.inet     "current_sign_in_ip"
-    t.inet     "last_sign_in_ip"
   end
-
-  add_index "players", ["email"], name: "index_players_on_email", unique: true, using: :btree
-  add_index "players", ["reset_password_token"], name: "index_players_on_reset_password_token", unique: true, using: :btree
 
   create_table "players_teams", force: :cascade do |t|
     t.integer "player_id"

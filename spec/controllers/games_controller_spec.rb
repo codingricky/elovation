@@ -1,6 +1,10 @@
 require "spec_helper"
 
 describe GamesController do
+  before(:each) do
+    sign_in_user
+  end
+
   describe "new" do
     it "exposes a new game" do
       get :new

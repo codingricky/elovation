@@ -1,6 +1,11 @@
 require "spec_helper"
 
 describe PlayersController do
+
+  before(:each) do
+    sign_in_user
+  end
+
   describe "new" do
     it "exposes a new player" do
       get :new

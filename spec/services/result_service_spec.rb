@@ -161,6 +161,7 @@ describe ResultService do
         rating2.should_not be_nil
         rating2.value.should < game.rater.default_attributes[:value]
       end
+
     end
   end
 

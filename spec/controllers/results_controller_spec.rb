@@ -1,6 +1,10 @@
 require "spec_helper"
 
 describe ResultsController do
+  before(:each) do
+    sign_in_user
+  end
+
   describe "new" do
     it "exposes a new result" do
       game = FactoryGirl.create(:game)

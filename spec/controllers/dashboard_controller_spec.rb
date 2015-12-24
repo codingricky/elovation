@@ -3,8 +3,7 @@ require "spec_helper"
 describe DashboardController do
   describe "show" do
     it "displays all players and games" do
-      @request.env["devise.mapping"] = Devise.mappings[:user]
-      sign_in FactoryGirl.create(:user)
+      sign_in_user
 
       player = FactoryGirl.create(:player)
       game = FactoryGirl.create(:game)

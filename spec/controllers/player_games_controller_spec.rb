@@ -1,6 +1,10 @@
 require "spec_helper"
 
 describe PlayerGamesController do
+  before(:each) do
+    sign_in_user
+  end
+
   describe "show" do
     it "renders successfully with the player and the game" do
       game = FactoryGirl.create(:game)
