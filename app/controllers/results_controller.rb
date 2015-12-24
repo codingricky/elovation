@@ -4,7 +4,13 @@ class ResultsController < ApplicationController
 
 
   def create
-    response = ResultService.create(@game, params[:result])
+
+    multiplier = params[:multiplier] || 1
+
+    response = nil
+    1.upto(multiplier.to_i) do
+      response = ResultService.create(@game, params[:result])
+    end
 
     if response.success?
       redirect_to dashboard_path
