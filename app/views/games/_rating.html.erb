@@ -14,8 +14,8 @@
       <% if game.allow_ties %>
           <td><%= rating.player.total_ties(rating.game) %></td>
       <% end %>
-      <td><%= number_to_percentage(rating.player.win_loss_ratio(rating.game), :precision => 0) %></td>
       <td><%= rating.player.results.for_game(rating.game).size %></td>
+      <td><%= number_to_percentage(rating.player.win_loss_ratio(rating.game), :precision => 0) %></td>
       <td><%= rating.player.streak(rating.game) %></td>
 
     </tr>
