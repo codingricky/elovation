@@ -15,48 +15,11 @@
 <div class="row-fluid">
 
   <div class='span5'>
-    <ul id='games-list'>
-      <li class="<%= "active" if @game == game %> game-list-item">
-        <%= link_to game_path(game) do %>
-            <h3 class='game-title'><%= game.name %></h3>
-            <ul class='game-params'>
-              <li class='rating-type'><%= game.rating_type %> – <%= game.allow_ties ? 'Ties allowed' : 'No ties' %></li>
-              <li class='num-players'><%= game.players.length %> players</li>
-              <li class='games-played'><%= game.results.length %> games played</li>
-            </ul>
-            <% result = game.recent_results.limit(1).first %>
-            <% if result %>
-                <div class='recent-result'>
-                  <h4>Last game</h4>
+    <h3>Recent Results in <%= link_to game.name, game_path(game) %></h3>
 
-                  <div class='description'>
-
-                    <% result.teams.each_with_index do |team, i| %>
-                        <% team.players.each do |winner| %>
-                    <span class='player'>
-                      <strong><%= winner.name %></strong>
-                    </span>
-                        <% end %>
-                        <% if i == 0 %>
-                            <% if result.tie? %>
-                                ties
-                            <% else %>
-                                defeated
-                            <% end %>
-                        <% end %>
-                    <% end %>
-                    <br/>
-                    <time><%= format_time(result.created_at) %></time>
-                  </div>
-                </div>
-            <% end %>
-
-
-        <% end %>
-      </li>
-    </ul>
-  </div>
-
+    <% if game.recent_results.any? %>
+        <%= render partial: 'shared/results', object: game.recent_results, locals: {show_game: false} %>  </div>
+    <% end %>
   <div class="span6">
     <h3>Current rankings</h3>
     <table>
@@ -79,24 +42,15 @@
       <tbody>
       <%= render partial: 'games/rating', collection: game.all_ratings, locals: {game: game} %>
       </tbody>
+
     </table>
+    <h3>How are the points calculated?</h3>
+    <p>Click here to read about the Elo rating system <a href="https://en.wikipedia.org/wiki/Elo_rating_system">here</a>.
+    </p>
   </div>
 
 </div>
 
-<div class="row-fluid">
-    <div class="span12">
-      <h3>How are the points calculated?</h3>
-      <p>The Elo rating system is a method for calculating the relative skill levels of players in competitor-versus-competitor games such as chess.
-        Each player has a rating, which is a number. A higher number indicates a better player, based on their results against other rated players.
-        The winner of a contest between two players gains a certain number of points in his rating and the losing player loses the same amount.
-        The number of points won or lost in a contest depends on the difference in the ratings of the players, so a player will gain more points by beating a higher-rated player than by beating a lower-rated player.
-        In chess, for instance, if one player is rated 100 points higher than the other player, he is expected to win about five games out of eight, and the rating changes reflect that.
-        Over a series of games, if a player does better than expected, based on the ratings (his compared to his opponents), his rating will go up.
-        Beginner's will start with 1000 points.</p>
-
-      <p>
-        Read more about the Elo rating system <a href="https://en.wikipedia.org/wiki/Elo_rating_system">here</a>.
-      </p>
-    </div>
+<div class="row">
+      <%= line_chart @chart_data, min: nil, max: nil %>
 </div>
