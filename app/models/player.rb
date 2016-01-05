@@ -72,6 +72,12 @@ class Player < ActiveRecord::Base
     results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).to_a.count { |r| !r.tie? }
   end
 
+  def win_loss_ratio(game)
+    total_games = results.for_game(game).size
+    0 if total_games == 0
+    total_wins(game)/total_games.to_f * 100
+  end
+
   def streak(game)
     results_array = results.where(game_id: game).order("created_at DESC").to_a.chunk do |result|
       result.winners.include?(self)
