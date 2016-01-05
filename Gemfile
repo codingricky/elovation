@@ -7,6 +7,9 @@ gem 'omniauth-google-oauth2'
 gem 'devise'
 gem 'puma'
 
+group :development do
+  gem 'rails_real_favicon'
+end
 
 gem 'paperclip'
 gem 'aws-sdk', '< 2.0'
