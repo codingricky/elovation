@@ -10,6 +10,7 @@ gem 'puma'
 group :development do
   gem 'rails_real_favicon'
 end
+gem "health_check"
 
 gem 'paperclip'
 gem 'aws-sdk', '< 2.0'

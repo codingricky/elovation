@@ -100,6 +100,8 @@ GEM
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     hashie (3.4.3)
+    health_check (1.5.1)
+      rails (>= 2.3.0)
     hike (1.2.3)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -283,6 +285,7 @@ DEPENDENCIES
   elo
   factory_girl_rails
   faker
+  health_check
   jquery-rails
   mocha
   omniauth-google-oauth2

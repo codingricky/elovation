@@ -1,3 +1,4 @@
+
 development:
   adapter: postgresql
   database: elovation_development
@@ -14,7 +15,6 @@ test:
   min_messages: WARNING
 
 production:
-    <<: *default
     adapter: postgresql
     encoding: unicode
     database: <%= ENV['RDS_DB_NAME'] %>
