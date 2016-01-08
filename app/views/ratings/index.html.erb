@@ -4,22 +4,7 @@
   <div class="span6">
     <h2>All Ratings</h2>
     <table>
-      <thead>
-        <tr>
-          <th>Player</th>
-          <th>Rating</th>
-          <th><abbr title='Wins'>W</abbr></th>
-          <th><abbr title='Losses'>L</abbr></th>
-          <% if @game.allow_ties %>
-            <th><abbr title='Ties'>T</abbr></th>
-          <% end %>
-          <th><abbr title='Total Games'>Games</abbr></th>
-          <th><abbr title='Win Loss Ratio'>W/L ratio</abbr></th>
-          <th><abbr title='Current winning streak'>Winning Streak</abbr></th>
-          <th><abbr title='Last 10 Games'>Last 10 Games</abbr></th>
-
-        </tr>
-      </thead>
+        <%= render partial: 'games/rating_heading', locals: {game:  @game} %>
 
       <tbody>
         <%= render partial: 'games/rating', collection: @game.all_ratings, locals: {game:  @game} %>
