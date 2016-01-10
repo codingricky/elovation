@@ -1,4 +1,5 @@
 <div class="hero-unit">
+  <%= player_avatar(@player) %>
   <h1><%= link_to @player.name, player_path(@player) %> <strong><%= @player.ratings.find_by_game_id(@game).value %></strong></h1>
 </div>
 
