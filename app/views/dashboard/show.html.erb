@@ -21,12 +21,12 @@
         <%= render partial: 'shared/results', object: game.recent_results, locals: {show_game: false} %>  </div>
     <% end %>
   <div class="span7">
-    <h3>Current rankings</h3>
+    <h3>Current Rankings of Active Players - <span><%= link_to "Full Rankings", game_ratings_path(game) %></span> </h3>
     <table>
       <%= render partial: 'games/rating_heading', locals: {game:  game} %>
 
       <tbody>
-      <%= render partial: 'games/rating', collection: game.all_ratings, locals: {game: game} %>
+      <%= render partial: 'games/rating', collection: game.all_ratings_with_active_players, locals: {game: game} %>
       </tbody>
 
     </table>

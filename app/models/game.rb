@@ -46,6 +46,10 @@ class Game < ActiveRecord::Base
     ratings.order(value: :desc)
   end
 
+  def all_ratings_with_active_players
+    all_ratings.select {|rating| rating.player.is_active?}
+  end
+
   def as_json(options = {})
     {
       name: name,
