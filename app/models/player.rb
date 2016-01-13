@@ -31,6 +31,10 @@ class Player < ActiveRecord::Base
       where("teams.rank > ?", Team::FIRST_PLACE_RANK)
     end
 
+    def today
+      where("results.created_at > :today", {today: Date.today})
+    end
+
   end
 
   before_destroy do
@@ -49,6 +53,10 @@ class Player < ActiveRecord::Base
 
   def is_active?
     results.where("results.created_at > :last_active_date", {last_active_date: DateTime.now - 20.days}).count > 0
+  end
+
+  def is_active_today?
+    results.today.count > 0
   end
 
   def recent_results
@@ -72,6 +80,11 @@ class Player < ActiveRecord::Base
     results.where(game_id: game, teams: { rank: Team::FIRST_PLACE_RANK }).to_a.count { |r| !r.tie? }
   end
 
+  def total_wins_for_today(game)
+    results.where(game_id: game,
+                  teams: { rank: Team::FIRST_PLACE_RANK }).today.to_a.count { |r| !r.tie? }
+  end
+
   def wins(game, opponent)
     results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).to_a.count { |r| !r.tie? }
   end
@@ -80,6 +93,12 @@ class Player < ActiveRecord::Base
     total_games = results.for_game(game).size
     0 if total_games == 0
     total_wins(game)/total_games.to_f * 100
+  end
+
+  def win_loss_ratio_for_today(game)
+    total_games = results.for_game(game).today.size
+    0 if total_games == 0
+    total_wins_for_today(game)/total_games.to_f * 100
   end
 
   def last_n(game, n)

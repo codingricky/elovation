@@ -12,7 +12,7 @@ Elovation::Application.routes.draw do
   end
 
   get '/dashboard' => 'dashboard#show', as: :dashboard
-
+  get '/daily/:id', to: 'daily_ratings#index', as: :daily_ratings
 
   root to: 'dashboard#show'
 end
