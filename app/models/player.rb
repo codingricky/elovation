@@ -48,7 +48,7 @@ class Player < ActiveRecord::Base
   end
 
   def is_active?
-    results.where("results.created_at > :last_active_date", {last_active_date: DateTime.now - 30.days}).count > 0
+    results.where("results.created_at > :last_active_date", {last_active_date: DateTime.now - 20.days}).count > 0
   end
 
   def recent_results
