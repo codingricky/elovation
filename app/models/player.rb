@@ -32,7 +32,7 @@ class Player < ActiveRecord::Base
     end
 
     def today
-      where("results.created_at > :today", {today: Time.zone.now.to_date})
+      where("results.created_at > :today", {today: Time.zone.now.to_date.beginning_of_day})
     end
 
   end
