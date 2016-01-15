@@ -1,7 +1,9 @@
 <li class="<%= 'new' if result.most_recent? -%>">
+  <% game = Game.first %>
   <% result.teams.each_with_index do |team, i| %>
     <% team.players.each do |winner| %>
-      <%= link_to winner, class: 'player' do %>
+
+      <%= link_to player_game_path(winner, game), class: 'player' do %>
               <%= player_avatar_tiny(winner) %>
         <strong> <%= winner.name %></strong>
       <% end %>

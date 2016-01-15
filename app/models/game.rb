@@ -46,6 +46,14 @@ class Game < ActiveRecord::Base
     ratings.order(value: :desc)
   end
 
+  def all_ratings_with_active_players
+    all_ratings.select {|rating| rating.player.is_active?}
+  end
+
+  def all_ratings_with_players_active_today
+    all_ratings.select {|rating| rating.player.is_active_today?}.sort_by{|rating| -rating.player.win_loss_ratio_for_today(self)}
+  end
+
   def as_json(options = {})
     {
       name: name,
