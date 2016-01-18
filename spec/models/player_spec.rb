@@ -191,6 +191,26 @@ describe Player do
     end
   end
 
+  describe 'win/loss today' do
+    it 'with a win and loss' do
+      player1 = FactoryGirl.create(:player)
+      player2 = FactoryGirl.create(:player)
+
+      game = FactoryGirl.create(:game)
+      create_result(game, player1, player2)
+      create_result(game, player1, player2)
+      create_result(game, player2, player1)
+      create_result(game, player2, player1)
+
+      Timecop.freeze(3.days.ago) do
+        5.times { create_result(game, player1, player2) }
+      end
+
+      player1.win_loss_ratio(game).should be_close(77.77, 0.01)
+      player1.win_loss_ratio_for_today(game).should == 50
+    end
+  end
+
   describe 'last n' do
     it 'with a win and loss' do
       player1 = FactoryGirl.create(:player)
@@ -207,11 +227,10 @@ describe Player do
       player1.last_n(game, 5).should == "WLWWW"
       player2.last_n(game, 5).should == "LWLLL"
     end
+  end
 
-    def create_result(game, winner, loser)
-      FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [winner]), FactoryGirl.create(:team, rank: 2, players: [loser])])
-    end
-
+  def create_result(game, winner, loser)
+    FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [winner]), FactoryGirl.create(:team, rank: 2, players: [loser])])
   end
 
   describe "ties" do
