@@ -195,8 +195,8 @@ describe Player do
     it 'with a win and loss' do
       player1 = FactoryGirl.create(:player)
       player2 = FactoryGirl.create(:player)
-
       game = FactoryGirl.create(:game)
+
       create_result(game, player1, player2)
       create_result(game, player1, player2)
       create_result(game, player2, player1)
@@ -206,8 +206,32 @@ describe Player do
         5.times { create_result(game, player1, player2) }
       end
 
-      player1.win_loss_ratio(game).should be_close(77.77, 0.01)
+      player1.win_loss_ratio(game).should be_within(77.77).of(0.01)
       player1.win_loss_ratio_for_today(game).should == 50
+    end
+  end
+
+  describe 'streak' do
+    it 'wins are counted' do
+      player1 = FactoryGirl.create(:player)
+      player2 = FactoryGirl.create(:player)
+      game = FactoryGirl.create(:game)
+
+      5.times { create_result(game, player1, player2) }
+
+      player1.streak(game).should == 5
+    end
+
+    it 'a loss breaks the streak' do
+      player1 = FactoryGirl.create(:player)
+      player2 = FactoryGirl.create(:player)
+      game = FactoryGirl.create(:game)
+
+
+      5.times { create_result(game, player1, player2) }
+      create_result(game, player2, player1)
+
+      player1.streak(game).should == 0
     end
   end
 
