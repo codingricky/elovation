@@ -235,6 +235,48 @@ describe Player do
     end
   end
 
+  describe 'is active?' do
+    it 'played a long time ago' do
+      player1 = FactoryGirl.create(:player)
+      player2 = FactoryGirl.create(:player)
+      game = FactoryGirl.create(:game)
+
+      Timecop.freeze(21.days.ago) do
+        20.times { create_result(game, player1, player2) }
+      end
+
+      player1.is_active?.should be_false
+    end
+
+    it 'played recently' do
+      player1 = FactoryGirl.create(:player)
+      player2 = FactoryGirl.create(:player)
+      game = FactoryGirl.create(:game)
+
+      Timecop.freeze(19.days.ago) do
+        20.times { create_result(game, player1, player2) }
+      end
+
+      player1.is_active?.should be_true
+    end
+
+    it 'played recently but not enough games' do
+      player1 = FactoryGirl.create(:player)
+      player2 = FactoryGirl.create(:player)
+      game = FactoryGirl.create(:game)
+
+      Timecop.freeze(15.days.ago) do
+        5.times { create_result(game, player1, player2) }
+      end
+
+      Timecop.freeze(35.days.ago) do
+        4.times { create_result(game, player1, player2) }
+      end
+
+      player1.is_active?.should be_false
+    end
+  end
+
   describe 'last n' do
     it 'with a win and loss' do
       player1 = FactoryGirl.create(:player)
