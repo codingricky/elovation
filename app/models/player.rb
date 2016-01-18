@@ -91,7 +91,7 @@ class Player < ActiveRecord::Base
 
   def win_loss_ratio(game)
     total_games = results.for_game(game).size
-    0 if total_games == 0
+    return 0 if total_games == 0
     total_wins(game)/total_games.to_f * 100
   end
 

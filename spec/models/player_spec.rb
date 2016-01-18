@@ -11,6 +11,7 @@ describe Player do
       }
     end
   end
+
   describe "validations" do
     context "name" do
       it "is required" do
@@ -165,6 +166,52 @@ describe Player do
       player1.total_wins(game).should == 1
       player1.wins(game, player2).should == 1
     end
+  end
+
+  describe 'win/loss' do
+    it 'with a win and loss' do
+      player1 = FactoryGirl.create(:player)
+      player1WinTeam = FactoryGirl.create(:team, rank: 1, players: [player1])
+
+      player2 = FactoryGirl.create(:player)
+      player2WinTeam = FactoryGirl.create(:team, rank: 1, players: [player2])
+
+      game = FactoryGirl.create(:game)
+      win_for_player_1 = FactoryGirl.create(:result, game: game, teams: [player1WinTeam, FactoryGirl.create(:team, players: [player2], rank: 2)])
+      loss_for_player_1 = FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 2, players: [player1]), player2WinTeam])
+
+      player1.win_loss_ratio(game).should == 50.0
+    end
+
+    it 'defaults to zero' do
+      player1 = FactoryGirl.create(:player)
+      game = FactoryGirl.create(:game)
+
+      player1.win_loss_ratio(game).should == 0
+    end
+  end
+
+  describe 'last n' do
+    it 'with a win and loss' do
+      player1 = FactoryGirl.create(:player)
+      player2 = FactoryGirl.create(:player)
+      game = FactoryGirl.create(:game)
+
+      # FactoryGirl.create(:result, game: game, teams: [player1WinTeam, FactoryGirl.create(:team, players: [player2], rank: 2)])
+      create_result(game, player1, player2)
+      create_result(game, player1, player2)
+      create_result(game, player1, player2)
+      create_result(game, player2, player1)
+      create_result(game, player1, player2)
+
+      player1.last_n(game, 5).should == "WLWWW"
+      player2.last_n(game, 5).should == "LWLLL"
+    end
+
+    def create_result(game, winner, loser)
+      FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [winner]), FactoryGirl.create(:team, rank: 2, players: [loser])])
+    end
+
   end
 
   describe "ties" do
