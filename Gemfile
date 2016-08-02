@@ -51,7 +51,6 @@ end
 
 group :test do
   gem 'mocha'
-  gem 'rspec-rails', '~> 2.99'
+  gem 'rspec-rails', '~> 3.5'
   gem 'timecop'
-  gem 'transpec'
 end
