@@ -10,8 +10,8 @@ describe DashboardController do
 
       get :show
 
-      assigns(:players).should == [player]
-      assigns(:games).should == [game]
+      expect(assigns(:players)).to eq([player])
+      expect(assigns(:games)).to eq([game])
     end
   end
 end

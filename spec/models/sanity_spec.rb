@@ -16,7 +16,7 @@ describe "sanity" do
       migrations_digests.each do |migration, digest|
         contents = File.read(Rails.root.join("db", "migrate", migration))
 
-        Digest::MD5.hexdigest(contents).should == digest
+        expect(Digest::MD5.hexdigest(contents)).to eq(digest)
       end
     end
   end

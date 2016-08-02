@@ -11,7 +11,7 @@ describe ResultsController do
 
       get :new, game_id: game
 
-      assigns(:result).should_not be_nil
+      expect(assigns(:result)).not_to be_nil
     end
 
     it "exposes the game" do
@@ -19,7 +19,7 @@ describe ResultsController do
 
       get :new, game_id: game
 
-      assigns(:game).should == game
+      expect(assigns(:game)).to eq(game)
     end
   end
 
@@ -39,9 +39,9 @@ describe ResultsController do
 
         result = game.reload.results.first
 
-        result.should_not be_nil
-        result.winners.should == [player_1]
-        result.losers.should == [player_2]
+        expect(result).not_to be_nil
+        expect(result.winners).to eq([player_1])
+        expect(result.losers).to eq([player_2])
       end
     end
 
@@ -57,7 +57,7 @@ describe ResultsController do
           }
         }
 
-        response.should render_template(:new)
+        expect(response).to render_template(:new)
       end
     end
   end
@@ -89,20 +89,20 @@ describe ResultsController do
           }
         ).result
 
-        player_1_rating.reload.value.should_not == old_rating_1
-        player_2_rating.reload.value.should_not == old_rating_2
+        expect(player_1_rating.reload.value).not_to eq(old_rating_1)
+        expect(player_2_rating.reload.value).not_to eq(old_rating_2)
 
         request.env['HTTP_REFERER'] = game_path(game)
 
         delete :destroy, game_id: game, id: result
 
-        response.should redirect_to(game_path(game))
+        expect(response).to redirect_to(game_path(game))
 
-        player_1_rating.reload.value.should == old_rating_1
-        player_2_rating.reload.value.should == old_rating_2
+        expect(player_1_rating.reload.value).to eq(old_rating_1)
+        expect(player_2_rating.reload.value).to eq(old_rating_2)
 
-        player_1.reload.results.size.should == 1
-        player_2.reload.results.size.should == 1
+        expect(player_1.reload.results.size).to eq(1)
+        expect(player_2.reload.results.size).to eq(1)
       end
     end
   end

@@ -10,7 +10,7 @@ describe PlayersController do
     it "exposes a new player" do
       get :new
 
-      assigns(:player).should_not be_nil
+      expect(assigns(:player)).not_to be_nil
     end
   end
 
@@ -20,8 +20,8 @@ describe PlayersController do
 
       player = Player.where(name: "Drew", email: "drew@example.com").first
 
-      player.should_not be_nil
-      response.should redirect_to(dashboard_path)
+      expect(player).not_to be_nil
+      expect(response).to redirect_to(dashboard_path)
     end
 
     it "renders new given invalid params" do
@@ -29,7 +29,7 @@ describe PlayersController do
 
       post :create, player: {name: "Drew"}
 
-      response.should render_template(:new)
+      expect(response).to render_template(:new)
     end
 
     it "protects against mass assignment" do
@@ -37,7 +37,7 @@ describe PlayersController do
         post :create, player: {created_at: 3.days.ago, name: "Drew"}
 
         player = Player.where(name: "Drew").first
-        player.created_at.should > 3.days.ago
+        expect(player.created_at).to be > 3.days.ago
       end
     end
   end
@@ -48,8 +48,8 @@ describe PlayersController do
 
       delete :destroy, id: player
 
-      response.should redirect_to(dashboard_path)
-      Player.find_by_id(player.id).should be_nil
+      expect(response).to redirect_to(dashboard_path)
+      expect(Player.find_by_id(player.id)).to be_nil
     end
 
     it "doesn't allow deleting a player with results" do
@@ -58,8 +58,8 @@ describe PlayersController do
 
       delete :destroy, id: player
 
-      response.should redirect_to(dashboard_path)
-      Player.find_by_id(player.id).should == player
+      expect(response).to redirect_to(dashboard_path)
+      expect(Player.find_by_id(player.id)).to eq(player)
     end
   end
 
@@ -69,7 +69,7 @@ describe PlayersController do
 
       get :edit, id: player
 
-      assigns(:player).should == player
+      expect(assigns(:player)).to eq(player)
     end
   end
 
@@ -80,7 +80,7 @@ describe PlayersController do
 
         put :update, id: player, player: {name: "Second name"}
 
-        response.should redirect_to(player_path(player))
+        expect(response).to redirect_to(player_path(player))
       end
 
       it "updates the player with the provided attributes" do
@@ -88,7 +88,7 @@ describe PlayersController do
 
         put :update, id: player, player: {name: "Second name"}
 
-        player.reload.name.should == "Second name"
+        expect(player.reload.name).to eq("Second name")
       end
 
       it "protects against mass assignment" do
@@ -97,7 +97,7 @@ describe PlayersController do
 
           put :update, id: player, player: {created_at: 3.days.ago}
 
-          player.reload.created_at.should > 3.days.ago
+          expect(player.reload.created_at).to be > 3.days.ago
         end
       end
     end
@@ -108,7 +108,7 @@ describe PlayersController do
 
         put :update, id: player, player: {name: nil}
 
-        response.should render_template(:edit)
+        expect(response).to render_template(:edit)
       end
     end
   end
@@ -119,7 +119,7 @@ describe PlayersController do
 
       get :show, id: player
 
-      assigns(:player).should == player
+      expect(assigns(:player)).to eq(player)
     end
   end
 end

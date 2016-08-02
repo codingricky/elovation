@@ -6,7 +6,7 @@ describe ResultsHelper do
       player1 = FactoryGirl.create(:player, name: "First")
       player2 = FactoryGirl.create(:player, name: "Second")
 
-      helper.player_options.should == [["First", player1.id], ["Second", player2.id]]
+      expect(helper.player_options).to eq([["First", player1.id], ["Second", player2.id]])
     end
   end
 end

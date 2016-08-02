@@ -9,7 +9,7 @@ describe GamesController do
     it "exposes a new game" do
       get :new
 
-      assigns(:game).should_not be_nil
+      expect(assigns(:game)).not_to be_nil
     end
   end
 
@@ -19,7 +19,7 @@ describe GamesController do
 
       get :edit, id: game
 
-      assigns(:game).should == game
+      expect(assigns(:game)).to eq(game)
     end
   end
 
@@ -29,7 +29,7 @@ describe GamesController do
         game_attributes = FactoryGirl.attributes_for(:game)
         post :create, game: game_attributes
 
-        Game.where(name: game_attributes[:name]).first.should_not be_nil
+        expect(Game.where(name: game_attributes[:name]).first).not_to be_nil
       end
 
       it "redirects to the game's show page" do
@@ -38,7 +38,7 @@ describe GamesController do
 
         game = Game.where(name: game_attributes[:name]).first
 
-        response.should redirect_to(game_path(game))
+        expect(response).to redirect_to(game_path(game))
       end
 
       it "protects against mass assignment" do
@@ -47,7 +47,7 @@ describe GamesController do
           post :create, game: game_attributes
 
           game = Game.where(name: game_attributes[:name]).first
-          game.created_at.should > 3.days.ago
+          expect(game.created_at).to be > 3.days.ago
         end
       end
     end
@@ -56,7 +56,7 @@ describe GamesController do
       it "renders new given invalid params" do
         post :create, game: {name: nil}
 
-        response.should render_template(:new)
+        expect(response).to render_template(:new)
       end
     end
   end
@@ -67,8 +67,8 @@ describe GamesController do
 
       delete :destroy, id: game
 
-      response.should redirect_to(dashboard_path)
-      Game.find_by_id(game.id).should be_nil
+      expect(response).to redirect_to(dashboard_path)
+      expect(Game.find_by_id(game.id)).to be_nil
     end
 
     it "doesn't allow deleting games with results" do
@@ -77,8 +77,8 @@ describe GamesController do
 
       delete :destroy, id: game
 
-      response.should redirect_to(dashboard_path)
-      Game.find_by_id(game.id).should == game
+      expect(response).to redirect_to(dashboard_path)
+      expect(Game.find_by_id(game.id)).to eq(game)
     end
   end
 
@@ -89,7 +89,7 @@ describe GamesController do
 
         put :update, id: game, game: {name: "Second name"}
 
-        response.should redirect_to(game_path(game))
+        expect(response).to redirect_to(game_path(game))
       end
 
       it "updates the game with the provided attributes" do
@@ -97,7 +97,7 @@ describe GamesController do
 
         put :update, id: game, game: {name: "Second name"}
 
-        game.reload.name.should == "Second name"
+        expect(game.reload.name).to eq("Second name")
       end
 
       it "protects against mass assignment" do
@@ -106,7 +106,7 @@ describe GamesController do
 
           put :update, id: game, game: {created_at: 3.days.ago}
 
-          game.created_at.should > 3.days.ago
+          expect(game.created_at).to be > 3.days.ago
         end
       end
     end
@@ -117,7 +117,7 @@ describe GamesController do
 
         put :update, id: game, game: {name: nil}
 
-        response.should render_template(:edit)
+        expect(response).to render_template(:edit)
       end
     end
   end
@@ -128,7 +128,7 @@ describe GamesController do
 
       get :show, id: game
 
-      assigns(:game).should == game
+      expect(assigns(:game)).to eq(game)
     end
 
     it "returns a json response" do
@@ -150,7 +150,7 @@ describe GamesController do
         get :show, id: game, format: :json
 
         json_data = JSON.parse(response.body)
-        json_data.should == {
+        expect(json_data).to eq({
           "name" => game.name,
           "ratings" => [
             {"player" => {"name" => player1.name, "email" => player1.email}, "value" => 1003},
@@ -162,7 +162,7 @@ describe GamesController do
             {"winner" => player2.name, "loser" => player3.name, "created_at" => Time.now.utc.to_s},
             {"winner" => player3.name, "loser" => player1.name, "created_at" => Time.now.utc.to_s}
           ]
-        }
+        })
       end
     end
   end
