@@ -40,7 +40,6 @@ class ResultsController < ApplicationController
   def new
     @result = Result.new
     (@game.max_number_of_teams || 20).times{|i| @result.teams.build rank: i}
-    @current_player = Player.find_by(email: current_user.email)
   end
 
   private

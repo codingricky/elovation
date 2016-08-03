@@ -50,7 +50,6 @@ group :development, :test do
 end
 
 group :test do
-  gem 'mocha'
   gem 'rspec-rails', '~> 3.5'
   gem 'timecop'
   gem 'simplecov'
