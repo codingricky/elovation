@@ -339,4 +339,21 @@ describe Game do
       expect(previous_ratings.map(&attrs)).to eq(game.all_ratings.map(&attrs))
     end
   end
+
+  describe "involves_player?" do
+    let(:p1) { FactoryGirl.create(:player) }
+    let(:p2) { FactoryGirl.create(:player) }
+    let(:p3) { FactoryGirl.create(:player) }
+    let(:t1) { FactoryGirl.create(:team, rank: 1, players: [p1]) }
+    let(:t2) { FactoryGirl.create(:team, rank: 2, players: [p2]) }
+    let(:game) { FactoryGirl.create(:game) }
+    let(:result) { FactoryGirl.create(:result, game: game, teams: [t1, t2]) }
+
+    it "shows if a player was in any of the participating teams" do
+      game.rater.update_ratings game, result.teams
+      expect(result.game.involves_player?(p1)).to be true
+      expect(result.game.involves_player?(p2)).to be true
+      expect(result.game.involves_player?(p3)).to be false
+    end
+  end
 end

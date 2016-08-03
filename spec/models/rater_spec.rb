@@ -70,7 +70,7 @@ describe Rater do
           pro: false
         )
 
-        Rater::EloRater.any_instance.stubs(:to_elo).returns(Elo::Player.new(pro: true))
+        expect_any_instance_of(Rater::EloRater).to receive(:to_elo).twice.and_return(Elo::Player.new(pro: true))
 
         game.rater.update_ratings(game, [team1, team2])
 
@@ -285,4 +285,3 @@ describe Rater do
     end
   end
 end
-

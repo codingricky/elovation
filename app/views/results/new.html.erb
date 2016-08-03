@@ -2,15 +2,16 @@
     <%= f.error_messages %>
 
     <% @result.teams.each.with_index do |team, index| %>
-        <%= select "result[teams][#{index}]", "players", player_options, {include_blank: ''}, class: "players", multiple: @game.max_number_of_players_per_team != 1, "data-placeholder" => "Team #{index + 1}" %>
+        <%
+          tag_id = "result[teams][#{index}]"
+          players = player_options(index, @current_player)
+          tag_opts = player_dropdown_tag_opts(index, @current_player)
+          html_opts = player_dropdown_html_opts(index, @current_player)
+        %>
+        <%= select tag_id, "players", players, tag_opts, html_opts %>
 
         <% if index != @result.teams.size - 1 %>
-            <% if @game.allow_ties %>
-                <%= select "result[teams][#{index}]", :relation, ["defeats", "ties"], {} %>
-            <% else %>
-                <%= hidden_field_tag "result[teams][#{index}][relation]", :defeats, {} %>
-                Defeats:
-            <% end %>
+          <%= select nil, :relation, relation_options, {} %>
         <% end %>
     <% end %>
 
