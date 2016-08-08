@@ -11,7 +11,7 @@ describe ResultsController do
 
       get :new, game_id: game
 
-      assigns(:result).should_not be_nil
+      expect(assigns(:result)).not_to be_nil
     end
 
     it "exposes the game" do
@@ -19,45 +19,88 @@ describe ResultsController do
 
       get :new, game_id: game
 
-      assigns(:game).should == game
+      expect(assigns(:game)).to eq(game)
     end
   end
 
   describe "create" do
-    context "with valid params" do
-      it "creates a new result with the given players" do
+    context "when defeated the opponent" do
+      it "creates a new result with the current player as the winner" do
         game = FactoryGirl.create(:game, results: [])
-        player_1 = FactoryGirl.create(:player)
-        player_2 = FactoryGirl.create(:player)
+        opponent = FactoryGirl.create(:player)
+        current_player = FactoryGirl.create(:player, email: TEST_EMAIL)
 
-        post :create, game_id: game, result: {
+        post :create, game_id: game, relation: 'defeated', result: {
           teams: {
-            "0" => { players: [player_1.id.to_s] },
-            "1" => { players: [player_2.id.to_s] }
+            "1" => { players: [opponent.id.to_s] }
           }
         }
 
         result = game.reload.results.first
 
-        result.should_not be_nil
-        result.winners.should == [player_1]
-        result.losers.should == [player_2]
+        expect(result).not_to be_nil
+
+        expect(result.winners).to eq([current_player])
+        expect(result.losers).to eq([opponent])
       end
     end
 
-    context "with invalid params" do
-      it "renders the new page" do
+    context "when lost to the opponent" do
+      it "creates a new result with the opponent as the winner" do
         game = FactoryGirl.create(:game, results: [])
-        player = FactoryGirl.create(:player)
+        opponent = FactoryGirl.create(:player)
+        current_player = FactoryGirl.create(:player, email: TEST_EMAIL)
 
-        post :create, game_id: game, result: {
+        post :create, game_id: game, relation: 'lost to', result: {
           teams: {
-            "0" => { players: [player.id.to_s] },
-            "1" => { players: [player.id.to_s] }
+            "1" => { players: [opponent.id.to_s] }
           }
         }
 
-        response.should render_template(:new)
+        result = game.reload.results.first
+
+        expect(result).not_to be_nil
+
+        expect(result.winners).to eq([opponent])
+        expect(result.losers).to eq([current_player])
+      end
+    end
+
+    context "when user TRIES TO HACK the current user" do
+      it "ignores the injected player and use the current player anyway" do
+        game = FactoryGirl.create(:game, results: [])
+        opponent = FactoryGirl.create(:player)
+        current_player = FactoryGirl.create(:player, email: TEST_EMAIL)
+
+        post :create, game_id: game, relation: 'lost to', result: {
+          teams: {
+            "0" => { players: [FactoryGirl.create(:player, name: "Others")] },
+            "1" => { players: [opponent.id.to_s] }
+          }
+        }
+
+        result = game.reload.results.first
+
+        expect(result).not_to be_nil
+
+        expect(result.winners).to eq([opponent])
+        expect(result.losers).to eq([current_player])
+      end
+    end
+
+    context "when user did not select the opponent" do
+      it "renders the ':new' template" do
+        game = FactoryGirl.create(:game, results: [])
+        opponent = FactoryGirl.create(:player)
+        FactoryGirl.create(:player, email: TEST_EMAIL)
+
+        result = post :create, game_id: game, relation: 'lost to', result: {
+          teams: {
+            "1" => { players: [nil] }
+          }
+        }
+
+        expect(result).to render_template(:new)
       end
     end
   end
@@ -89,20 +132,20 @@ describe ResultsController do
           }
         ).result
 
-        player_1_rating.reload.value.should_not == old_rating_1
-        player_2_rating.reload.value.should_not == old_rating_2
+        expect(player_1_rating.reload.value).not_to eq(old_rating_1)
+        expect(player_2_rating.reload.value).not_to eq(old_rating_2)
 
         request.env['HTTP_REFERER'] = game_path(game)
 
         delete :destroy, game_id: game, id: result
 
-        response.should redirect_to(game_path(game))
+        expect(response).to redirect_to(game_path(game))
 
-        player_1_rating.reload.value.should == old_rating_1
-        player_2_rating.reload.value.should == old_rating_2
+        expect(player_1_rating.reload.value).to eq(old_rating_1)
+        expect(player_2_rating.reload.value).to eq(old_rating_2)
 
-        player_1.reload.results.size.should == 1
-        player_2.reload.results.size.should == 1
+        expect(player_1.reload.results.size).to eq(1)
+        expect(player_2.reload.results.size).to eq(1)
       end
     end
   end

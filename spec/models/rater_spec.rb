@@ -12,8 +12,8 @@ describe Rater do
 
         game.rater.update_ratings(game, [team1, team2])
 
-        player1.ratings.where(game_id: game.id).should_not be_empty
-        player2.ratings.where(game_id: game.id).should_not be_empty
+        expect(player1.ratings.where(game_id: game.id)).not_to be_empty
+        expect(player2.ratings.where(game_id: game.id)).not_to be_empty
       end
 
       it "works with ties" do
@@ -27,8 +27,8 @@ describe Rater do
 
         rating1 = player1.ratings.where(game_id: game.id).first
         rating2 = player2.ratings.where(game_id: game.id).first
-        rating1.reload.value.should == game.rater.default_attributes[:value]
-        rating2.reload.value.should == game.rater.default_attributes[:value]
+        expect(rating1.reload.value).to eq(game.rater.default_attributes[:value])
+        expect(rating2.reload.value).to eq(game.rater.default_attributes[:value])
       end
 
       it "updates existing ratings" do
@@ -52,8 +52,8 @@ describe Rater do
 
         game.rater.update_ratings(game, [team1, team2])
 
-        rating1.reload.value.should > game.rater.default_attributes[:value]
-        rating2.reload.value.should < game.rater.default_attributes[:value]
+        expect(rating1.reload.value).to be > game.rater.default_attributes[:value]
+        expect(rating2.reload.value).to be < game.rater.default_attributes[:value]
       end
 
       it "persists the value of the pro flag" do
@@ -70,11 +70,11 @@ describe Rater do
           pro: false
         )
 
-        Rater::EloRater.any_instance.stubs(:to_elo).returns(Elo::Player.new(pro: true))
+        expect_any_instance_of(Rater::EloRater).to receive(:to_elo).twice.and_return(Elo::Player.new(pro: true))
 
         game.rater.update_ratings(game, [team1, team2])
 
-        rating1.reload.pro?.should be_true
+        expect(rating1.reload.pro?).to be_truthy
       end
 
       it "creates rating history events" do
@@ -101,8 +101,8 @@ describe Rater do
         new_rating1 = rating1.reload.value
         new_rating2 = rating2.reload.value
 
-        rating1.history_events.first.value.should == new_rating1
-        rating2.history_events.first.value.should == new_rating2
+        expect(rating1.history_events.first.value).to eq(new_rating1)
+        expect(rating2.history_events.first.value).to eq(new_rating2)
       end
 
       it "returns the same result regardless of team order" do
@@ -120,7 +120,7 @@ describe Rater do
         game.reload
 
         game.rater.update_ratings(game, [team1, team2])
-        game.ratings.map(&:value).should == old_ratings
+        expect(game.ratings.map(&:value)).to eq(old_ratings)
       end
     end
 
@@ -128,7 +128,7 @@ describe Rater do
       let(:rater) { Rater::EloRater.new }
       it "returns an elo player with the correct value" do
         rating = FactoryGirl.build(:rating, value: 1000)
-        rater.to_elo(rating).rating.should == 1000
+        expect(rater.to_elo(rating).rating).to eq(1000)
       end
 
       it "includes number of games played" do
@@ -138,12 +138,12 @@ describe Rater do
 
         rating = FactoryGirl.create(:rating, player: player, game: game)
 
-        rater.to_elo(rating).games_played.should == 2
+        expect(rater.to_elo(rating).games_played).to eq(2)
       end
 
       it "includes the pro flag" do
         rating = FactoryGirl.build(:rating, pro: true)
-        rater.to_elo(rating).should be_pro
+        expect(rater.to_elo(rating)).to be_pro
       end
     end
   end
@@ -166,13 +166,13 @@ describe Rater do
       it "creates new ratings" do
         game.rater.update_ratings(game, [team1, team2, team3, team4])
 
-        player1.ratings.where(game_id: game.id).should_not be_empty
-        player2.ratings.where(game_id: game.id).should_not be_empty
-        player3.ratings.where(game_id: game.id).should_not be_empty
-        player4.ratings.where(game_id: game.id).should_not be_empty
-        player5.ratings.where(game_id: game.id).should_not be_empty
-        player6.ratings.where(game_id: game.id).should_not be_empty
-        player7.ratings.where(game_id: game.id).should_not be_empty
+        expect(player1.ratings.where(game_id: game.id)).not_to be_empty
+        expect(player2.ratings.where(game_id: game.id)).not_to be_empty
+        expect(player3.ratings.where(game_id: game.id)).not_to be_empty
+        expect(player4.ratings.where(game_id: game.id)).not_to be_empty
+        expect(player5.ratings.where(game_id: game.id)).not_to be_empty
+        expect(player6.ratings.where(game_id: game.id)).not_to be_empty
+        expect(player7.ratings.where(game_id: game.id)).not_to be_empty
       end
 
       it "updates existing ratings" do
@@ -198,7 +198,7 @@ describe Rater do
         rating1.reload
         rating2.reload
 
-        rating1.value.should > rating2.value
+        expect(rating1.value).to be > rating2.value
       end
 
       it "creates rating history events" do
@@ -224,9 +224,9 @@ describe Rater do
         new_rating1 = rating1.reload.value
         new_rating2 = rating2.reload.value
 
-        rating1.history_events.first.value.should == new_rating1
-        rating2.history_events.first.value.should == new_rating2
-        RatingHistoryEvent.count.should == 7
+        expect(rating1.history_events.first.value).to eq(new_rating1)
+        expect(rating2.history_events.first.value).to eq(new_rating2)
+        expect(RatingHistoryEvent.count).to eq(7)
       end
 
       it "calculates rank as value" do
@@ -235,8 +235,8 @@ describe Rater do
         rating1 = player1.ratings.find_or_create(game)
         rating2 = player2.ratings.find_or_create(game)
 
-        rating1.value.should == (((rating1.trueskill_mean - (3 * rating1.trueskill_deviation)) * 100)).floor
-        rating1.value.should > rating2.value
+        expect(rating1.value).to eq((((rating1.trueskill_mean - (3 * rating1.trueskill_deviation)) * 100)).floor)
+        expect(rating1.value).to be > rating2.value
       end
 
       it "is sane" do
@@ -250,12 +250,12 @@ describe Rater do
         rating6 = player6.ratings.find_or_create(game)
         rating7 = player7.ratings.find_or_create(game)
 
-        rating1.value.should > rating2.value
-        rating2.value.should > rating3.value
-        rating3.value.should == rating4.value
-        rating4.value.should > rating5.value
-        rating5.value.should == rating6.value
-        rating6.value.should == rating7.value
+        expect(rating1.value).to be > rating2.value
+        expect(rating2.value).to be > rating3.value
+        expect(rating3.value).to eq(rating4.value)
+        expect(rating4.value).to be > rating5.value
+        expect(rating5.value).to eq(rating6.value)
+        expect(rating6.value).to eq(rating7.value)
       end
 
       it "returns the same result regardless of team order" do
@@ -266,7 +266,7 @@ describe Rater do
         game.reload
 
         game.rater.update_ratings(game, [team2, team3, team1])
-        game.ratings.map(&:value).should == old_ratings
+        expect(game.ratings.map(&:value)).to eq(old_ratings)
       end
     end
 
@@ -274,15 +274,14 @@ describe Rater do
       it "returns an trueskill rating with the correct mean" do
         game = FactoryGirl.create(:game)
         rating = FactoryGirl.build :rating, trueskill_mean: Rater::TrueSkillRater::DefaultMean
-        game.rater.to_trueskill(rating).mean.should == Rater::TrueSkillRater::DefaultMean
+        expect(game.rater.to_trueskill(rating).mean).to eq(Rater::TrueSkillRater::DefaultMean)
       end
 
       it "returns an trueskill rating with the correct mean" do
         game = FactoryGirl.create(:game)
         rating = FactoryGirl.build :rating, trueskill_deviation: Rater::TrueSkillRater::DefaultDeviation
-        game.rater.to_trueskill(rating).deviation.should == Rater::TrueSkillRater::DefaultDeviation
+        expect(game.rater.to_trueskill(rating).deviation).to eq(Rater::TrueSkillRater::DefaultDeviation)
       end
     end
   end
 end
-

@@ -1,8 +1,5 @@
 source 'https://rubygems.org'
 
-ruby '2.2.3'
-
-
 gem 'omniauth-google-oauth2'
 gem 'devise'
 gem 'puma'
@@ -16,7 +13,6 @@ gem 'paperclip'
 gem 'aws-sdk', '< 2.0'
 
 gem 'rails', '~> 4.2.5'
-gem 'pg'
 
 gem 'sass-rails', '~> 4.0.3'
 gem 'jquery-rails'
@@ -29,6 +25,7 @@ gem 'elo'
 gem 'trueskill', github: 'saulabs/trueskill', require: 'saulabs/trueskill'
 
 group :production do
+  gem 'pg'
   gem 'rails_12factor'
   gem 'unicorn'
 end
@@ -40,6 +37,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'sqlite3'
   gem 'factory_girl_rails'
   gem 'faker'
   gem 'pry'
@@ -52,7 +50,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'mocha'
-  gem 'rspec-rails', '~> 2.14.2'
+  gem 'rspec-rails', '~> 3.5'
   gem 'timecop'
+  gem 'simplecov'
 end

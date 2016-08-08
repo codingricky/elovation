@@ -11,10 +11,10 @@ describe PlayerGamesController do
       player = FactoryGirl.create(:player)
 
       get :show, player_id: player, id: game
-      response.should be_success
+      expect(response).to be_success
 
-      assigns(:game).should == game
-      assigns(:player).should == player
+      expect(assigns(:game)).to eq(game)
+      expect(assigns(:player)).to eq(player)
     end
   end
 end

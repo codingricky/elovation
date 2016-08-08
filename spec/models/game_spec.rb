@@ -5,7 +5,7 @@ describe Game do
     it "has a name" do
       game = FactoryGirl.create(:game, name: "Go")
 
-      game.name.should == "Go"
+      expect(game.name).to eq("Go")
     end
   end
 
@@ -16,7 +16,7 @@ describe Game do
       player2 = FactoryGirl.create(:player)
       FactoryGirl.create(:rating, game: game, player: player1)
       FactoryGirl.create(:rating, game: game, player: player2)
-      game.players.sort_by(&:id).should == [player1, player2]
+      expect(game.players.sort_by(&:id)).to eq([player1, player2])
     end
   end
 
@@ -25,7 +25,7 @@ describe Game do
       game = FactoryGirl.create(:game)
       21.times { FactoryGirl.create(:result, game: game) }
 
-      game.recent_results.size.should == 20
+      expect(game.recent_results.size).to eq(20)
     end
 
     it "returns the 20 most recently created results" do
@@ -40,7 +40,7 @@ describe Game do
         newer_results = 20.times.map { FactoryGirl.create(:result, game: game) }
       end
 
-      game.recent_results.sort.should == newer_results.sort
+      expect(game.recent_results.sort).to eq(newer_results.sort)
     end
 
     it "orders results by created_at, descending" do
@@ -55,7 +55,7 @@ describe Game do
         new = FactoryGirl.create(:result, game: game)
       end
 
-      game.recent_results.should == [new, old]
+      expect(game.recent_results).to eq([new, old])
     end
 
     it "orders games by updated_at, descending" do
@@ -71,7 +71,7 @@ describe Game do
       game = FactoryGirl.create(:game)
       10.times { FactoryGirl.create(:rating, game: game) }
 
-      game.top_ratings.count.should == 5
+      expect(game.top_ratings.count).to eq(5)
     end
 
     it "orders ratings by value, descending" do
@@ -80,7 +80,7 @@ describe Game do
       rating3 = FactoryGirl.create(:rating, game: game, value: 3)
       rating1 = FactoryGirl.create(:rating, game: game, value: 1)
 
-      game.top_ratings.should == [rating3, rating2, rating1]
+      expect(game.top_ratings).to eq([rating3, rating2, rating1])
     end
   end
 
@@ -94,14 +94,14 @@ describe Game do
       rating5 = FactoryGirl.create(:rating, game: game, value: 5)
       rating6 = FactoryGirl.create(:rating, game: game, value: 6)
 
-      game.all_ratings.should == [
+      expect(game.all_ratings).to eq([
         rating6,
         rating5,
         rating4,
         rating3,
         rating2,
         rating1
-      ]
+      ])
     end
   end
 
@@ -110,8 +110,8 @@ describe Game do
       it "must be present" do
         game = FactoryGirl.build(:game, name: nil)
 
-        game.should_not be_valid
-        game.errors[:name].should == ["can't be blank"]
+        expect(game).not_to be_valid
+        expect(game.errors[:name]).to eq(["can't be blank"])
       end
     end
 
@@ -119,27 +119,27 @@ describe Game do
       it "can be 2" do
         game = FactoryGirl.build(:game, min_number_of_teams: 2)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "can be greater than 2" do
         game = FactoryGirl.build(:game, min_number_of_teams: 3, max_number_of_teams: 3)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "cannot be less than 2" do
         game = FactoryGirl.build(:game, min_number_of_teams: 1)
 
-        game.should_not be_valid
-        game.errors[:min_number_of_teams].should == ["must be greater than or equal to 2"]
+        expect(game).not_to be_valid
+        expect(game.errors[:min_number_of_teams]).to eq(["must be greater than or equal to 2"])
       end
 
       it "cannot be nil" do
         game = FactoryGirl.build(:game, min_number_of_teams: nil)
 
-        game.should_not be_valid
-        game.errors[:min_number_of_teams].should == ["is not a number"]
+        expect(game).not_to be_valid
+        expect(game.errors[:min_number_of_teams]).to eq(["is not a number"])
       end
     end
 
@@ -147,26 +147,26 @@ describe Game do
       it "can be equal to min number of teams" do
         game = FactoryGirl.build(:game, min_number_of_teams: 2, max_number_of_teams: 2)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "can be greater than the min number of teams" do
         game = FactoryGirl.build(:game, min_number_of_teams: 2, max_number_of_teams: 3)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "can be nil" do
         game = FactoryGirl.build(:game, min_number_of_teams: 2, max_number_of_teams: nil)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "cannot be less than the min number of teams" do
         game = FactoryGirl.build(:game, min_number_of_teams: 2, max_number_of_teams: 1)
 
-        game.should_not be_valid
-        game.errors[:max_number_of_teams].should == ["cannot be less than the minimum"]
+        expect(game).not_to be_valid
+        expect(game.errors[:max_number_of_teams]).to eq(["cannot be less than the minimum"])
       end
     end
 
@@ -174,27 +174,27 @@ describe Game do
       it "can be 1" do
         game = FactoryGirl.build(:game, min_number_of_players_per_team: 1)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "can be greater than 1" do
         game = FactoryGirl.build(:game, min_number_of_players_per_team: 2, max_number_of_players_per_team: 2)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "cannot be less than 1" do
         game = FactoryGirl.build(:game, min_number_of_players_per_team: 0)
 
-        game.should_not be_valid
-        game.errors[:min_number_of_players_per_team].should == ["must be greater than or equal to 1"]
+        expect(game).not_to be_valid
+        expect(game.errors[:min_number_of_players_per_team]).to eq(["must be greater than or equal to 1"])
       end
 
       it "cannot be nil" do
         game = FactoryGirl.build(:game, min_number_of_players_per_team: nil)
 
-        game.should_not be_valid
-        game.errors[:min_number_of_players_per_team].should == ["is not a number"]
+        expect(game).not_to be_valid
+        expect(game.errors[:min_number_of_players_per_team]).to eq(["is not a number"])
       end
     end
 
@@ -202,26 +202,26 @@ describe Game do
       it "can be equal to the min number of players per team" do
         game = FactoryGirl.build(:game, min_number_of_players_per_team: 2, max_number_of_players_per_team: 2)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "can be greater than the min number of players per team" do
         game = FactoryGirl.build(:game, min_number_of_players_per_team: 2, max_number_of_players_per_team: 3)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "can be nil" do
         game = FactoryGirl.build(:game, min_number_of_players_per_team: 2, max_number_of_players_per_team: 3)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "cannot be less than the min number of players per team" do
         game = FactoryGirl.build(:game, min_number_of_players_per_team: 2, max_number_of_players_per_team: 1)
 
-        game.should_not be_valid
-        game.errors[:max_number_of_teams].should == ["cannot be less than the minimum"]
+        expect(game).not_to be_valid
+        expect(game.errors[:max_number_of_teams]).to eq(["cannot be less than the minimum"])
       end
     end
 
@@ -229,20 +229,20 @@ describe Game do
       it "can be true" do
         game = FactoryGirl.build(:game, allow_ties: true)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "can be false" do
         game = FactoryGirl.build(:game, allow_ties: false)
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "cannot be nil" do
         game = FactoryGirl.build(:game, allow_ties: nil)
 
-        game.should_not be_valid
-        game.errors[:allow_ties].should == ["must be selected"]
+        expect(game).not_to be_valid
+        expect(game.errors[:allow_ties]).to eq(["must be selected"])
       end
     end
 
@@ -250,27 +250,27 @@ describe Game do
       it "must be present" do
         game = FactoryGirl.build(:game, rating_type: nil)
 
-        game.should_not be_valid
-        game.errors[:rating_type].should == ["must be a valid rating type"]
+        expect(game).not_to be_valid
+        expect(game.errors[:rating_type]).to eq(["must be a valid rating type"])
       end
 
       it "can be elo" do
         game = FactoryGirl.build(:game, rating_type: "elo")
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "can be trueskill" do
         game = FactoryGirl.build(:game, rating_type: "trueskill")
 
-        game.should be_valid
+        expect(game).to be_valid
       end
 
       it "cannot be anything else" do
         game = FactoryGirl.build(:game, rating_type: "foo")
 
-        game.should_not be_valid
-        game.errors[:rating_type].should == ["must be a valid rating type"]
+        expect(game).not_to be_valid
+        expect(game.errors[:rating_type]).to eq(["must be a valid rating type"])
       end
 
       it "cannot be changed" do
@@ -278,22 +278,22 @@ describe Game do
         game.save!
 
         game.rating_type = "trueskill"
-        game.should_not be_valid
-        game.errors[:rating_type].should == ["cannot be changed"]
+        expect(game).not_to be_valid
+        expect(game.errors[:rating_type]).to eq(["cannot be changed"])
       end
     end
 
     describe "with elo rating type" do
       it "does not allow more than 2 teams" do
         game = FactoryGirl.build(:game, rating_type: "elo", max_number_of_teams: 3)
-        game.should_not be_valid
-        game.errors[:rating_type].should == ["Elo can only be used with 1v1 games"]
+        expect(game).not_to be_valid
+        expect(game.errors[:rating_type]).to eq(["Elo can only be used with 1v1 games"])
       end
 
       it "does not allow more than 1 player per team" do
         game = FactoryGirl.build(:game, rating_type: "elo", max_number_of_players_per_team: 2)
-        game.should_not be_valid
-        game.errors[:rating_type].should == ["Elo can only be used with 1v1 games"]
+        expect(game).not_to be_valid
+        expect(game.errors[:rating_type]).to eq(["Elo can only be used with 1v1 games"])
       end
     end
   end
@@ -306,8 +306,8 @@ describe Game do
 
       game.destroy
 
-      Rating.find_by_id(rating.id).should be_nil
-      Result.find_by_id(result.id).should be_nil
+      expect(Rating.find_by_id(rating.id)).to be_nil
+      expect(Result.find_by_id(result.id)).to be_nil
     end
   end
 
@@ -335,8 +335,25 @@ describe Game do
       game.recalculate_ratings!
 
       attrs = ->(rating){[rating.player_id, rating.value, rating.trueskill_mean, rating.trueskill_deviation]}
-      previous_ratings.map(&:id).should_not == game.all_ratings.map(&:id)
-      previous_ratings.map(&attrs).should == game.all_ratings.map(&attrs)
+      expect(previous_ratings.map(&:id)).not_to eq(game.all_ratings.map(&:id))
+      expect(previous_ratings.map(&attrs)).to eq(game.all_ratings.map(&attrs))
+    end
+  end
+
+  describe "involves_player?" do
+    let(:p1) { FactoryGirl.create(:player) }
+    let(:p2) { FactoryGirl.create(:player) }
+    let(:p3) { FactoryGirl.create(:player) }
+    let(:t1) { FactoryGirl.create(:team, rank: 1, players: [p1]) }
+    let(:t2) { FactoryGirl.create(:team, rank: 2, players: [p2]) }
+    let(:game) { FactoryGirl.create(:game) }
+    let(:result) { FactoryGirl.create(:result, game: game, teams: [t1, t2]) }
+
+    it "shows if a player was in any of the participating teams" do
+      game.rater.update_ratings game, result.teams
+      expect(result.game.involves_player?(p1)).to be true
+      expect(result.game.involves_player?(p2)).to be true
+      expect(result.game.involves_player?(p3)).to be false
     end
   end
 end

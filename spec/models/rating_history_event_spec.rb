@@ -11,7 +11,7 @@ describe RatingHistoryEvent do
           FactoryGirl.create(:rating_history_event, rating: rating, value: 1000)
       ]
 
-      RatingHistoryEvent.events(player, game).should == rating_history_events
+      expect(RatingHistoryEvent.events(player, game)).to eq(rating_history_events)
     end
   end
 end

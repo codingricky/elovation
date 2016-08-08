@@ -66,6 +66,10 @@ class Game < ActiveRecord::Base
     ratings.map(&:player)
   end
 
+  def involves_player?(player)
+    ratings.any? { |r| r.player == player }
+  end
+
   def recent_results
     results.order("created_at DESC").limit(20)
   end

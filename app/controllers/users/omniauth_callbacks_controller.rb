@@ -9,15 +9,14 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     raw_info = request.env["omniauth.auth"]["extra"]["raw_info"]
     email = raw_info["email"]
-    @user = User.find_by_email(email)
-    unless @user
-      @user = User.create(email: email,
-           password: Devise.friendly_token[0,20])
+    name = request.env["omniauth.auth"]["info"]["name"]
+    Player.find_or_create_by(name: name, email: email)
+    @user = User.find_or_create_by(email: email) do |user|
+      user.password = Devise.friendly_token[0,20]
     end
-
     if @user
-        flash[:notice] = I18n.t "devise.omniauth_callbacks.success", :kind => "Google"
-        sign_in_and_redirect @user, :event => :authentication
+      flash[:notice] = I18n.t "devise.omniauth_callbacks.success", :kind => "Google"
+      sign_in_and_redirect @user, :event => :authentication
     end
 
   end

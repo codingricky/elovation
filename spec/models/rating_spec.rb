@@ -9,11 +9,11 @@ describe Rating do
       teams = [ FactoryGirl.create(:team, rank: 1, players: [player]),
                 FactoryGirl.create(:team, rank: 2) ]
       result = FactoryGirl.create(:result, teams: teams, game: game, created_at: 5.weeks.ago)
-      rating.active?.should == false
+      expect(rating.active?).to eq(false)
       teams = [ FactoryGirl.create(:team, rank: 1, players: [player]),
                 FactoryGirl.create(:team, rank: 2) ]
       result = FactoryGirl.create(:result, teams: teams, game: game, created_at: 4.weeks.ago + 1.hour)
-      rating.active?.should == true
+      expect(rating.active?).to eq(true)
     end
   end
 
@@ -22,13 +22,13 @@ describe Rating do
       player = FactoryGirl.build(:player, name: "John")
       rating = FactoryGirl.build(:rating, value: 1000, player: player)
 
-      rating.as_json.should == {
+      expect(rating.as_json).to eq({
         player: {
           name: player.name,
           email: player.email
         },
         value: 1000
-      }
+      })
     end
   end
 
@@ -42,19 +42,19 @@ describe Rating do
                                                           FactoryGirl.create(:team, rank: 2)],
                                               game: game,
                                               created_at: 5.weeks.ago)
-      rating.most_recent_result.should == result_5_weeks_ago
+      expect(rating.most_recent_result).to eq(result_5_weeks_ago)
       result_4_weeks_ago = FactoryGirl.create(:result,
                                               teams: [ FactoryGirl.create(:team, rank: 2, players: [player]),
                                                           FactoryGirl.create(:team, rank: 1)],
                                               game: game,
                                               created_at: 4.weeks.ago)
-      rating.most_recent_result.should == result_4_weeks_ago
+      expect(rating.most_recent_result).to eq(result_4_weeks_ago)
       result_6_weeks_ago = FactoryGirl.create(:result,
                                               teams: [ FactoryGirl.create(:team, rank: 1, players: [player]),
                                                           FactoryGirl.create(:team, rank: 2)],
                                               game: game,
                                               created_at: 6.weeks.ago)
-      rating.most_recent_result.should == result_4_weeks_ago
+      expect(rating.most_recent_result).to eq(result_4_weeks_ago)
     end
   end
 
@@ -65,7 +65,7 @@ describe Rating do
 
       rating.destroy
 
-      RatingHistoryEvent.find_by_id(history_event.id).should be_nil
+      expect(RatingHistoryEvent.find_by_id(history_event.id)).to be_nil
     end
   end
 
@@ -79,9 +79,9 @@ describe Rating do
 
       rating.reload
 
-      rating.value.should == 1001
-      rating.trueskill_mean.should == 51
-      rating.trueskill_deviation.should == 21
+      expect(rating.value).to eq(1001)
+      expect(rating.trueskill_mean).to eq(51)
+      expect(rating.trueskill_deviation).to eq(21)
     end
 
     it "deletes the most recent history event" do
@@ -91,7 +91,7 @@ describe Rating do
 
       rating.rewind!
 
-      RatingHistoryEvent.find_by_id(history_event.id).should be_nil
+      expect(RatingHistoryEvent.find_by_id(history_event.id)).to be_nil
     end
 
     it "destroys the rating if there is only one history event" do
@@ -100,8 +100,8 @@ describe Rating do
 
       rating.rewind!
 
-      Rating.find_by_id(rating.id).should be_nil
-      RatingHistoryEvent.find_by_id(history_event.id).should be_nil
+      expect(Rating.find_by_id(rating.id)).to be_nil
+      expect(RatingHistoryEvent.find_by_id(history_event.id)).to be_nil
     end
   end
 end

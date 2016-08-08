@@ -5,10 +5,10 @@ describe Player do
     it "returns the json representation of the player" do
       player = FactoryGirl.build(:player, name: "John Doe", email: "foo@example.com")
 
-      player.as_json.should == {
+      expect(player.as_json).to eq({
         name: "John Doe",
         email: "foo@example.com"
-      }
+      })
     end
   end
 
@@ -17,33 +17,33 @@ describe Player do
       it "is required" do
         player = FactoryGirl.build(:player, name: nil)
 
-        player.should_not be_valid
-        player.errors[:name].should == ["can't be blank"]
+        expect(player).not_to be_valid
+        expect(player.errors[:name]).to eq(["can't be blank"])
       end
 
       it "must be unique" do
         FactoryGirl.create(:player, name: "Drew")
         player = FactoryGirl.build(:player, name: "Drew")
 
-        player.should_not be_valid
-        player.errors[:name].should == ["has already been taken"]
+        expect(player).not_to be_valid
+        expect(player.errors[:name]).to eq(["has already been taken"])
       end
     end
 
     context "email" do
       it "can be blank" do
         player = FactoryGirl.build(:player, email: "")
-        player.should be_valid
+        expect(player).to be_valid
       end
 
       it "must be a valid email format" do
         player = Player.new
         player.email = "invalid-email-address"
-        player.should_not be_valid
-        player.errors[:email].should == ["is invalid"]
+        expect(player).not_to be_valid
+        expect(player.errors[:email]).to eq(["is invalid"])
         player.email = "valid@example.com"
         player.valid?
-        player.errors[:email].should == []
+        expect(player.errors[:email]).to eq([])
       end
     end
   end
@@ -52,7 +52,7 @@ describe Player do
     it "has a name" do
       player = FactoryGirl.create(:player, name: "Drew")
 
-      player.name.should == "Drew"
+      expect(player.name).to eq("Drew")
     end
   end
 
@@ -63,7 +63,7 @@ describe Player do
 
       10.times { FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [player]), FactoryGirl.create(:team, rank: 2)]) }
 
-      player.recent_results.size.should == 5
+      expect(player.recent_results.size).to eq(5)
     end
 
     it "returns the 5 most recently created results" do
@@ -79,7 +79,7 @@ describe Player do
         newer_results = 5.times.map { FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [player]), FactoryGirl.create(:team, rank: 2)]) }
       end
 
-      player.recent_results.sort.should == newer_results.sort
+      expect(player.recent_results.sort).to eq(newer_results.sort)
     end
 
     it "orders results by created_at, descending" do
@@ -95,7 +95,7 @@ describe Player do
         new = FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [player]), FactoryGirl.create(:team, rank: 2)])
       end
 
-      player.recent_results.should == [new, old]
+      expect(player.recent_results).to eq([new, old])
     end
   end
 
@@ -107,8 +107,8 @@ describe Player do
 
       player.destroy
 
-      Rating.find_by_id(rating.id).should be_nil
-      Result.find_by_id(result.id).should be_nil
+      expect(Rating.find_by_id(rating.id)).to be_nil
+      expect(Result.find_by_id(result.id)).to be_nil
     end
   end
 
@@ -121,7 +121,7 @@ describe Player do
 
         expect do
           found_rating = player.ratings.find_or_create(game)
-          found_rating.should == rating
+          expect(found_rating).to eq(rating)
         end.to_not change { player.ratings.count }
       end
 
@@ -130,7 +130,7 @@ describe Player do
         game = FactoryGirl.create(:game)
 
         expect do
-          player.ratings.find_or_create(game).should_not be_nil
+          expect(player.ratings.find_or_create(game)).not_to be_nil
         end.to change { player.ratings.count }.by(1)
       end
     end
@@ -146,7 +146,7 @@ describe Player do
 
       player.rewind_rating!(game)
 
-      player.ratings.where(game_id: game.id).first.value.should == 1001
+      expect(player.ratings.where(game_id: game.id).first.value).to eq(1001)
     end
   end
 
@@ -162,9 +162,9 @@ describe Player do
       win = FactoryGirl.create(:result, game: game, teams: [player1WinTeam, FactoryGirl.create(:team, players: [player2], rank: 2)])
       loss = FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 2, players: [player1]), player2WinTeam])
 
-      player1.results.for_game(game).size.should == 2
-      player1.total_wins(game).should == 1
-      player1.wins(game, player2).should == 1
+      expect(player1.results.for_game(game).size).to eq(2)
+      expect(player1.total_wins(game)).to eq(1)
+      expect(player1.wins(game, player2)).to eq(1)
     end
   end
 
@@ -180,14 +180,14 @@ describe Player do
       win_for_player_1 = FactoryGirl.create(:result, game: game, teams: [player1WinTeam, FactoryGirl.create(:team, players: [player2], rank: 2)])
       loss_for_player_1 = FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 2, players: [player1]), player2WinTeam])
 
-      player1.win_loss_ratio(game).should == 50.0
+      expect(player1.win_loss_ratio(game)).to eq(50.0)
     end
 
     it 'defaults to zero' do
       player1 = FactoryGirl.create(:player)
       game = FactoryGirl.create(:game)
 
-      player1.win_loss_ratio(game).should == 0
+      expect(player1.win_loss_ratio(game)).to eq(0)
     end
   end
 
@@ -206,8 +206,8 @@ describe Player do
         5.times { create_result(game, player1, player2) }
       end
 
-      player1.win_loss_ratio(game).should be_within(77.77).of(0.01)
-      player1.win_loss_ratio_for_today(game).should == 50
+      expect(player1.win_loss_ratio(game)).to be_within(77.77).of(0.01)
+      expect(player1.win_loss_ratio_for_today(game)).to eq(50)
     end
   end
 
@@ -219,7 +219,7 @@ describe Player do
 
       5.times { create_result(game, player1, player2) }
 
-      player1.streak(game).should == 5
+      expect(player1.streak(game)).to eq(5)
     end
 
     it 'a loss breaks the streak' do
@@ -231,7 +231,7 @@ describe Player do
       5.times { create_result(game, player1, player2) }
       create_result(game, player2, player1)
 
-      player1.streak(game).should == 0
+      expect(player1.streak(game)).to eq(0)
     end
   end
 
@@ -245,7 +245,7 @@ describe Player do
         20.times { create_result(game, player1, player2) }
       end
 
-      player1.is_active?.should be_false
+      expect(player1.is_active?).to be_falsey
     end
 
     it 'played recently' do
@@ -257,7 +257,7 @@ describe Player do
         20.times { create_result(game, player1, player2) }
       end
 
-      player1.is_active?.should be_true
+      expect(player1.is_active?).to be_truthy
     end
 
     it 'played recently but not enough games' do
@@ -273,7 +273,7 @@ describe Player do
         4.times { create_result(game, player1, player2) }
       end
 
-      player1.is_active?.should be_false
+      expect(player1.is_active?).to be_falsey
     end
   end
 
@@ -290,8 +290,8 @@ describe Player do
       create_result(game, player2, player1)
       create_result(game, player1, player2)
 
-      player1.last_n(game, 5).should == "WLWWW"
-      player2.last_n(game, 5).should == "LWLLL"
+      expect(player1.last_n(game, 5)).to eq("WLWWW")
+      expect(player2.last_n(game, 5)).to eq("LWLLL")
     end
   end
 
@@ -310,9 +310,9 @@ describe Player do
       game = FactoryGirl.create(:game)
       tie = FactoryGirl.create(:result, game: game, teams: [player1WinTeam, player2WinTeam])
 
-      player1.results.for_game(game).size.should == 1
-      player1.total_ties(game).should == 1
-      player1.ties(game, player2).should == 1
+      expect(player1.results.for_game(game).size).to eq(1)
+      expect(player1.total_ties(game)).to eq(1)
+      expect(player1.ties(game, player2)).to eq(1)
     end
   end
 
@@ -322,8 +322,8 @@ describe Player do
       game = FactoryGirl.create(:game)
       win = FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [player]), FactoryGirl.create(:team, rank: 2)])
       loss = FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 2, players: [player]), FactoryGirl.create(:team, rank: 1)])
-      player.results.for_game(game).size.should == 2
-      player.results.for_game(game).losses.should == [loss]
+      expect(player.results.for_game(game).size).to eq(2)
+      expect(player.results.for_game(game).losses).to eq([loss])
     end
   end
 
@@ -339,8 +339,8 @@ describe Player do
       opponent2_game_against_different_player = FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1), FactoryGirl.create(:team, rank: 2, players: [opponent2])])
       win_with_opponent1 = FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [player, opponent1]), FactoryGirl.create(:team, rank: 2)])
 
-      player.results.for_game(game).against(opponent1).sort_by(&:id).should match_array [win_against_opponent1, loss_against_opponent1]
-      player.results.for_game(game).against(opponent2).sort_by(&:id).should match_array [win_against_opponent2]
+      expect(player.results.for_game(game).against(opponent1).sort_by(&:id)).to match_array [win_against_opponent1, loss_against_opponent1]
+      expect(player.results.for_game(game).against(opponent2).sort_by(&:id)).to match_array [win_against_opponent2]
     end
   end
 end
