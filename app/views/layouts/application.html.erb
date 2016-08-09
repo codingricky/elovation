@@ -15,7 +15,6 @@
 </head>
 <body>
 <%= render 'favicon' %>
-
   <div id='container'>
     <header>
       <%= link_to root_path, class: "brand" do %>
@@ -23,12 +22,9 @@
         <div class='brand-label'>Home</div>
       <% end %>
       <nav>
-        <ul><li>Home</li></ul>
+        <ul><li class="home">Home</li></ul>
       </nav>
     </header>
-
-
-
     <div id='main'>
       <%= yield %>
     </div>
