@@ -13,14 +13,11 @@
 
 ActiveRecord::Schema.define(version: 20151220112512) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "games", force: :cascade do |t|
-    t.string   "name",                           limit: 255, null: false
+    t.string   "name",                           null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "rating_type",                    limit: 255
+    t.string   "rating_type"
     t.integer  "min_number_of_teams"
     t.integer  "max_number_of_teams"
     t.integer  "min_number_of_players_per_team"
@@ -29,13 +26,12 @@ ActiveRecord::Schema.define(version: 20151220112512) do
   end
 
   create_table "players", force: :cascade do |t|
-    t.string   "name",                limit: 255, null: false
+    t.string   "name",                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email",               limit: 255
-    t.integer  "avatar"
-    t.string   "avatar_file_name",    limit: 255
-    t.string   "avatar_content_type", limit: 255
+    t.string   "email"
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
   end
@@ -54,7 +50,7 @@ ActiveRecord::Schema.define(version: 20151220112512) do
     t.float    "trueskill_deviation"
   end
 
-  add_index "rating_history_events", ["rating_id"], name: "index_rating_history_events_on_rating_id", using: :btree
+  add_index "rating_history_events", ["rating_id"], name: "index_rating_history_events_on_rating_id"
 
   create_table "ratings", force: :cascade do |t|
     t.integer  "player_id",           null: false
@@ -67,8 +63,8 @@ ActiveRecord::Schema.define(version: 20151220112512) do
     t.float    "trueskill_deviation"
   end
 
-  add_index "ratings", ["game_id"], name: "index_ratings_on_game_id", using: :btree
-  add_index "ratings", ["player_id"], name: "index_ratings_on_player_id", using: :btree
+  add_index "ratings", ["game_id"], name: "index_ratings_on_game_id"
+  add_index "ratings", ["player_id"], name: "index_ratings_on_player_id"
 
   create_table "results", force: :cascade do |t|
     t.integer  "game_id",    null: false
@@ -76,7 +72,7 @@ ActiveRecord::Schema.define(version: 20151220112512) do
     t.datetime "updated_at"
   end
 
-  add_index "results", ["game_id"], name: "index_results_on_game_id", using: :btree
+  add_index "results", ["game_id"], name: "index_results_on_game_id"
 
   create_table "teams", force: :cascade do |t|
     t.integer  "rank"
@@ -96,11 +92,11 @@ ActiveRecord::Schema.define(version: 20151220112512) do
     t.integer  "sign_in_count",          default: 0,  null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.inet     "current_sign_in_ip"
-    t.inet     "last_sign_in_ip"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["email"], name: "index_users_on_email", unique: true
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
 end
