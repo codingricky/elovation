@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+ruby '2.2.3'
+
 gem 'omniauth-google-oauth2'
 gem 'devise'
 gem 'puma'
