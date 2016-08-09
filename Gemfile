@@ -26,6 +26,7 @@ gem 'elo'
 gem 'trueskill', github: 'saulabs/trueskill', require: 'saulabs/trueskill'
 
 group :production do
+  gem 'pg'
   gem 'rails_12factor'
   gem 'unicorn'
 end
