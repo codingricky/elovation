@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20151220112512) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "games", force: :cascade do |t|
     t.string   "name",                           null: false
     t.datetime "created_at"
@@ -50,7 +53,7 @@ ActiveRecord::Schema.define(version: 20151220112512) do
     t.float    "trueskill_deviation"
   end
 
-  add_index "rating_history_events", ["rating_id"], name: "index_rating_history_events_on_rating_id"
+  add_index "rating_history_events", ["rating_id"], name: "index_rating_history_events_on_rating_id", using: :btree
 
   create_table "ratings", force: :cascade do |t|
     t.integer  "player_id",           null: false
@@ -63,8 +66,8 @@ ActiveRecord::Schema.define(version: 20151220112512) do
     t.float    "trueskill_deviation"
   end
 
-  add_index "ratings", ["game_id"], name: "index_ratings_on_game_id"
-  add_index "ratings", ["player_id"], name: "index_ratings_on_player_id"
+  add_index "ratings", ["game_id"], name: "index_ratings_on_game_id", using: :btree
+  add_index "ratings", ["player_id"], name: "index_ratings_on_player_id", using: :btree
 
   create_table "results", force: :cascade do |t|
     t.integer  "game_id",    null: false
@@ -72,7 +75,7 @@ ActiveRecord::Schema.define(version: 20151220112512) do
     t.datetime "updated_at"
   end
 
-  add_index "results", ["game_id"], name: "index_results_on_game_id"
+  add_index "results", ["game_id"], name: "index_results_on_game_id", using: :btree
 
   create_table "teams", force: :cascade do |t|
     t.integer  "rank"
@@ -92,11 +95,11 @@ ActiveRecord::Schema.define(version: 20151220112512) do
     t.integer  "sign_in_count",          default: 0,  null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
+    t.inet     "current_sign_in_ip"
+    t.inet     "last_sign_in_ip"
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
 end

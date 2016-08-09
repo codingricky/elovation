@@ -1,3 +1,5 @@
+require 'slack-notifier'
+
 class ResultsController < ApplicationController
   before_action :set_game
   before_action :authenticate_user!
@@ -10,13 +12,22 @@ class ResultsController < ApplicationController
 
     current_player = [@current_player.id.to_s]
     winner = params["relation"] == "defeated" ? current_player : opponent
-    looser = params["relation"] == "defeated" ? opponent : current_player
+    loser = params["relation"] == "defeated" ? opponent : current_player
     result = {
       teams: {
         "0" => { players: winner },
-        "1" => { players: looser }
+        "1" => { players: loser }
       }
     }
+
+    if ENV["SLACK_WEB_URL"]
+      notifier = Slack::Notifier.new ENV["SLACK_WEB_URL"], channel: '#tabletennis',
+                                                           username: 'http://diustt.club'
+      multiplier_message = multiplier.to_i > 2 ? "#{multiplier} times" : ""
+      winner = winner.kind_of?(Array) ? winner.first : winner
+      loser = loser.kind_of?(Array) ? loser.first : loser
+      notifier.ping "#{Player.find(winner).name} defeated #{Player.find(loser).name} #{multiplier_message}"
+    end
 
     response = nil
     1.upto(multiplier.to_i) do

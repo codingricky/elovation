@@ -65,5 +65,6 @@ module Elovation
         [u, p] == [ENV['BASIC_AUTH_USER'], ENV['BASIC_AUTH_PASSWORD']]
       end
     end
+
   end
 end

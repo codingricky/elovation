@@ -7,7 +7,8 @@ gem 'puma'
 group :development do
   gem 'rails_real_favicon'
 end
-gem "health_check"
+gem 'health_check'
+gem 'slack-notifier'
 
 gem 'paperclip'
 gem 'aws-sdk', '~> 2.3'
@@ -25,7 +26,6 @@ gem 'elo'
 gem 'trueskill', github: 'saulabs/trueskill', require: 'saulabs/trueskill'
 
 group :production do
-  gem 'pg'
   gem 'rails_12factor'
   gem 'unicorn'
 end
