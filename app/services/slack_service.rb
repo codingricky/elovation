@@ -14,7 +14,7 @@ class SlackService
       loser_rating_before = message[:loser_rating_before]
       loser_rating_after = message[:loser_rating_after]
 
-      notifier.ping "*#{winner_name}* (~#{winner_rating_before}~ - #{winner_rating_after}) defeated *#{loser_name}* (~#{loser_rating_before}~ - #{loser_rating_after}) #{multiplier_message}"
+      notifier.ping ":table_tennis_paddle_and_ball: *#{winner_name}* (~#{winner_rating_before}~ - #{winner_rating_after}) defeated *#{loser_name}* (~#{loser_rating_before}~ - #{loser_rating_after}) #{multiplier_message}"
     end
   end
  end
