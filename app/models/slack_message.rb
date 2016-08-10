@@ -30,7 +30,7 @@ class SlackMessage
   end
 
   def multiplier_message
-    @multiplier > 1 ? "#{@message} times" : ""
+    @multiplier > 1 ? "#{@multiplier} times" : ""
   end
 
   def winner_name
