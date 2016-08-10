@@ -26,7 +26,7 @@ class SlackMessage
   end
 
   def loser_message
-    "*#{loser_name}* (~#{@loser_rating_before}~ - #{@loser_rating_before})"
+    "*#{loser_name}* (~#{@loser_rating_before}~ - #{@loser_rating_after})"
   end
 
   def multiplier_message
