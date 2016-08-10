@@ -20,22 +20,17 @@ class ResultsController < ApplicationController
       }
     }
 
+    winner_id = winner.kind_of?(Array) ? winner.first : winner
+    loser_id = loser.kind_of?(Array) ? loser.first : loser
 
-    slack_message = {}
-    slack_message[:winner_id] = winner.kind_of?(Array) ? winner.first : winner
-    slack_message[:winner_rating_before] =  Rating.find_by(player_id: slack_message[:winner_id], game_id: @game.id).value
-    slack_message[:loser_id] = loser.kind_of?(Array) ? loser.first : loser
-    slack_message[:loser_rating_before] =  Rating.find_by(player_id: slack_message[:loser_id], game_id: @game.id).value
+    slack_message = SlackMessage.new(winner_id, loser_id, @game, multiplier.to_i)
 
     response = nil
     1.upto(multiplier.to_i) do
       response = ResultService.create(@game, result)
     end
 
-    slack_message[:winner_rating_after] =  Rating.find_by(player_id: slack_message[:winner_id], game_id: @game.id).value
-    slack_message[:loser_rating_after] =  Rating.find_by(player_id: slack_message[:loser_id], game_id: @game.id).value
-    slack_message[:multiplier] = multiplier.to_i
-
+    slack_message.save_after_rating
     SlackService.notify(slack_message)
 
 

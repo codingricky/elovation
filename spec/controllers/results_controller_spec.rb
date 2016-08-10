@@ -2,6 +2,10 @@ require "spec_helper"
 
 describe ResultsController do
   before(:each) do
+    slack_message = double("slack_message")
+    slack_message.stub(:save_after_rating)
+    slack_message.stub(:message)
+    SlackMessage.stub(:new).and_return(slack_message)
     sign_in_user
   end
 
