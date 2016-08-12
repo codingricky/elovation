@@ -6,7 +6,6 @@ class Player < ActiveRecord::Base
       square: '200x200#',
       medium: '300x300>'
   }
-
   # Validate the attached image is image/jpg, image/png, etc
   validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
 
@@ -78,16 +77,30 @@ class Player < ActiveRecord::Base
   end
 
   def total_wins(game)
-    results.where(game_id: game, teams: { rank: Team::FIRST_PLACE_RANK }).to_a.count { |r| !r.tie? }
+    if game.allow_ties
+      results.where(game_id: game, teams: { rank: Team::FIRST_PLACE_RANK }).to_a.count { |r| !r.tie? }
+    else
+      results.where(game_id: game, teams: { rank: Team::FIRST_PLACE_RANK }).count
+    end
   end
 
   def total_wins_for_today(game)
-    results.where(game_id: game,
+    if game.allow_ties
+      results.where(game_id: game,
                   teams: { rank: Team::FIRST_PLACE_RANK }).today.to_a.count { |r| !r.tie? }
+    else
+      results.where(game_id: game,
+                    teams: { rank: Team::FIRST_PLACE_RANK }).today.count
+    end
+
   end
 
   def wins(game, opponent)
-    results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).to_a.count { |r| !r.tie? }
+    if game.allow_ties
+      results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).to_a.count { |r| !r.tie? }
+    else
+      results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).count
+    end
   end
 
   def win_loss_ratio(game)
@@ -103,15 +116,15 @@ class Player < ActiveRecord::Base
   end
 
   def last_n(game, n)
-    results_array = results.where(game_id: game).order("created_at DESC").to_a
+    results_array = results.where(game_id: game).order("created_at DESC").includes({teams: :players}).to_a
     win_loss_array = results_array.collect {|result| result.winners.include?(self) ? 'W' : 'L'}
     win_loss_array.take(n).join("")
   end
 
   def streak(game)
-    results_array = results.where(game_id: game).order("created_at DESC").to_a.chunk do |result|
+    results_array = results.where(game_id: game).order("created_at DESC").includes({teams: :players}).chunk do |result|
       result.winners.include?(self)
-    end.collect{|e, a| {:is_winner => e, :size => a.size}}
+    end.collect{|e, result| {:is_winner => e, :size => result.size}}
     return 0 if results_array.empty?
     results_array.first[:is_winner] ? results_array.first[:size] : 0
   end
