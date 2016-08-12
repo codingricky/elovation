@@ -84,6 +84,14 @@ class Player < ActiveRecord::Base
     end
   end
 
+  def total_losses(game)
+    if game.allow_ties
+      results.where(game_id: game).where.not(teams: { rank: Team::FIRST_PLACE_RANK }).to_a.count { |r| !r.tie? }
+    else
+      results.where(game_id: game).where.not(teams: { rank: Team::FIRST_PLACE_RANK }).count
+    end
+  end
+
   def total_wins_for_today(game)
     if game.allow_ties
       results.where(game_id: game,
