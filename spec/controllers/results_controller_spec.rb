@@ -6,6 +6,7 @@ describe ResultsController do
     slack_message.stub(:save_after_rating)
     slack_message.stub(:message)
     SlackMessage.stub(:new).and_return(slack_message)
+    SlackService.stub(:notify)
     sign_in_user
   end
 
