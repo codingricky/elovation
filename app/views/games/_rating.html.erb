@@ -17,8 +17,7 @@
       <% end %>
       <td><%= rating.player.results.for_game(rating.game).size %></td>
       <td><%= number_to_percentage(rating.player.win_loss_ratio(rating.game), :precision => 0) %></td>
-      <td><%= rating.player.streak(rating.game) %></td>
-      <td><span class="lastn"><%= rating.player.last_n(rating.game, 10) %></span></td>
+
 
     </tr>
 
