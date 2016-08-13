@@ -33,6 +33,7 @@ class ResultsController < ApplicationController
     slack_message.save_after_rating
     SlackService.notify(slack_message)
 
+    update_streak_data(winner_id, loser_id)
 
     if response.success?
       redirect_to dashboard_path
@@ -57,5 +58,12 @@ class ResultsController < ApplicationController
 
   def set_game
     @game = Game.find(params[:game_id])
+  end
+
+  def update_streak_data(winner_id, loser_id)
+    winner = Player.find_by_id(winner_id)
+    winner.update_streak_data(@game, 10) if winner
+    loser = Player.find_by_id(loser_id)
+    loser.update_streak_data(@game, 10) if loser
   end
 end
