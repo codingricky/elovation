@@ -16,7 +16,7 @@ class SlackMessage
 
 
   def message
-    ":table_tennis_paddle_and_ball: #{winner_message} defeated #{loser_message} #{multiplier_message} #{Faker::SlackEmoji.celebration}"
+    ":table_tennis_paddle_and_ball: #{winner_message} defeated #{loser_message} #{multiplier_message} #{Faker::SlackEmoji.food_and_drink}"
   end
 
   private
