@@ -1,0 +1,26 @@
+<div class="row-fluid">
+  <h1><%= image_tag("DIUS_lightbg_@2x.png", class: 'logo') %></h1>
+</div>
+<% game = @games.first %>
+
+
+  <div class='span5'>
+
+  <div class="span7">
+    <h4>Current Rankings of Active Players<sup>*</sup> | <span><%= link_to "Daily Rankings", daily_ratings_path(game) %></span> |  <span><%= link_to "Full Rankings", game_ratings_path(game) %></span> </h4>
+    <table>
+      <%= render partial: 'games/rating_heading', locals: {game:  game} %>
+
+      <tbody>
+      <%= render partial: 'games/rating', collection: game.all_ratings_with_active_players, locals: {game: game} %>
+      </tbody>
+
+    </table>
+    <span><sup>*</sup>An active player is one who has played a game in the last 20 days and has played a minimum of 10 games.</span>
+
+    <h3>How are the points calculated?</h3>
+    <p>Click here to read about the Elo rating system <a href="https://en.wikipedia.org/wiki/Elo_rating_system">here</a>.
+    </p>
+  </div>
+
+</div>
