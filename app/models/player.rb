@@ -6,7 +6,6 @@ class Player < ActiveRecord::Base
       square: '200x200#',
       medium: '300x300>'
   }
-
   # Validate the attached image is image/jpg, image/png, etc
   validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
 
@@ -78,16 +77,38 @@ class Player < ActiveRecord::Base
   end
 
   def total_wins(game)
-    results.where(game_id: game, teams: { rank: Team::FIRST_PLACE_RANK }).to_a.count { |r| !r.tie? }
+    if game.allow_ties
+      results.where(game_id: game, teams: { rank: Team::FIRST_PLACE_RANK }).to_a.count { |r| !r.tie? }
+    else
+      results.where(game_id: game, teams: { rank: Team::FIRST_PLACE_RANK }).count
+    end
+  end
+
+  def total_losses(game)
+    if game.allow_ties
+      results.where(game_id: game).where.not(teams: { rank: Team::FIRST_PLACE_RANK }).to_a.count { |r| !r.tie? }
+    else
+      results.where(game_id: game).where.not(teams: { rank: Team::FIRST_PLACE_RANK }).count
+    end
   end
 
   def total_wins_for_today(game)
-    results.where(game_id: game,
+    if game.allow_ties
+      results.where(game_id: game,
                   teams: { rank: Team::FIRST_PLACE_RANK }).today.to_a.count { |r| !r.tie? }
+    else
+      results.where(game_id: game,
+                    teams: { rank: Team::FIRST_PLACE_RANK }).today.count
+    end
+
   end
 
   def wins(game, opponent)
-    results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).to_a.count { |r| !r.tie? }
+    if game.allow_ties
+      results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).to_a.count { |r| !r.tie? }
+    else
+      results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).count
+    end
   end
 
   def win_loss_ratio(game)
@@ -102,18 +123,36 @@ class Player < ActiveRecord::Base
     total_wins_for_today(game)/total_games.to_f * 100
   end
 
+  def update_streak_data(game, n)
+    Rails.cache.delete(last_n_cache_key(game, n))
+    Rails.cache.delete(streak_cache_key(game))
+    last_n(game, n)
+    streak(game)
+  end
+
   def last_n(game, n)
-    results_array = results.where(game_id: game).order("created_at DESC").to_a
-    win_loss_array = results_array.collect {|result| result.winners.include?(self) ? 'W' : 'L'}
-    win_loss_array.take(n).join("")
+    Rails.cache.fetch(last_n_cache_key(game, n)) do
+      results_array = results.where(game_id: game).order("created_at DESC").includes({teams: :players}).to_a
+      win_loss_array = results_array.collect {|result| result.winners.include?(self) ? 'W' : 'L'}
+      win_loss_array.take(n).join("")
+    end
   end
 
   def streak(game)
-    results_array = results.where(game_id: game).order("created_at DESC").to_a.chunk do |result|
-      result.winners.include?(self)
-    end.collect{|e, a| {:is_winner => e, :size => a.size}}
-    return 0 if results_array.empty?
-    results_array.first[:is_winner] ? results_array.first[:size] : 0
+    Rails.cache.fetch(streak_cache_key(game)) do
+        results_array = results.where(game_id: game).order("created_at DESC").includes({teams: :players}).chunk do |result|
+        result.winners.include?(self)
+      end.collect{|e, result| {:is_winner => e, :size => result.size}}
+      return 0 if results_array.empty?
+      results_array.first[:is_winner] ? results_array.first[:size] : 0
+    end
   end
 
+  def streak_cache_key(game)
+    "#{id}|#{game.id}|streak"
+  end
+
+  def last_n_cache_key(game, n)
+    "#{id}|#{game.id}|#{n}|last_n"
+  end
 end

@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'omniauth-google-oauth2'
 gem 'devise'
 gem 'puma'
+gem 'rack-mini-profiler', :require => false
 
 group :development do
   gem 'rails_real_favicon'

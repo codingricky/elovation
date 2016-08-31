@@ -25,7 +25,7 @@ describe Game do
       game = FactoryGirl.create(:game)
       21.times { FactoryGirl.create(:result, game: game) }
 
-      expect(game.recent_results.size).to eq(20)
+      expect(game.recent_results.size).to eq(10)
     end
 
     it "returns the 20 most recently created results" do
@@ -37,7 +37,7 @@ describe Game do
       end
 
       Timecop.freeze(1.day.ago) do
-        newer_results = 20.times.map { FactoryGirl.create(:result, game: game) }
+        newer_results = 10.times.map { FactoryGirl.create(:result, game: game) }
       end
 
       expect(game.recent_results.sort).to eq(newer_results.sort)
