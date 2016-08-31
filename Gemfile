@@ -7,15 +7,14 @@ gem 'puma'
 group :development do
   gem 'rails_real_favicon'
 end
-gem 'health_check'
 gem 'slack-notifier'
 
 gem 'paperclip'
 gem 'aws-sdk', '~> 2.3'
 
-gem 'rails', '~> 4.2.5'
+gem 'rails', '5.0.0.1'
 
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails'
 gem 'jquery-rails'
 gem 'coffee-rails'
 gem 'uglifier'
@@ -35,13 +34,11 @@ end
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'quiet_assets'
 end
 
 group :development, :test do
   gem 'sqlite3'
   gem 'factory_girl_rails'
-  gem 'faker'
   gem 'pry'
   gem 'pry-byebug'
   gem 'pry-coolline'
@@ -52,7 +49,8 @@ group :development, :test do
 end
 
 group :test do
-  gem 'rspec-rails', '~> 3.5'
+  gem 'rspec-rails'
   gem 'timecop'
   gem 'simplecov'
+  gem 'rails-controller-testing'
 end
