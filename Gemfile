@@ -25,6 +25,7 @@ gem 'dynamic_form'
 gem 'elo'
 gem 'trueskill', github: 'saulabs/trueskill', require: 'saulabs/trueskill'
 gem 'faker'
+gem 'gastly'
 
 group :production do
   gem 'pg'

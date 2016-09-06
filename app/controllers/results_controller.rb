@@ -31,7 +31,7 @@ class ResultsController < ApplicationController
     end
 
     slack_message.save_after_rating
-    SlackService.notify(slack_message)
+    SlackService.notify(slack_message, url_for(controller: 'leaderboard', action: 'show_image'))
 
     update_streak_data(winner_id, loser_id)
 
