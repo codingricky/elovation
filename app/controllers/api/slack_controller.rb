@@ -23,10 +23,13 @@ class Api::SlackController < ActionController::API
             "1" => { players: loser_id }
         }
     }
-
+    slack_message = SlackMessage.new(winner_id, loser_id, game, times)
     1.upto(times) do
       ResultService.create(game, result)
     end
+    slack_message.save_after_rating
+    SlackService.notify(slack_message, nil)
+
     render json: {text: "created result"}
   end
 
