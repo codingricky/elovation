@@ -1,5 +1,7 @@
 class Player < ActiveRecord::Base
 
+
+
   has_attached_file :avatar, styles: {
       tiny: '24x24>',
       thumb: '100x100>',
@@ -154,5 +156,9 @@ class Player < ActiveRecord::Base
 
   def last_n_cache_key(game, n)
     "#{id}|#{game.id}|#{n}|last_n"
+  end
+
+  def self.with_name(name)
+    where("name like ?", "#{name}%").first
   end
 end

@@ -71,6 +71,18 @@ describe Api::ResultsController do
 
         expect(Result.all.count).to eql(5)
       end
+
+      it 'can find winner by first name' do
+        winner = FactoryGirl.create(:player, name: "Elliott Murray")
+        post :create, params: {winner: "Elliott", loser: loser.name, times: 1}
+        expect(Result.all.count).to eql(1)
+      end
+
+      it 'can find loser by first name' do
+        loser = FactoryGirl.create(:player, name: "Elliott Murray")
+        post :create, params: {winner: winner.name, loser: "Elliott", times: 1}
+        expect(Result.all.count).to eql(1)
+      end
     end
 
   end
