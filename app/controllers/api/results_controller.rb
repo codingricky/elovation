@@ -4,8 +4,13 @@ class Api::ResultsController < ActionController::API
     winner_name = params[:winner]
     loser_name = params[:loser]
 
-    winner_id = Player.find_by_name(winner_name).id
-    loser_id = Player.find_by_name(loser_name).id
+    winner = Player.find_by_name(winner_name)
+    render json: {message: "winner can not be found"}, status: :bad_request unless winner; return if performed?
+    winner_id = winner.id
+
+    loser = Player.find_by_name(loser_name)
+    render json: {message: "loser can not be found"}, status: :bad_request unless loser; return if performed?
+    loser_id = loser.id
 
     game = Game.first
 
@@ -17,11 +22,20 @@ class Api::ResultsController < ActionController::API
     }
 
     times = params[:times].to_i
+    times = times <= 0 ? 1 : times
+    times = times > 5 ? 5 : times
 
     1.upto(times) do
       ResultService.create(game, result)
     end
     render json: "created"
+  end
+
+
+  private
+
+  def player_exists?(name)
+    Player.find_by_name(name)
   end
 
 end
