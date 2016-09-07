@@ -16,5 +16,9 @@ Elovation::Application.routes.draw do
   get '/leaderboard' => 'leaderboard#show', as: :leaderboard
   get '/leaderboard_image' => 'leaderboard#show_image', as: :leaderboard_show_image
 
+  namespace :api do
+    get '/results' => 'results#create', as: :api_results
+  end
+
   root to: 'dashboard#show'
 end

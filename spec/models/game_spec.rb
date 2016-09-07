@@ -59,6 +59,7 @@ describe Game do
     end
 
     it "orders games by updated_at, descending" do
+
       game1 = FactoryGirl.create(:game)
       game2 = FactoryGirl.create(:game)
 
