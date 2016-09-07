@@ -162,6 +162,6 @@ class Player < ActiveRecord::Base
     results = where("name like ?", "#{name}%")
     return nil if results.count == 0
     return results.first if results.count == 1
-    return results.select {|p| p.active?}
+    return results.find {|p| p.is_active?}
   end
 end

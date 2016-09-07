@@ -345,4 +345,34 @@ describe Player do
       expect(player.results.for_game(game).against(opponent2).sort_by(&:id)).to match_array [win_against_opponent2]
     end
   end
+
+  describe 'with name' do
+    it 'returns nil when no results' do
+      expect(Player.with_name("Homer")).to eq(nil)
+    end
+
+    it 'returns player' do
+      player = FactoryGirl.create(:player)
+      expect(Player.with_name(player.name)).to eq(player)
+    end
+
+    it 'returns player based on first name' do
+      player = FactoryGirl.create(:player, name: "John Smith")
+      expect(Player.with_name("John")).to eq(player)
+    end
+
+    it 'returns player with case insensitivity' do
+      player = FactoryGirl.create(:player, name: "John Smith")
+      expect(Player.with_name("john")).to eq(player)
+    end
+
+    it 'returns the first active player when there are multiple players with the same name' do
+      active_player = FactoryGirl.create(:player, name: "John Smith")
+      loser = FactoryGirl.create(:player, name: "John Red")
+      game = FactoryGirl.create(:game)
+      20.times { create_result(game, active_player, loser) }
+
+      expect(Player.with_name("john")).to eq(active_player)
+    end
+  end
 end

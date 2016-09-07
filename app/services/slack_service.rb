@@ -5,9 +5,11 @@ class SlackService
       notifier = Slack::Notifier.new ENV["SLACK_WEB_URL"], channel: Rails.configuration.slack_channel,
                                      username: 'http://diustt.club'
 
-      attachments = {image_url:  image_url}
-      notifier.ping slack_message.message, attachments: [attachments]
-
+      if image_url
+        notifier.ping slack_message.message, attachments: [{image_url:  image_url}]
+      else
+        notifier.ping slack_message.message
+      end
     end
   end
  end
