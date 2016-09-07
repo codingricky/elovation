@@ -16,8 +16,11 @@ class Api::ResultsController < ActionController::API
         }
     }
 
-    # multiplier = params[:multiplier].to_i
-    ResultService.create(game, result)
+    times = params[:times].to_i
+
+    1.upto(times) do
+      ResultService.create(game, result)
+    end
     render json: "created"
   end
 
