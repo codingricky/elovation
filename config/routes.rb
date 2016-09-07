@@ -19,6 +19,9 @@ Elovation::Application.routes.draw do
   namespace :api do
     post '/create' => 'results#create', as: :api_create
     post '/create_from_txt' => 'results#create_from_txt', as: :api_create_from_txt
+    # bug in slack
+    get '/create_from_txt' => 'results#create_from_txt', as: :api_create_from_txt_get
+
   end
 
   root to: 'dashboard#show'
