@@ -36,7 +36,9 @@ describe Api::SlackController do
 
     context 'request is valid' do
       before do
-        allow(SlackMessage).to receive(:new).and_return(double("slack").as_null_object)
+        @slack_message = double("slack").as_null_object
+        allow(@slack_message).to receive(:message).and_return("message")
+        allow(SlackMessage).to receive(:new).and_return(@slack_message)
       end
 
       it 'creates result' do
@@ -48,6 +50,9 @@ describe Api::SlackController do
         result = Result.first
         expect(result.winners.first).to eql(winner)
         expect(result.losers.first).to eql(loser)
+
+        expect_json(text: @slack_message.message)
+
       end
 
       it 'creates result multiple times' do
@@ -56,7 +61,11 @@ describe Api::SlackController do
         expect(response).to have_http_status(:success)
 
         expect(Result.all.count).to eql(5)
+
+        expect_json(text: @slack_message.message)
       end
     end
   end
+
+
 end
