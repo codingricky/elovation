@@ -28,7 +28,7 @@ class Api::SlackController < ActionController::API
       ResultService.create(game, result)
     end
     slack_message.save_after_rating
-
+    SlackService.notify(slack_message, nil)
     render json: {text: slack_message.message}
   end
 
