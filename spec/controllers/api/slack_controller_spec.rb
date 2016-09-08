@@ -38,7 +38,7 @@ describe Api::SlackController do
       before do
         allow(SlackMessage).to receive(:new).and_return(double("slack").as_null_object)
       end
-      
+
       it 'creates result' do
         post :create_from_txt, params: {token: token, text: defeats_txt}
 
