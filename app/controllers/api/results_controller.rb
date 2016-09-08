@@ -31,5 +31,4 @@ class Api::ResultsController < ActionController::API
     render json: "created"
   end
 
-
 end
