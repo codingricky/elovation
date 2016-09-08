@@ -32,4 +32,10 @@ class Api::SlackController < ActionController::API
     render json: {text: slack_message.message}
   end
 
+
+  def show_leaderboard
+    SlackService.show_leaderboard(url_for(controller: '/leaderboard', action: 'show_image'))
+    render json: {text: ""}
+  end
+
 end
