@@ -28,3 +28,7 @@ elovation_development
 !.elasticbeanstalk/*.global.yml
 
 /coverage
+
+
+#public
+public/api/*

@@ -1,5 +1,18 @@
 class Api::ResultsController < ActionController::API
 
+  include Swagger::Docs::ImpotentMethods
+
+  swagger_controller :api_results, "Results Management"
+
+  swagger_api :create do
+    summary "Creates results"
+    param :winner, :string, "Winner's name"
+    param :loser, :string, "Loser's name"
+    param :times, :int, :optional, "Times that someone has won"
+    response :success
+    response :bad_request
+  end
+
   def create
     winner_name = params[:winner]
     loser_name = params[:loser]
