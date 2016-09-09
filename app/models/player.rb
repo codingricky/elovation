@@ -164,4 +164,13 @@ class Player < ActiveRecord::Base
     return results.first if results.count == 1
     return results.find {|p| p.is_active?}
   end
+
+  def create_default_rating
+    rating = Rating.new
+    rating.player = self
+    rating.game = Game.first
+    rating.pro = false
+    rating.value = Rater::EloRater::DefaultValue
+    rating.save!
+  end
 end

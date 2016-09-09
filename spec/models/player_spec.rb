@@ -375,4 +375,17 @@ describe Player do
       expect(Player.with_name("john")).to eq(active_player)
     end
   end
+
+  describe 'create default rating' do
+    let!(:game) { FactoryGirl.create(:game) }
+    let!(:player) { FactoryGirl.create(:player) }
+
+    it 'should create a rating if not exists' do
+      player.create_default_rating
+
+      rating = Rating.find_by_player_id(player.id)
+      expect(rating).to_not be_nil
+      expect(rating.value).to eql(1000)
+    end
+  end
 end
