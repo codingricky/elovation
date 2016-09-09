@@ -1,5 +1,16 @@
 class Api::ResultsController < ActionController::API
 
+  swagger_controller :results, "Results Controller"
+
+  swagger_api :create do
+    summary "Creates a result"
+    param :form, :winner, :string, "winner of the match"
+    param :form, :loser, :string, :optional, "loser of the match"
+    param :form, :times, :integer, :optional, "times the winner has won"
+    response :success
+    response :bad_request
+  end
+
   def create
     winner_name = params[:winner]
     loser_name = params[:loser]

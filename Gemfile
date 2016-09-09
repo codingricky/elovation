@@ -26,6 +26,7 @@ gem 'elo'
 gem 'trueskill', github: 'saulabs/trueskill', require: 'saulabs/trueskill'
 gem 'faker'
 gem 'gastly'
+gem 'swagger-docs'
 
 group :production do
   gem 'pg'

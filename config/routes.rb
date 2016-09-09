@@ -16,6 +16,8 @@ Elovation::Application.routes.draw do
   get '/leaderboard' => 'leaderboard#show', as: :leaderboard
   get '/leaderboard_image' => 'leaderboard#show_image', as: :leaderboard_show_image
 
+
+
   namespace :api do
     post '/create' => 'results#create', as: :api_create
     # bug in slack need to make it a get not a post
