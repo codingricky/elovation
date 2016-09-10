@@ -14,7 +14,7 @@
               "paramType": "header",
               "name": "Authorization",
               "type": "string",
-              "description": "Authentication token",
+              "description": "Authorization token in the form of \"Token token=XXXX\"",
               "required": true
             },
             {

@@ -4,7 +4,7 @@ class Api::ResultsController < Api::ApiBaseController
 
   swagger_api :create do
     summary "Creates a result"
-    param :header, 'Authorization', :string, :required, 'Authentication token'
+    param :header, 'Authorization', :string, :required, 'Authorization token in the form of "Token token=XXXX"'
     param :form, :winner, :string, :required, "winner of the match"
     param :form, :loser, :string, :required, "loser of the match"
     param :form, :times, :integer, :optional, "times the winner has won"
