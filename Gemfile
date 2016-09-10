@@ -28,6 +28,7 @@ gem 'faker'
 gem 'gastly'
 gem 'swagger-docs'
 gem 'swagger_engine'
+gem 'okcomputer'
 
 
 group :production do
