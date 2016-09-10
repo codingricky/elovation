@@ -13,27 +13,10 @@ class ResultsController < ApplicationController
     current_player = [@current_player.id.to_s]
     winner = params["relation"] == "defeated" ? current_player : opponent
     loser = params["relation"] == "defeated" ? opponent : current_player
-    result = {
-      teams: {
-        "0" => { players: winner },
-        "1" => { players: loser }
-      }
-    }
-
     winner_id = winner.kind_of?(Array) ? winner.first : winner
     loser_id = loser.kind_of?(Array) ? loser.first : loser
+    response = ResultService.create_times(winner_id, loser_id, multiplier)
 
-    slack_message = SlackMessage.new(winner_id, loser_id, @game, multiplier.to_i)
-
-    response = nil
-    1.upto(multiplier.to_i) do
-      response = ResultService.create(@game, result)
-    end
-
-    slack_message.save_after_rating
-    SlackService.notify(slack_message, url_for(controller: 'leaderboard', action: 'show_image'))
-
-    update_streak_data(winner_id, loser_id)
 
     if response.success?
       redirect_to dashboard_path
@@ -60,10 +43,5 @@ class ResultsController < ApplicationController
     @game = Game.find(params[:game_id])
   end
 
-  def update_streak_data(winner_id, loser_id)
-    winner = Player.find_by_id(winner_id)
-    winner.update_streak_data(@game, 10) if winner
-    loser = Player.find_by_id(loser_id)
-    loser.update_streak_data(@game, 10) if loser
-  end
+
 end

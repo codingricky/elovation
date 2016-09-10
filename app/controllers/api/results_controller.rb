@@ -27,23 +27,17 @@ class Api::ResultsController < Api::ApiBaseController
     render json: {message: "loser can not be found"}, status: :bad_request unless loser; return if performed?
     loser_id = loser.id
 
-    game = Game.first
-
-    result = {
-        teams: {
-            "0" => { players: winner_id },
-            "1" => { players: loser_id }
-        }
-    }
-
     times = params[:times].to_i
     times = times <= 0 ? 1 : times
     times = times > 5 ? 5 : times
-
-    1.upto(times) do
-      ResultService.create(game, result)
-    end
-    render json: "created"
+    slack_message = ResultService.create_times(winner_id, loser_id, times).message
+    render json: slack_message
   end
 
+  def update_streak_data(winner_id, loser_id)
+    winner = Player.find_by_id(winner_id)
+    winner.update_streak_data(@game, 10) if winner
+    loser = Player.find_by_id(loser_id)
+    loser.update_streak_data(@game, 10) if loser
+  end
 end

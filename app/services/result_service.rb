@@ -1,4 +1,34 @@
 class ResultService
+
+  def self.create_times(winner_id, loser_id, times)
+    game = Game.first
+    params = {
+        teams: {
+            "0" => { players: winner_id },
+            "1" => { players: loser_id }
+        }
+    }
+
+
+    slack_message = SlackMessage.new(winner_id, loser_id, game, times)
+    result = nil
+    1.upto(times) do
+      result = ResultService.create(game, params)
+    end
+    slack_message.save_after_rating
+    SlackService.notify(slack_message, nil)
+    update_streak_data(winner_id, loser_id, game)
+    result[:message] = slack_message.message
+    return result
+  end
+
+  def self.update_streak_data(winner_id, loser_id, game)
+    winner = Player.find_by_id(winner_id)
+    winner.update_streak_data(game, 10) if winner
+    loser = Player.find_by_id(loser_id)
+    loser.update_streak_data(game, 10) if loser
+  end
+
   def self.create(game, params)
     result = game.results.build
 

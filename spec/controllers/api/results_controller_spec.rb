@@ -4,7 +4,9 @@ describe Api::ResultsController do
 
   let!(:game) { FactoryGirl.create(:game) }
   let!(:winner) { FactoryGirl.create(:player) }
+  let!(:winner_rating) { FactoryGirl.create(:rating, player: winner, game: game) }
   let!(:loser) { FactoryGirl.create(:player) }
+  let!(:loser_rating) { FactoryGirl.create(:rating, player: loser, game: game) }
   let(:valid_token) { ActionController::HttpAuthentication::Token.encode_credentials('valid_token') }
 
   before do
@@ -88,12 +90,16 @@ describe Api::ResultsController do
 
       it 'can find winner by first name' do
         winner = FactoryGirl.create(:player, name: "Elliott Murray")
+        FactoryGirl.create(:rating, player: winner, game: game)
+
         post :create, params: {winner: "Elliott", loser: loser.name, times: 1}
         expect(Result.all.count).to eql(1)
       end
 
       it 'can find loser by first name' do
         loser = FactoryGirl.create(:player, name: "Elliott Murray")
+        FactoryGirl.create(:rating, player: loser, game: game)
+
         post :create, params: {winner: winner.name, loser: "Elliott", times: 1}
         expect(Result.all.count).to eql(1)
       end

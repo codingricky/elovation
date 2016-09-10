@@ -16,26 +16,21 @@ class Api::SlackController < ActionController::API
     times = times <= 0 ? 1 : times
     times = times > 5 ? 5 : times
 
-    game = Game.first
-    result = {
-        teams: {
-            "0" => { players: winner_id },
-            "1" => { players: loser_id }
-        }
-    }
-    slack_message = SlackMessage.new(winner_id, loser_id, game, times)
-    1.upto(times) do
-      ResultService.create(game, result)
-    end
-    slack_message.save_after_rating
-    SlackService.notify(slack_message, nil)
-    render json: {text: slack_message.message}
+    slack_message = ResultService.create_times(winner_id, loser_id, times).message
+    render json: {text: slack_message}
   end
 
 
   def show_leaderboard
     SlackService.show_leaderboard(url_for(controller: '/leaderboard', action: 'show_image'))
     render json: {text: ""}
+  end
+
+  def update_streak_data(winner_id, loser_id)
+    winner = Player.find_by_id(winner_id)
+    winner.update_streak_data(@game, 10) if winner
+    loser = Player.find_by_id(loser_id)
+    loser.update_streak_data(@game, 10) if loser
   end
 
 end
