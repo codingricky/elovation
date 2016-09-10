@@ -1,4 +1,4 @@
-class Api::ResultsController < ActionController::API
+class Api::ResultsController < Api::ApiBaseController
 
   swagger_controller :results, "Results Controller"
 
@@ -10,6 +10,9 @@ class Api::ResultsController < ActionController::API
     response :success
     response :bad_request
   end
+
+  before_action :authenticate, only: [:create]
+
 
   def create
     winner_name = params[:winner]

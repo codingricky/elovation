@@ -5,12 +5,17 @@ describe Api::ResultsController do
   let!(:game) { FactoryGirl.create(:game) }
   let!(:winner) { FactoryGirl.create(:player) }
   let!(:loser) { FactoryGirl.create(:player) }
+  let(:valid_token) { ActionController::HttpAuthentication::Token.encode_credentials('valid_token') }
+
+  before do
+    request.env['HTTP_AUTHORIZATION'] = valid_token
+    allow(User).to receive(:find_by).and_return(double("user"))
+  end
 
   describe 'create' do
-
     context 'rejects invalid params' do
       it 'winner does not exist' do
-        post :create, params: {winner: "no one"}
+        post :create, params: {winner: "no one"}, :authorization => 'string'
 
         expect(response).to have_http_status(:bad_request)
         expect_json(message: "winner can not be found")
@@ -23,6 +28,13 @@ describe Api::ResultsController do
         expect_json(message: "loser can not be found")
       end
 
+      it 'rejects invalid token' do
+        allow(User).to receive(:find_by).and_return(nil)
+
+        post :create
+
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
     context 'creating results' do
@@ -88,7 +100,4 @@ describe Api::ResultsController do
     end
 
   end
-
-
-
 end
