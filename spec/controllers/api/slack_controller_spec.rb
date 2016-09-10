@@ -39,6 +39,7 @@ describe Api::SlackController do
         @slack_message = double("slack").as_null_object
         allow(@slack_message).to receive(:message).and_return("message")
         allow(SlackMessage).to receive(:new).and_return(@slack_message)
+        allow(SlackService).to receive(:notify)
       end
 
       it 'creates result' do

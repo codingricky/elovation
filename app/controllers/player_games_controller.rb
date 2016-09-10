@@ -8,5 +8,6 @@ class PlayerGamesController < ApplicationController
                       .where(player_id: @player.id)
                       .flat_map(&:history_events)
                       .map { |event| [event.created_at, event.value] }
+    @user = User.find_by_email(@player.email)
   end
 end

@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151220112512) do
+ActiveRecord::Schema.define(version: 20160910033911) do
 
   create_table "games", force: :cascade do |t|
     t.string   "name",                           null: false
@@ -48,9 +47,8 @@ ActiveRecord::Schema.define(version: 20151220112512) do
     t.datetime "updated_at"
     t.float    "trueskill_mean"
     t.float    "trueskill_deviation"
+    t.index ["rating_id"], name: "index_rating_history_events_on_rating_id"
   end
-
-  add_index "rating_history_events", ["rating_id"], name: "index_rating_history_events_on_rating_id"
 
   create_table "ratings", force: :cascade do |t|
     t.integer  "player_id",           null: false
@@ -61,18 +59,16 @@ ActiveRecord::Schema.define(version: 20151220112512) do
     t.datetime "updated_at"
     t.float    "trueskill_mean"
     t.float    "trueskill_deviation"
+    t.index ["game_id"], name: "index_ratings_on_game_id"
+    t.index ["player_id"], name: "index_ratings_on_player_id"
   end
-
-  add_index "ratings", ["game_id"], name: "index_ratings_on_game_id"
-  add_index "ratings", ["player_id"], name: "index_ratings_on_player_id"
 
   create_table "results", force: :cascade do |t|
     t.integer  "game_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["game_id"], name: "index_results_on_game_id"
   end
-
-  add_index "results", ["game_id"], name: "index_results_on_game_id"
 
   create_table "teams", force: :cascade do |t|
     t.integer  "rank"
@@ -94,9 +90,9 @@ ActiveRecord::Schema.define(version: 20151220112512) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
+    t.string   "api_key"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
-
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
 end
