@@ -27,6 +27,8 @@ gem 'trueskill', github: 'saulabs/trueskill', require: 'saulabs/trueskill'
 gem 'faker'
 gem 'gastly'
 gem 'swagger-docs'
+gem 'swagger_engine'
+
 
 group :production do
   gem 'pg'
