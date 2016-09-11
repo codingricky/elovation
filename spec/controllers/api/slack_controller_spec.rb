@@ -2,12 +2,17 @@ require "spec_helper"
 
 describe Api::SlackController do
 
-  describe 'create via txt' do
+  describe 'slack' do
     let!(:game) { FactoryGirl.create(:game) }
+
     let!(:winner) { FactoryGirl.create(:player) }
+    let!(:winner_rating) {FactoryGirl.create(:rating, player: winner, game: game)}
     let!(:winner_name) { winner.name.split[0] }
+
     let!(:loser) { FactoryGirl.create(:player) }
+    let!(:loser_rating) {FactoryGirl.create(:rating, player: loser, game: game)}
     let!(:loser_name) { loser.name.split[0] }
+
     let!(:token) { ENV["SLACK_TOKEN"] = "ABC"}
     let!(:defeats_txt) {"#{winner_name} defeats #{loser_name}"}
     let!(:defeats_txt_multiple) {"#{defeats_txt} 5 times"}
@@ -34,7 +39,33 @@ describe Api::SlackController do
       end
     end
 
-    context 'request is valid' do
+    context 'help' do
+      it 'should display help' do
+        post :slack, params: {token: token, text: "help"}
+
+        expect(response).to have_http_status(:success)
+        expect(Result.all.count).to eql(0)
+        expect(JSON.parse(response.body)["text"]).to_not be_blank
+      end
+    end
+
+    context 'show' do
+      it 'should display leaderboard' do
+
+        # 20 games to make players active
+        1.upto(20) do
+          FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [winner]),
+                                                          FactoryGirl.create(:team, rank: 2, players: [loser])])
+        end
+
+        post :slack, params: {token: token, text: "show"}
+
+        expect(response).to have_http_status(:success)
+        expect_json(text: [winner.as_string, loser.as_string].join("\n"))
+      end
+    end
+
+    context 'create result' do
       before do
         @slack_message = double("slack").as_null_object
         allow(@slack_message).to receive(:message).and_return("message")
@@ -42,7 +73,7 @@ describe Api::SlackController do
         allow(SlackService).to receive(:notify)
       end
 
-      it 'creates result' do
+      it 'creates one result' do
         post :slack, params: {token: token, text: defeats_txt}
 
         expect(response).to have_http_status(:success)
@@ -56,7 +87,7 @@ describe Api::SlackController do
 
       end
 
-      it 'creates result multiple times' do
+      it 'creates multiple results' do
         post :slack, params: {token: token, text: defeats_txt_multiple}
 
         expect(response).to have_http_status(:success)
