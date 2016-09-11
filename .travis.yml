@@ -1,4 +1,12 @@
 language: ruby
 rvm:
-  - 2.3.1
+- 2.3.1
 before_script: bundle exec rake db:do
+deploy:
+  provider: heroku
+  api_key:
+    secure: eLF1rxSJHRZP5LFnX14k8Xt+hoD6OhNXZ0mSRtiT4nfseoxVseI4k3XUzAvw9mS/cKPlQM3+Gg4HFK0WrXRAR4vc4tEBdk98m8OJXghBctGbIfNssq1Ofua/G4RPzIKNKtN8C4IzbY9QvmkruXrzQUy+EniF20OtsTO1fRJcSgvjvhTTnjthl1i1dWuzU2PclW9jzQ94LHN/em4GOLCeTScpjsKGPid8rSK05q2KTytzLiOneifSxxfRQFxScNvbFK+vkeZIIgXCHmHQjIOKK2YsXWhzAG/NzXpTwu5JGrU4vhYt5HjO1q3OvEDdUTNoFxRzSOY3cNHwfhoT514oe0xF1jSTKIA1Uk2E+72Zi2iDu8mTRywsyDvcBxrXPD4CXh3UQj9qkmBUZr3tXBjTnHjUkDvyPA48vAcXLvReH3jKM+vjzWTnieMiDboPldFVJ7uIaBjHHgWeNEO4SG5gSpmmSoc/S9Bs8TsVnl93JbBuP9ai4oOmQiFKVDZm5yYxe9Lyet5sIc0HKNTCi3R6plPHvh5M035MFEw3LEXRq2CiveyPYF8LuWfjSAx8sH6GshfGyliUc1uC5ul9m187iuw/tBk5VimzXUIrg1oazbGm4NDD7RlhRE737nKVKiW1SptevsGNDt6EUtgnmVcgvSbIMP7V+B1WE2hjzfQ8oTs=
+  app: dtt
+  on:
+    repo: codingricky/elovation
+    branch: table-tennis
