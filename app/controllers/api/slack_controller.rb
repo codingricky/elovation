@@ -24,7 +24,7 @@ class Api::SlackController < ActionController::API
     usage: /tt [command]
           show                                      shows the leaderboard
           show_leaderboard                          shows the leaderboard image
-          if [winner] defeats [loser] n [times]     hypothesis a result
+          if [winner] defeats [loser] n [times]     hypothesise a result
           [winner] defeats [loser] n [times]        creates a result
           help                                      this message
     FOO
