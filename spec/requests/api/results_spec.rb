@@ -10,6 +10,11 @@ RSpec.describe "API results", :type => :request do
   let!(:loser_rating) { FactoryGirl.create(:rating, player: loser, game: game) }
 
   it "creates a result" do
+    ENV["SLACK_WEB_URL"] = "some callback url"
+    notifier = double('notifier')
+    allow(Slack::Notifier).to receive(:new).and_return(notifier)
+    expect(notifier).to receive(:ping)
+
     post '/api/results', params: {winner: winner.name, loser: loser.name, times: 3}, headers: {'Authorization' => "Token #{user.api_key}"}
 
     expect(response).to have_http_status(:success)
