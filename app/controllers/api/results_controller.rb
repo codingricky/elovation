@@ -34,6 +34,11 @@ class Api::ResultsController < Api::ApiBaseController
     render json: slack_message
   end
 
+  def leaderboard
+    @players = Player.all.sort_by(&:name)
+    @games = Game.all
+  end
+
   def update_streak_data(winner_id, loser_id)
     winner = Player.find_by_id(winner_id)
     winner.update_streak_data(@game, 10) if winner
