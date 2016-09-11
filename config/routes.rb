@@ -18,6 +18,8 @@ Elovation::Application.routes.draw do
 
   namespace :api do
     post '/results' => 'results#create', as: :api_create
+    get '/active_players' => 'results#active_players', as: :api_active_players
+
     post '/slack' => 'slack#create_from_txt', as: :api_create_from_txt_get
     get '/show' => 'slack#show_leaderboard', as: :api_show
   end

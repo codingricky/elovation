@@ -1,6 +1,6 @@
 class Api::ResultsController < Api::ApiBaseController
 
-  swagger_controller :results, "Results Controller"
+  swagger_controller :api, "Results Controller"
 
   swagger_api :create do
     summary "Creates a result"
@@ -12,7 +12,13 @@ class Api::ResultsController < Api::ApiBaseController
     response :bad_request
   end
 
-  before_action :authenticate, only: [:create]
+  swagger_api :active_players do
+    summary "Gets active players"
+    param :header, 'Authorization', :string, :required, 'Authorization token in the form of "Token token=XXXX"'
+    response :success
+  end
+
+  before_action :authenticate, only: [:create, :active_players]
 
 
   def create
@@ -34,9 +40,9 @@ class Api::ResultsController < Api::ApiBaseController
     render json: slack_message
   end
 
-  def leaderboard
-    @players = Player.all.sort_by(&:name)
-    @games = Game.all
+  def active_players
+    game = Game.first
+    render json: game.all_ratings_with_active_players.collect
   end
 
   def update_streak_data(winner_id, loser_id)

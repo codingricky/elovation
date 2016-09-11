@@ -153,9 +153,9 @@ describe GamesController do
         expect(json_data).to eq({
           "name" => game.name,
           "ratings" => [
-            {"player" => {"name" => player1.name, "email" => player1.email}, "value" => 1003},
-            {"player" => {"name" => player2.name, "email" => player2.email}, "value" => 1002},
-            {"player" => {"name" => player3.name, "email" => player3.email}, "value" => 1001}
+            {"player" => player1.as_json.stringify_keys, "value" => 1003},
+            {"player" => player2.as_json.stringify_keys, "value" => 1002},
+            {"player" => player3.as_json.stringify_keys, "value" => 1001}
           ],
           "results" => [
             {"winner" => player1.name, "loser" => player2.name, "created_at" => Time.now.utc.to_s},

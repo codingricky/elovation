@@ -1,7 +1,5 @@
 class Player < ActiveRecord::Base
 
-
-
   has_attached_file :avatar, styles: {
       tiny: '24x24>',
       thumb: '100x100>',
@@ -48,7 +46,11 @@ class Player < ActiveRecord::Base
   def as_json
     {
       name: name,
-      email: email
+      email: email,
+      wins: current_wins,
+      losses: current_losses,
+      win_loss_ratio:  current_win_loss_ratio,
+      streak: current_streak
     }
   end
 
@@ -172,5 +174,21 @@ class Player < ActiveRecord::Base
     rating.pro = false
     rating.value = Rater::EloRater::DefaultValue
     rating.save!
+  end
+
+  def current_wins
+    total_wins(Game.default)
+  end
+
+  def current_losses
+    total_losses(Game.default)
+  end
+
+  def current_streak
+    streak(Game.default)
+  end
+
+  def current_win_loss_ratio
+    win_loss_ratio(Game.default)
   end
 end

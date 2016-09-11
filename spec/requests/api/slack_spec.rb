@@ -10,8 +10,11 @@ RSpec.describe "Slack", :type => :request do
   let!(:loser_rating) { FactoryGirl.create(:rating, player: loser, game: game) }
   let!(:token) { "ABC" }
 
-  it "creates a result" do
+  before do
     ENV["SLACK_TOKEN"] = token
+  end
+
+  it "creates a result" do
 
     slack_message = "#{winner.name} defeats #{loser.name} 3 times"
     post '/api/slack', params: {text: slack_message, token: token}

@@ -5,7 +5,7 @@
   "resourcePath": "results",
   "apis": [
     {
-      "path": "/api/create.json",
+      "path": "/api/results.json",
       "operations": [
         {
           "summary": "Creates a result",
@@ -53,6 +53,32 @@
           ],
           "nickname": "Api::Results#create",
           "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/api/active_players.json",
+      "operations": [
+        {
+          "summary": "Gets active players",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authorization token in the form of \"Token token=XXXX\"",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Api::Results#active_players",
+          "method": "get"
         }
       ]
     }

@@ -25,7 +25,11 @@ describe Rating do
       expect(rating.as_json).to eq({
         player: {
           name: player.name,
-          email: player.email
+          email: player.email,
+          wins: 0,
+          losses: 0,
+          win_loss_ratio: 0,
+          streak: 0
         },
         value: 1000
       })
