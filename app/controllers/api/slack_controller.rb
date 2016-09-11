@@ -6,8 +6,10 @@ class Api::SlackController < ActionController::API
     text = params[:text]
     if text == "help"
       help
-    elsif text == "show image"
+    elsif text == "show_leaderboard"
       show_leaderboard
+    elsif text =="show"
+      show
     else
       create_from_txt
     end
@@ -26,7 +28,8 @@ class Api::SlackController < ActionController::API
   end
 
   def show
-
+    players = Game.default.all_ratings_with_active_players.collect{|r| r.player.as_string}.join("\n")
+    render json: {text: players, response_type: "in_channel"}
   end
 
   def create_from_txt

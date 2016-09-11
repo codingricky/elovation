@@ -54,6 +54,10 @@ class Player < ActiveRecord::Base
     }
   end
 
+  def as_string
+    "#{name} #{current_wins}-#{current_losses} #{rating.value} points #{current_win_loss_ratio.to_i}% #{current_streak}"
+  end
+
   def is_active?
     results.where("results.created_at > :last_active_date", {last_active_date: DateTime.now - 20.days}).count > 0 &&
         results.count >= 10
@@ -190,5 +194,9 @@ class Player < ActiveRecord::Base
 
   def current_win_loss_ratio
     win_loss_ratio(Game.default)
+  end
+
+  def rating
+    Rating.find_by_player_id(id)
   end
 end
