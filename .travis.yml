@@ -20,4 +20,4 @@ deploy:
     bucket_name: rickys-builds
     on:
       repo: codingricky/elovation
-      branch: table-tennis
+      branch: production
