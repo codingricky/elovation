@@ -1,5 +1,29 @@
 class Api::SlackController < ActionController::API
 
+  def slack
+    render json: "invalid token", status: :unauthorized unless ENV["SLACK_TOKEN"] == params[:token]; return if performed?
+
+    text = params[:text]
+    if text == "help"
+      help
+    elsif text == "show image"
+      show_leaderboard
+    else
+      create_from_txt
+    end
+  end
+
+  def help
+    help_text <<-FOO
+    usage: /tt [command]
+          show_leaderboard                          shows the leaderboard
+          [winner] defeats [loser] n [times]        creates a result
+          help                                      this message
+    FOO
+
+    render json: {text: help_text, response_type: "in_channel"}
+  end
+
   def create_from_txt
     render json: "invalid token", status: :unauthorized unless ENV["SLACK_TOKEN"] == params[:token]; return if performed?
 

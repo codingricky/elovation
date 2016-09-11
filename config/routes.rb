@@ -20,7 +20,7 @@ Elovation::Application.routes.draw do
     post '/results' => 'results#create', as: :api_create
     get '/active_players' => 'results#active_players', as: :api_active_players
 
-    post '/slack' => 'slack#create_from_txt', as: :api_create_from_txt_get
+    post '/slack' => 'slack#slack', as: :api_slack
     get '/show' => 'slack#show_leaderboard', as: :api_show
   end
 
