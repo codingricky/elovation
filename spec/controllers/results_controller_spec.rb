@@ -3,10 +3,10 @@ require "spec_helper"
 describe ResultsController do
   before(:each) do
     slack_message = double("slack_message")
-    slack_message.stub(:save_after_rating)
-    slack_message.stub(:message)
-    SlackMessage.stub(:new).and_return(slack_message)
-    SlackService.stub(:notify)
+    allow(slack_message).to receive(:save_after_rating)
+    allow(slack_message).to receive(:message)
+    allow(SlackMessage).to receive(:new).and_return(slack_message)
+    allow(SlackService).to receive(:notify)
 
     sign_in_user
   end
@@ -15,7 +15,7 @@ describe ResultsController do
     it "exposes a new result" do
       game = FactoryGirl.create(:game)
 
-      get :new, game_id: game
+      get :new, params: {game_id: game}
 
       expect(assigns(:result)).not_to be_nil
     end
@@ -23,7 +23,7 @@ describe ResultsController do
     it "exposes the game" do
       game = FactoryGirl.create(:game)
 
-      get :new, game_id: game
+      get :new, params: {game_id: game}
 
       expect(assigns(:game)).to eq(game)
     end
@@ -36,11 +36,11 @@ describe ResultsController do
         opponent = FactoryGirl.create(:player)
         current_player = FactoryGirl.create(:player, email: TEST_EMAIL)
 
-        post :create, game_id: game, relation: 'defeated', result: {
+        post :create, params: {game_id: game, relation: 'defeated', result: {
           teams: {
             "1" => { players: [opponent.id.to_s] }
           }
-        }
+        }}
 
         result = game.reload.results.first
 
@@ -57,11 +57,11 @@ describe ResultsController do
         opponent = FactoryGirl.create(:player)
         current_player = FactoryGirl.create(:player, email: TEST_EMAIL)
 
-        post :create, game_id: game, relation: 'lost to', result: {
+        post :create, params: {game_id: game, relation: 'lost to', result: {
           teams: {
             "1" => { players: [opponent.id.to_s] }
           }
-        }
+        }}
 
         result = game.reload.results.first
 
@@ -78,12 +78,12 @@ describe ResultsController do
         opponent = FactoryGirl.create(:player)
         current_player = FactoryGirl.create(:player, email: TEST_EMAIL)
 
-        post :create, game_id: game, relation: 'lost to', result: {
+        post :create, params: {game_id: game, relation: 'lost to', result: {
           teams: {
             "0" => { players: [FactoryGirl.create(:player, name: "Others")] },
             "1" => { players: [opponent.id.to_s] }
           }
-        }
+        }}
 
         result = game.reload.results.first
 
@@ -100,11 +100,11 @@ describe ResultsController do
         opponent = FactoryGirl.create(:player)
         FactoryGirl.create(:player, email: TEST_EMAIL)
 
-        result = post :create, game_id: game, relation: 'lost to', result: {
+        result = post :create, params: {game_id: game, relation: 'lost to', result: {
           teams: {
             "1" => { players: [nil] }
           }
-        }
+        }}
 
         expect(result).to render_template(:new)
       end
@@ -143,7 +143,7 @@ describe ResultsController do
 
         request.env['HTTP_REFERER'] = game_path(game)
 
-        delete :destroy, game_id: game, id: result
+        delete :destroy, params: {game_id: game, id: result}
 
         expect(response).to redirect_to(game_path(game))
 

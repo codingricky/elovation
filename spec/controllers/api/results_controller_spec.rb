@@ -12,6 +12,7 @@ describe Api::ResultsController do
   before do
     request.env['HTTP_AUTHORIZATION'] = valid_token
     allow(User).to receive(:find_by).and_return(double("user"))
+    allow(SlackService).to receive(:notify)
   end
 
   describe 'create' do
