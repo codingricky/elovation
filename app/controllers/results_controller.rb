@@ -15,8 +15,7 @@ class ResultsController < ApplicationController
     loser = params["relation"] == "defeated" ? opponent : current_player
     winner_id = winner.kind_of?(Array) ? winner.first : winner
     loser_id = loser.kind_of?(Array) ? loser.first : loser
-    response = ResultService.create_times(winner_id, loser_id, multiplier)
-
+    response = ResultService.create_times(winner_id, loser_id, multiplier.to_i)
 
     if response.success?
       redirect_to dashboard_path
