@@ -1,7 +1,9 @@
 class Api::SlackController < ActionController::API
 
   def slack
+    if Rails.env != "development"
     render json: "invalid token", status: :unauthorized unless ENV["SLACK_TOKEN"] == params[:token]; return if performed?
+    end
 
     text = params[:text]
     if text == "help"
@@ -10,6 +12,8 @@ class Api::SlackController < ActionController::API
       show_leaderboard
     elsif text =="show"
       show
+    elsif text.starts_with?("if ")
+      if_create_from_txt
     else
       create_from_txt
     end
@@ -20,6 +24,7 @@ class Api::SlackController < ActionController::API
     usage: /tt [command]
           show                                      shows the leaderboard
           show_leaderboard                          shows the leaderboard image
+          if [winner] defeats [loser] n [times]     hypothesis a result
           [winner] defeats [loser] n [times]        creates a result
           help                                      this message
     FOO
@@ -33,6 +38,11 @@ class Api::SlackController < ActionController::API
   end
 
   def create_from_txt
+    message = create_result; return if performed?
+    render json: {text: message, response_type: "in_channel"}
+  end
+
+  def create_result
     split_text = params[:text].split
     winner = Player.with_name(split_text[0])
     render json: {text: "winner can not be found"} unless winner; return if performed?
@@ -46,8 +56,21 @@ class Api::SlackController < ActionController::API
     times = times <= 0 ? 1 : times
     times = times > 5 ? 5 : times
 
-    slack_message = ResultService.create_times_without_slack(winner_id, loser_id, times).message
-    render json: {text: slack_message, response_type: "in_channel"}
+    ResultService.create_times_without_slack(winner_id, loser_id, times).message
+  end
+
+  def if_create_from_txt
+    begin
+      ActiveRecord::Base.transaction do
+        params[:text] = params[:text].sub("if ", "")
+        @slack_message = create_result
+        raise ActiveRecord::RecordNotFound
+      end
+    rescue
+    end
+
+    render json: {text: ">>> *IF* #{@slack_message}", response_type: "in_channel"}
+
   end
 
   def show_leaderboard
