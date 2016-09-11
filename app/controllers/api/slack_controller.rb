@@ -14,7 +14,7 @@ class Api::SlackController < ActionController::API
   end
 
   def help
-    help_text <<-FOO
+    help_text = <<-FOO
     usage: /tt [command]
           show                                      shows the leaderboard
           show_leaderboard                          shows the leaderboard image
