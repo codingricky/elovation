@@ -1,7 +1,7 @@
 class SlackService
 
   def self.notify(slack_message, image_url)
-    if ENV["SLACK_WEB_URL"] && !ENV["SLACK_WEB_URL"].blank?
+    if slack_web_url && !slack_web_url.blank?
       notifier = create_notifier
 
       if image_url
@@ -13,7 +13,7 @@ class SlackService
   end
 
   def self.show_leaderboard(image_url)
-    if ENV["SLACK_WEB_URL"] && !ENV["SLACK_WEB_URL"].blank?
+    if slack_web_url && !slack_web_url.blank?
       notifier = create_notifier
       notifier.ping "", attachments: [{image_url:  image_url}]
     end
@@ -21,7 +21,12 @@ class SlackService
 
 
   def self.create_notifier
-    Slack::Notifier.new ENV["SLACK_WEB_URL"], channel: Rails.configuration.slack_channel,
-                                   username: 'http://diustt.club'
+    Slack::Notifier.new slack_web_url, channel: Rails.configuration.slack_channel,
+                        username: 'http://diustt.club'
   end
+
+  def self.slack_web_url
+    ENV["SLACK_WEB_URL"]
+  end
+
  end
