@@ -12,12 +12,9 @@ RSpec.describe "Slack", :type => :request do
 
   it "creates a result" do
     ENV["SLACK_TOKEN"] = token
-    ENV["SLACK_WEB_URL"] = "some callback url"
-    notifier = double('notifier')
-    allow(Slack::Notifier).to receive(:new).and_return(notifier)
-    expect(notifier).to receive(:ping)
 
-    post '/api/slack', params: {text: "#{winner.name} defeats #{loser.name} 3 times", token: token}
+    slack_message = "#{winner.name} defeats #{loser.name} 3 times"
+    post '/api/slack', params: {text: slack_message, token: token}
 
     expect(response).to have_http_status(:success)
 

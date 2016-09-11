@@ -16,8 +16,8 @@ class Api::SlackController < ActionController::API
     times = times <= 0 ? 1 : times
     times = times > 5 ? 5 : times
 
-    slack_message = ResultService.create_times(winner_id, loser_id, times).message
-    render json: {text: slack_message}
+    slack_message = ResultService.create_times_without_slack(winner_id, loser_id, times).message
+    render json: {text: slack_message, response_type: "in_channel"}
   end
 
 

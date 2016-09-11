@@ -30,7 +30,7 @@ class Api::ResultsController < Api::ApiBaseController
     times = params[:times].to_i
     times = times <= 0 ? 1 : times
     times = times > 5 ? 5 : times
-    slack_message = ResultService.create_times(winner_id, loser_id, times).message
+    slack_message = ResultService.create_times_with_slack(winner_id, loser_id, times).message
     render json: slack_message
   end
 
