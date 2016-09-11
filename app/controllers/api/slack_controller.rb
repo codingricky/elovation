@@ -16,7 +16,8 @@ class Api::SlackController < ActionController::API
   def help
     help_text <<-FOO
     usage: /tt [command]
-          show_leaderboard                          shows the leaderboard
+          show                                      shows the leaderboard
+          show_leaderboard                          shows the leaderboard image
           [winner] defeats [loser] n [times]        creates a result
           help                                      this message
     FOO
@@ -24,9 +25,11 @@ class Api::SlackController < ActionController::API
     render json: {text: help_text, response_type: "in_channel"}
   end
 
-  def create_from_txt
-    render json: "invalid token", status: :unauthorized unless ENV["SLACK_TOKEN"] == params[:token]; return if performed?
+  def show
 
+  end
+
+  def create_from_txt
     split_text = params[:text].split
     winner = Player.with_name(split_text[0])
     render json: {text: "winner can not be found"} unless winner; return if performed?

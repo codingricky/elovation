@@ -14,20 +14,20 @@ describe Api::SlackController do
 
     context 'rejects a request ' do
       it 'token is invalid' do
-        post :create_from_txt, params: {token: "invalid"}
+        post :slack, params: {token: "invalid"}
 
         expect(response).to have_http_status(:unauthorized)
       end
 
       it 'winner does not exist' do
-        post :create_from_txt, params: {token: token, text: "John defeats #{loser_name}"}
+        post :slack, params: {token: token, text: "John defeats #{loser_name}"}
 
         expect(response).to have_http_status(:success)
         expect_json(text: "winner can not be found")
       end
 
       it 'loser does not exist' do
-        post :create_from_txt, params: {token: token, text: "#{winner_name} defeats John"}
+        post :slack, params: {token: token, text: "#{winner_name} defeats John"}
 
         expect(response).to have_http_status(:success)
         expect_json(text: "loser can not be found")
@@ -43,7 +43,7 @@ describe Api::SlackController do
       end
 
       it 'creates result' do
-        post :create_from_txt, params: {token: token, text: defeats_txt}
+        post :slack, params: {token: token, text: defeats_txt}
 
         expect(response).to have_http_status(:success)
         expect(Result.all.count).to eql(1)
@@ -57,7 +57,7 @@ describe Api::SlackController do
       end
 
       it 'creates result multiple times' do
-        post :create_from_txt, params: {token: token, text: defeats_txt_multiple}
+        post :slack, params: {token: token, text: defeats_txt_multiple}
 
         expect(response).to have_http_status(:success)
 
