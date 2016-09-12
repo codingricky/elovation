@@ -13,7 +13,7 @@ class Api::SlackController < ActionController::API
     elsif text =="show"
       show
     elsif text.starts_with?("if ")
-      if_create_from_txt
+      # if_create_from_txt
     else
       create_from_txt
     end
@@ -24,7 +24,6 @@ class Api::SlackController < ActionController::API
     usage: /tt [command]
           show                                      shows the leaderboard
           show_leaderboard                          shows the leaderboard image
-          if [winner] defeats [loser] n [times]     hypothesise a result
           [winner] defeats [loser] n [times]        creates a result
           help                                      this message
     FOO
@@ -56,7 +55,7 @@ class Api::SlackController < ActionController::API
     times = times <= 0 ? 1 : times
     times = times > 5 ? 5 : times
 
-    ResultService.create_times_without_slack(winner_id, loser_id, times).message
+    ResultService.create_times_with_slack(winner_id, loser_id, times).message
   end
 
   def if_create_from_txt
