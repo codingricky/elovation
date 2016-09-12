@@ -15,6 +15,7 @@ RSpec.describe "Slack", :type => :request do
   end
 
   it "creates a result" do
+    allow(SlackService).to receive(:notify)
 
     slack_message = "#{winner.name} defeats #{loser.name} 3 times"
     post '/api/slack', params: {text: slack_message, token: token}
