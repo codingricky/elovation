@@ -22,11 +22,11 @@ class Api::SlackController < ActionController::API
   def help
     help_text = <<-FOO
     usage: /tt [command]
-          show                                      shows the leaderboard
-          show_leaderboard                          shows the leaderboard image
-          if [winner] defeats [loser] n [times]     hypothesise a result
-          [winner] defeats [loser] n [times]        creates a result
-          help                                      this message
+          *show*                                         shows the leaderboard
+          *show_leaderboard*                             shows the leaderboard image
+          *if [winner] defeats [loser] n [times]*        hypothesise a result
+          *[winner] defeats [loser] n [times]*           creates a result
+          *help*                                         this message
     FOO
 
     render json: {text: help_text, response_type: "in_channel"}

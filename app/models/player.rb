@@ -55,7 +55,7 @@ class Player < ActiveRecord::Base
   end
 
   def as_string
-    "#{name} #{current_wins}-#{current_losses} #{rating.value} points #{current_win_loss_ratio.to_i}% #{current_streak}"
+    "*#{name}* #{current_wins}-#{current_losses} #{rating.value} points #{current_win_loss_ratio.to_i}% #{current_streak}"
   end
 
   def is_active?
