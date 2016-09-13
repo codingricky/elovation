@@ -14,6 +14,8 @@ class Api::SlackController < ActionController::API
       show
     elsif text.starts_with?("if ")
       if_create_from_txt
+    elsif text.starts_with?("lookup ")
+      lookup text
     else
       create_from_txt
     end
@@ -26,10 +28,23 @@ class Api::SlackController < ActionController::API
           *show_leaderboard*                             shows the leaderboard image
           *if [winner] defeats [loser] n [times]*        hypothesise a result
           *[winner] defeats [loser] n [times]*           creates a result
+          *lookup [player]                               looks up a player
           *help*                                         this message
     FOO
 
     render json: {text: help_text, response_type: "in_channel"}
+  end
+
+  def lookup
+    player = Player.find_by_name(text.sub("lookup ", ""))
+    render json: {text: "player not found", response_type: "in_channel"} if player.nil?
+
+    player_string = player.as_string
+    player_image_url = ApplicationHelper.player_avatar(player)
+    attachments = {
+      image_url: player_image_url
+    }
+    render json: {text: player_string, response_type: "in_channel"}, attachments: [attachments] if player.nil?
   end
 
   def show
