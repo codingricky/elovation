@@ -1,7 +1,6 @@
 class Player < ActiveRecord::Base
 
 
-
   has_attached_file :avatar, styles: {
       tiny: '24x24>',
       thumb: '100x100>',
@@ -23,9 +22,9 @@ class Player < ActiveRecord::Base
   has_many :results, through: :teams do
     def against(opponent)
       joins("INNER JOIN teams AS other_teams ON results.id = other_teams.result_id")
-        .where("other_teams.id != teams.id")
-        .joins("INNER JOIN players_teams AS other_players_teams ON other_teams.id = other_players_teams.team_id")
-        .where("other_players_teams.player_id = ?", opponent)
+          .where("other_teams.id != teams.id")
+          .joins("INNER JOIN players_teams AS other_players_teams ON other_teams.id = other_players_teams.team_id")
+          .where("other_players_teams.player_id = ?", opponent)
     end
 
     def losses
@@ -47,8 +46,8 @@ class Player < ActiveRecord::Base
 
   def as_json
     {
-      name: name,
-      email: email
+        name: name,
+        email: email
     }
   end
 
@@ -80,27 +79,27 @@ class Player < ActiveRecord::Base
 
   def total_wins(game)
     if game.allow_ties
-      results.where(game_id: game, teams: { rank: Team::FIRST_PLACE_RANK }).to_a.count { |r| !r.tie? }
+      results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).to_a.count { |r| !r.tie? }
     else
-      results.where(game_id: game, teams: { rank: Team::FIRST_PLACE_RANK }).count
+      results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).count
     end
   end
 
   def total_losses(game)
     if game.allow_ties
-      results.where(game_id: game).where.not(teams: { rank: Team::FIRST_PLACE_RANK }).to_a.count { |r| !r.tie? }
+      results.where(game_id: game).where.not(teams: {rank: Team::FIRST_PLACE_RANK}).to_a.count { |r| !r.tie? }
     else
-      results.where(game_id: game).where.not(teams: { rank: Team::FIRST_PLACE_RANK }).count
+      results.where(game_id: game).where.not(teams: {rank: Team::FIRST_PLACE_RANK}).count
     end
   end
 
   def total_wins_for_today(game)
     if game.allow_ties
       results.where(game_id: game,
-                  teams: { rank: Team::FIRST_PLACE_RANK }).today.to_a.count { |r| !r.tie? }
+                    teams: {rank: Team::FIRST_PLACE_RANK}).today.to_a.count { |r| !r.tie? }
     else
       results.where(game_id: game,
-                    teams: { rank: Team::FIRST_PLACE_RANK }).today.count
+                    teams: {rank: Team::FIRST_PLACE_RANK}).today.count
     end
 
   end
@@ -125,43 +124,24 @@ class Player < ActiveRecord::Base
     total_wins_for_today(game)/total_games.to_f * 100
   end
 
-  def update_streak_data(game, n)
-    Rails.cache.delete(last_n_cache_key(game, n))
-    Rails.cache.delete(streak_cache_key(game))
-    last_n(game, n)
-    streak(game)
-  end
-
   def last_n(game, n)
-    Rails.cache.fetch(last_n_cache_key(game, n)) do
-      results_array = results.where(game_id: game).order("created_at DESC").includes({teams: :players}).to_a
-      win_loss_array = results_array.collect {|result| result.winners.include?(self) ? 'W' : 'L'}
-      win_loss_array.take(n).join("")
-    end
+    results_array = results.where(game_id: game).order("created_at DESC").includes({teams: :players}).to_a
+    win_loss_array = results_array.collect { |result| result.winners.include?(self) ? 'W' : 'L' }
+    win_loss_array.take(n).join("")
   end
 
   def streak(game)
-    Rails.cache.fetch(streak_cache_key(game)) do
-        results_array = results.where(game_id: game).order("created_at DESC").includes({teams: :players}).chunk do |result|
-        result.winners.include?(self)
-      end.collect{|e, result| {:is_winner => e, :size => result.size}}
-      return 0 if results_array.empty?
-      results_array.first[:is_winner] ? results_array.first[:size] : 0
-    end
-  end
-
-  def streak_cache_key(game)
-    "#{id}|#{game.id}|streak"
-  end
-
-  def last_n_cache_key(game, n)
-    "#{id}|#{game.id}|#{n}|last_n"
+    results_array = results.where(game_id: game).order("created_at DESC").includes({teams: :players}).chunk do |result|
+      result.winners.include?(self)
+    end.collect { |e, result| {:is_winner => e, :size => result.size} }
+    return 0 if results_array.empty?
+    results_array.first[:is_winner] ? results_array.first[:size] : 0
   end
 
   def self.with_name(name)
     results = where("name like ?", "#{name}%")
     return nil if results.count == 0
     return results.first if results.count == 1
-    return results.find {|p| p.is_active?}
+    return results.find { |p| p.is_active? }
   end
 end

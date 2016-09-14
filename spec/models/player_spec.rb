@@ -219,7 +219,6 @@ describe Player do
 
       5.times { create_result(game, player1, player2) }
 
-      player1.update_streak_data(game, 10)
       expect(player1.streak(game)).to eq(5)
     end
 
@@ -232,7 +231,6 @@ describe Player do
       5.times { create_result(game, player1, player2) }
       create_result(game, player2, player1)
 
-      player1.update_streak_data(game, 10)
       expect(player1.streak(game)).to eq(0)
     end
   end
