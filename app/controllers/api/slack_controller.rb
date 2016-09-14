@@ -40,7 +40,7 @@ class Api::SlackController < ActionController::API
     render json: {text: "player not found", response_type: "in_channel"} if player.nil?; return if performed?
 
     player_string = player.as_string
-    results = player.n_most_recent_results(10).collect{|r| "*#{r.winner.name}* defeated *#{r.loser.name}*"}.join('\n')
+    results = player.n_most_recent_results(10).collect{|r| "*#{r.winner.name}* defeated *#{r.loser.name}*"}.join("\n")
     render json: {text: "#{player_string}\n*Last 10 results*\n#{results}", response_type: "in_channel"}
   end
 
