@@ -1,8 +1,59 @@
 class Api::SlackController < ActionController::API
 
-  def create_from_txt
+  def slack
+    if Rails.env != "development"
     render json: "invalid token", status: :unauthorized unless ENV["SLACK_TOKEN"] == params[:token]; return if performed?
+    end
 
+    text = params[:text]
+    if text == "help"
+      help
+    elsif text == "show_leaderboard"
+      show_leaderboard
+    elsif text =="show"
+      show
+    elsif text.starts_with?("if ")
+      if_create_from_txt
+    elsif text.starts_with?("lookup ")
+      lookup text
+    else
+      create_from_txt
+    end
+  end
+
+  def help
+    help_text = <<-FOO
+    usage: /tt [command]
+          *show*                                         shows the leaderboard
+          *show_leaderboard*                             shows the leaderboard image
+          *if [winner] defeats [loser] n [times]*        hypothesise a result
+          *[winner] defeats [loser] n [times]*           creates a result
+          *lookup [player]*                               looks up a player
+          *help*                                         this message
+    FOO
+
+    render json: {text: help_text, response_type: "in_channel"}
+  end
+
+  def lookup(text)
+    player = Player.with_name(text.sub("lookup ", ""))
+    render json: {text: "player not found", response_type: "in_channel"} if player.nil?; return if performed?
+
+    player_string = player.as_string
+    render json: {text: player_string, response_type: "in_channel"}
+  end
+
+  def show
+    players = Game.default.all_ratings_with_active_players.collect{|r| r.player.as_string}.join("\n")
+    render json: {text: players, response_type: "in_channel"}
+  end
+
+  def create_from_txt
+    message = create_result; return if performed?
+    render json: {text: message, response_type: "in_channel"}
+  end
+
+  def create_result
     split_text = params[:text].split
     winner = Player.with_name(split_text[0])
     render json: {text: "winner can not be found"} unless winner; return if performed?
@@ -16,22 +67,22 @@ class Api::SlackController < ActionController::API
     times = times <= 0 ? 1 : times
     times = times > 5 ? 5 : times
 
-    game = Game.first
-    result = {
-        teams: {
-            "0" => { players: winner_id },
-            "1" => { players: loser_id }
-        }
-    }
-    slack_message = SlackMessage.new(winner_id, loser_id, game, times)
-    1.upto(times) do
-      ResultService.create(game, result)
-    end
-    slack_message.save_after_rating
-    SlackService.notify(slack_message, nil)
-    render json: {text: slack_message.message}
+    ResultService.create_times_without_slack(winner_id, loser_id, times).message
   end
 
+  def if_create_from_txt
+    begin
+      ActiveRecord::Base.transaction do
+        params[:text] = params[:text].sub("if ", "")
+        @slack_message = create_result
+        raise ActiveRecord::RecordNotFound
+      end
+    rescue
+    end
+
+    render json: {text: ">>> *IF* #{@slack_message}", response_type: "in_channel"}
+
+  end
 
   def show_leaderboard
     SlackService.show_leaderboard(url_for(controller: '/leaderboard', action: 'show_image'))

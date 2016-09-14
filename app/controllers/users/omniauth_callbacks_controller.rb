@@ -10,7 +10,11 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     raw_info = request.env["omniauth.auth"]["extra"]["raw_info"]
     email = raw_info["email"]
     name = request.env["omniauth.auth"]["info"]["name"]
-    Player.find_or_create_by(name: name, email: email)
+    player = Player.find_or_create_by(name: name, email: email)
+    unless Rating.find_by_player_id(player.id)
+      player.create_default_rating
+    end
+
     @user = User.find_or_create_by(email: email) do |user|
       user.password = Devise.friendly_token[0,20]
     end

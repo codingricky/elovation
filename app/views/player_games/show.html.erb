@@ -1,7 +1,9 @@
 <div class="hero-unit">
   <%= player_avatar(@player) %>
-  <h1><%= link_to @player.name, player_path(@player) %> <strong><%= @player.ratings.find_by_game_id(@game).value %></strong></h1>
+  <h1><%= link_to @player.name, player_path(@player) %>
+    <strong><%= @player.ratings.find_by_game_id(@game).value %></strong></h1>
 </div>
+
 
 <section class="action-buttons">
   <span><%= link_to 'Edit Player', edit_player_path(@player), class: "btn btn-primary" %></span>
@@ -11,52 +13,57 @@
 </section>
 
 <div class="row">
+  <div class="span12">
+    <span><h3>Api Key:<strong><%= @user.api_key %></strong></h3></span>
+
+  </div>
+
   <div class="span6">
     <h2>Head-to-Head Records</h2>
     <table id='ratings'>
       <thead>
-        <tr>
-          <th>Player</th>
-          <th>Rating</th>
-          <th><abbr title='Wins'>W</abbr></th>
-          <th><abbr title='Losses'>L</abbr></th>
-          <% if @game.allow_ties %>
+      <tr>
+        <th>Player</th>
+        <th>Rating</th>
+        <th><abbr title='Wins'>W</abbr></th>
+        <th><abbr title='Losses'>L</abbr></th>
+        <% if @game.allow_ties %>
             <th><abbr title='Ties'>T</abbr></th>
-          <% end %>
-        </tr>
+        <% end %>
+      </tr>
       </thead>
 
       <tbody>
-        <% @game.all_ratings.each do |rating| %>
+      <% @game.all_ratings.each do |rating| %>
 
           <% opponent = rating.player %>
           <% wins = @player.wins(@game, opponent) %>
           <% losses = @player.results.losses.for_game(@game).against(opponent).size %>
-          <tr class="<%= "unplayed" if @player != opponent and wins == 0 and losses == 0 %>" >
+          <tr class="<%= "unplayed" if @player != opponent and wins == 0 and losses == 0 %>">
             <td>
               <%= link_to player_game_path(opponent, @game) do %>
-                <%= player_avatar_tiny(opponent) %>
-                <%= opponent.name %>
+                  <%= player_avatar_tiny(opponent) %>
+                  <%= opponent.name %>
               <% end %>
             </td>
             <% unless opponent == @player %>
-              <td><%= rating.value %></td>
-              <td><%= wins %></td>
-              <td><%= losses %></td>
-              <% if @game.allow_ties %>
-                <td><%= @player.ties(@game, opponent) %></td>
-              <% end %>
+                <td><%= rating.value %></td>
+                <td><%= wins %></td>
+                <td><%= losses %></td>
+                <% if @game.allow_ties %>
+                    <td><%= @player.ties(@game, opponent) %></td>
+                <% end %>
             <% else %>
-              <td>–</td>
-              <td>–</td>
-              <td>–</td>
+                <td>–</td>
+                <td>–</td>
+                <td>–</td>
                 <% if @game.allow_ties %>
                     <td>–</td>
                 <% end %>
             <% end %>
           </tr>
 
-        <% end %>
+      <% end %>
       </tbody>
 
     </table>
@@ -66,22 +73,22 @@
     <h2>Recent Games</h2>
     <ul id='results'>
       <% @player.results.for_game(@game).limit(15).order('created_at desc').each do |result| %>
-        <li>
-          <%= format_time(result.created_at) %>
-          -
-          <% if result.winners.include?(@player) %>
-            <% if result.losers.empty? %>
-              Tied
+          <li>
+            <%= format_time(result.created_at) %>
+            -
+            <% if result.winners.include?(@player) %>
+                <% if result.losers.empty? %>
+                    Tied
+                <% else %>
+                    Won against <strong><%= result.losers.map(&:name).join(", ") %></strong>
+                <% end %>
             <% else %>
-              Won against <strong><%= result.losers.map(&:name).join(", ") %></strong>
+                Lost to <strong><%= result.winners.map(&:name).join(", ") %></strong>
             <% end %>
-          <% else %>
-            Lost to <strong><%= result.winners.map(&:name).join(", ") %></strong>
-          <% end %>
-          <% if result.most_recent? -%>
-            <%= link_to "Delete", game_result_path(@game, result), class: "btn btn-danger", method: :delete, confirm: "Are you sure?" %>
-          <% end -%>
-        </li>
+            <% if result.most_recent? -%>
+                <%= link_to "Delete", game_result_path(@game, result), class: "btn btn-danger", method: :delete, confirm: "Are you sure?" %>
+            <% end -%>
+          </li>
       <% end %>
     </ul>
   </div>
@@ -89,5 +96,5 @@
 
 <div class="row">
   <h2>Progress</h2>
-    <%= line_chart @chart_data, min: nil, max: nil %>
+  <%= line_chart @chart_data, min: nil, max: nil %>
 </div>

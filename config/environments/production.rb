@@ -90,5 +90,5 @@ Elovation::Application.configure do
       },
   }
 
-  config.slack_channel = "#tabletennis"
+  config.slack_channel =  ENV["SLACK_CHANNEL"] || "#tabletennis"
 end

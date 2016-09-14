@@ -28,6 +28,8 @@ gem 'faker'
 gem 'gastly'
 gem 'swagger-docs'
 gem 'swagger-ui_rails'
+gem 'swagger_engine'
+gem 'okcomputer'
 
 group :production do
   gem 'pg'

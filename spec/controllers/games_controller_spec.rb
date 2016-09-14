@@ -17,7 +17,7 @@ describe GamesController do
     it "exposes the game for editing" do
       game = FactoryGirl.create(:game)
 
-      get :edit, id: game
+      get :edit, params: {id: game}
 
       expect(assigns(:game)).to eq(game)
     end
@@ -27,14 +27,14 @@ describe GamesController do
     context "with valid params" do
       it "creates a game" do
         game_attributes = FactoryGirl.attributes_for(:game)
-        post :create, game: game_attributes
+        post :create, params: {game: game_attributes}
 
         expect(Game.where(name: game_attributes[:name]).first).not_to be_nil
       end
 
       it "redirects to the game's show page" do
         game_attributes = FactoryGirl.attributes_for(:game)
-        post :create, game: game_attributes
+        post :create, params: {game: game_attributes}
 
         game = Game.where(name: game_attributes[:name]).first
 
@@ -44,7 +44,7 @@ describe GamesController do
       it "protects against mass assignment" do
         Timecop.freeze(Time.now) do
           game_attributes = FactoryGirl.attributes_for(:game, created_at: 3.days.ago)
-          post :create, game: game_attributes
+          post :create, params: {game: game_attributes}
 
           game = Game.where(name: game_attributes[:name]).first
           expect(game.created_at).to be > 3.days.ago
@@ -54,7 +54,7 @@ describe GamesController do
 
     context "with invalid params" do
       it "renders new given invalid params" do
-        post :create, game: {name: nil}
+        post :create, params: {game: {name: nil}}
 
         expect(response).to render_template(:new)
       end
@@ -65,7 +65,7 @@ describe GamesController do
     it "allows deleting games without results" do
       game = FactoryGirl.create(:game, name: "First name")
 
-      delete :destroy, id: game
+      delete :destroy, params: {id: game}
 
       expect(response).to redirect_to(dashboard_path)
       expect(Game.find_by_id(game.id)).to be_nil
@@ -75,7 +75,7 @@ describe GamesController do
       game = FactoryGirl.create(:game, name: "First name")
       FactoryGirl.create(:result, game: game)
 
-      delete :destroy, id: game
+      delete :destroy, params: {id: game}
 
       expect(response).to redirect_to(dashboard_path)
       expect(Game.find_by_id(game.id)).to eq(game)
@@ -87,7 +87,7 @@ describe GamesController do
       it "redirects to the game's show page" do
         game = FactoryGirl.create(:game, name: "First name")
 
-        put :update, id: game, game: {name: "Second name"}
+        put :update, params: {id: game, game: {name: "Second name"}}
 
         expect(response).to redirect_to(game_path(game))
       end
@@ -95,7 +95,7 @@ describe GamesController do
       it "updates the game with the provided attributes" do
         game = FactoryGirl.create(:game, name: "First name")
 
-        put :update, id: game, game: {name: "Second name"}
+        put :update, params: {id: game, game: {name: "Second name"}}
 
         expect(game.reload.name).to eq("Second name")
       end
@@ -104,7 +104,7 @@ describe GamesController do
         Timecop.freeze(Time.now) do
           game = FactoryGirl.create(:game, name: "First name")
 
-          put :update, id: game, game: {created_at: 3.days.ago}
+          put :update, params: {id: game, game: {created_at: 3.days.ago}}
 
           expect(game.created_at).to be > 3.days.ago
         end
@@ -115,7 +115,7 @@ describe GamesController do
       it "renders the edit page" do
         game = FactoryGirl.create(:game, name: "First name")
 
-        put :update, id: game, game: {name: nil}
+        put :update, params: {id: game, game: {name: nil}}
 
         expect(response).to render_template(:edit)
       end
@@ -126,7 +126,7 @@ describe GamesController do
     it "exposes the game" do
       game = FactoryGirl.create(:game)
 
-      get :show, id: game
+      get :show, params: {id: game}
 
       expect(assigns(:game)).to eq(game)
     end
@@ -147,15 +147,15 @@ describe GamesController do
         result2 = FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [player2]), FactoryGirl.create(:team, rank: 2, players: [player3])])
         result3 = FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [player3]), FactoryGirl.create(:team, rank: 2, players: [player1])])
 
-        get :show, id: game, format: :json
+        get :show, params: {id: game, format: :json}
 
         json_data = JSON.parse(response.body)
         expect(json_data).to eq({
           "name" => game.name,
           "ratings" => [
-            {"player" => {"name" => player1.name, "email" => player1.email}, "value" => 1003},
-            {"player" => {"name" => player2.name, "email" => player2.email}, "value" => 1002},
-            {"player" => {"name" => player3.name, "email" => player3.email}, "value" => 1001}
+            {"player" => player1.as_json.stringify_keys, "value" => 1003},
+            {"player" => player2.as_json.stringify_keys, "value" => 1002},
+            {"player" => player3.as_json.stringify_keys, "value" => 1001}
           ],
           "results" => [
             {"winner" => player1.name, "loser" => player2.name, "created_at" => Time.now.utc.to_s},

@@ -29,6 +29,7 @@ elovation_development
 
 /coverage
 
-
 #public
 public/api/*
+public/api
+public/assets

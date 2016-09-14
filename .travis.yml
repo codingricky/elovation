@@ -1,4 +1,23 @@
 language: ruby
 rvm:
-  - 2.3.1
+- 2.3.1
 before_script: bundle exec rake db:do
+deploy:
+  - provider: heroku
+    api_key:
+     secure: eLF1rxSJHRZP5LFnX14k8Xt+hoD6OhNXZ0mSRtiT4nfseoxVseI4k3XUzAvw9mS/cKPlQM3+Gg4HFK0WrXRAR4vc4tEBdk98m8OJXghBctGbIfNssq1Ofua/G4RPzIKNKtN8C4IzbY9QvmkruXrzQUy+EniF20OtsTO1fRJcSgvjvhTTnjthl1i1dWuzU2PclW9jzQ94LHN/em4GOLCeTScpjsKGPid8rSK05q2KTytzLiOneifSxxfRQFxScNvbFK+vkeZIIgXCHmHQjIOKK2YsXWhzAG/NzXpTwu5JGrU4vhYt5HjO1q3OvEDdUTNoFxRzSOY3cNHwfhoT514oe0xF1jSTKIA1Uk2E+72Zi2iDu8mTRywsyDvcBxrXPD4CXh3UQj9qkmBUZr3tXBjTnHjUkDvyPA48vAcXLvReH3jKM+vjzWTnieMiDboPldFVJ7uIaBjHHgWeNEO4SG5gSpmmSoc/S9Bs8TsVnl93JbBuP9ai4oOmQiFKVDZm5yYxe9Lyet5sIc0HKNTCi3R6plPHvh5M035MFEw3LEXRq2CiveyPYF8LuWfjSAx8sH6GshfGyliUc1uC5ul9m187iuw/tBk5VimzXUIrg1oazbGm4NDD7RlhRE737nKVKiW1SptevsGNDt6EUtgnmVcgvSbIMP7V+B1WE2hjzfQ8oTs=
+    app: dtt
+    on:
+     repo: codingricky/elovation
+     branch: table-tennis
+  - provider: elasticbeanstalk
+    access_key_id: AKIAJJDQBTHUQYJPLG3Q
+    secret_access_key:
+      secure: KzZ7xnRs5vSItXuEmVAQD2ib2RtoP9bhTh+aRp8QJNqQdqShP3Ovy0a4NX4foQgKA0tOenExJOTBIaXjZSdcu0aXykaIkl+AEcnbwwIKAentKyOEwEUx7usBOK4/aPHchoaJOci27AmZRRssZlCgUzTUkSPqOT7+YPLbQbY9ovz/Q6mJMafY0i7BXWRIw3ojWIh55MNz/E67fMpbItGJPxbnvRcrDZ3kNbGEs7teCnjEQIr5QljF0lNTp+wI3rz2CUnN6RBpwIxeGI4qNj+fHRiojb8na5worz1krG6ibp22Ae2bInDH3IhQFdC3HauJ6e+KuhJnzipz8PMGAJ8nzRkO/Wn5sgzukLUcPPD1QfPHP6OCPpK4o+cj0POGrhMDJqOTiZ/SuFwKvCrNd02x3AVPwpVOqfkstj3KhUO6EAjY3B7ngs38LdOOabe9oU/ZOFW4gPCNgcu51GiUQWZwZoCj1IoXrpdL4IRsAOvqYvwkRuC3vQAZGYLVu2K9MjwbTtbFOBlZ5ky0G6AharFzp9Tod2pwo37vXmxBY0zy+xQoo95sE+hcp8Ci6kzdumKgetdETXHgukcsFn6mTzG1QQlVckhoiNufEh1oyIjRe1/0JxTiPOKYZYuKTgjvL9q+knAL0cMwTPgvTXx4+guJueUAJzJEs43ZcUxh07Ntaa0=
+    region: ap-southeast-2
+    app: dius-table-tennis
+    env: dius-tt-prod
+    bucket_name: rickys-builds
+    on:
+      repo: codingricky/elovation
+      branch: production

@@ -3,11 +3,16 @@ require "spec_helper"
 describe Player do
   describe "as_json" do
     it "returns the json representation of the player" do
+      FactoryGirl.create(:game)
       player = FactoryGirl.build(:player, name: "John Doe", email: "foo@example.com")
 
       expect(player.as_json).to eq({
         name: "John Doe",
-        email: "foo@example.com"
+        email: "foo@example.com",
+        losses: 0,
+        wins: 0,
+        win_loss_ratio: 0,
+        streak: 0
       })
     end
   end
@@ -371,6 +376,19 @@ describe Player do
       20.times { create_result(game, active_player, loser) }
 
       expect(Player.with_name("john")).to eq(active_player)
+    end
+  end
+
+  describe 'create default rating' do
+    let!(:game) { FactoryGirl.create(:game) }
+    let!(:player) { FactoryGirl.create(:player) }
+
+    it 'should create a rating if not exists' do
+      player.create_default_rating
+
+      rating = Rating.find_by_player_id(player.id)
+      expect(rating).to_not be_nil
+      expect(rating.value).to eql(1000)
     end
   end
 end

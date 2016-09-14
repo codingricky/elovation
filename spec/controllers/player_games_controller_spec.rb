@@ -10,7 +10,7 @@ describe PlayerGamesController do
       game = FactoryGirl.create(:game)
       player = FactoryGirl.create(:player)
 
-      get :show, player_id: player, id: game
+      get :show, params: {player_id: player, id: game}
       expect(response).to be_success
 
       expect(assigns(:game)).to eq(game)

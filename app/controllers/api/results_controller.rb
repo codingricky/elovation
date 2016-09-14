@@ -1,4 +1,25 @@
-class Api::ResultsController < ActionController::API
+class Api::ResultsController < Api::ApiBaseController
+
+  swagger_controller :api, "Results Controller"
+
+  swagger_api :create do
+    summary "Creates a result"
+    param :header, 'Authorization', :string, :required, 'Authorization token in the form of "Token token=XXXX"'
+    param :form, :winner, :string, :required, "winner of the match"
+    param :form, :loser, :string, :required, "loser of the match"
+    param :form, :times, :integer, :optional, "times the winner has won"
+    response :success
+    response :bad_request
+  end
+
+  swagger_api :active_players do
+    summary "Gets active players"
+    param :header, 'Authorization', :string, :required, 'Authorization token in the form of "Token token=XXXX"'
+    response :success
+  end
+
+  before_action :authenticate, only: [:create, :active_players]
+
 
   include Swagger::Docs::ImpotentMethods
 
@@ -25,24 +46,16 @@ class Api::ResultsController < ActionController::API
     render json: {message: "loser can not be found"}, status: :bad_request unless loser; return if performed?
     loser_id = loser.id
 
-    game = Game.first
-
-    result = {
-        teams: {
-            "0" => { players: winner_id },
-            "1" => { players: loser_id }
-        }
-    }
-
     times = params[:times].to_i
     times = times <= 0 ? 1 : times
     times = times > 5 ? 5 : times
-
-    1.upto(times) do
-      ResultService.create(game, result)
-    end
-    render json: "created"
+    slack_message = ResultService.create_times_with_slack(winner_id, loser_id, times).message
+    render json: slack_message
   end
 
+  def active_players
+    game = Game.first
+    render json: game.all_ratings_with_active_players.collect
+  end
 
 end

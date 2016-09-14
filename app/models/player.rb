@@ -1,6 +1,5 @@
 class Player < ActiveRecord::Base
 
-
   has_attached_file :avatar, styles: {
       tiny: '24x24>',
       thumb: '100x100>',
@@ -46,9 +45,17 @@ class Player < ActiveRecord::Base
 
   def as_json
     {
-        name: name,
-        email: email
+      name: name,
+      email: email,
+      wins: current_wins,
+      losses: current_losses,
+      win_loss_ratio:  current_win_loss_ratio,
+      streak: current_streak
     }
+  end
+
+  def as_string
+    "*#{name}* #{current_wins}-#{current_losses} #{rating.value} points #{current_win_loss_ratio.to_i}% #{current_streak}"
   end
 
   def is_active?
@@ -143,5 +150,34 @@ class Player < ActiveRecord::Base
     return nil if results.count == 0
     return results.first if results.count == 1
     return results.find { |p| p.is_active? }
+  end
+
+  def create_default_rating
+    rating = Rating.new
+    rating.player = self
+    rating.game = Game.first
+    rating.pro = false
+    rating.value = Rater::EloRater::DefaultValue
+    rating.save!
+  end
+
+  def current_wins
+    total_wins(Game.default)
+  end
+
+  def current_losses
+    total_losses(Game.default)
+  end
+
+  def current_streak
+    streak(Game.default)
+  end
+
+  def current_win_loss_ratio
+    win_loss_ratio(Game.default)
+  end
+
+  def rating
+    Rating.find_by_player_id(id)
   end
 end

@@ -1,4 +1,34 @@
 class ResultService
+
+  def self.create_times_without_slack(winner_id, loser_id, times)
+    create_times(winner_id, loser_id, times, false)
+  end
+
+  def self.create_times_with_slack(winner_id, loser_id, times)
+    create_times(winner_id, loser_id, times, true)
+  end
+
+  def self.create_times(winner_id, loser_id, times, notify_slack)
+    game = Game.first
+    params = {
+        teams: {
+            "0" => { players: winner_id },
+            "1" => { players: loser_id }
+        }
+    }
+
+    slack_message = SlackMessage.new(winner_id, loser_id, game, times)
+    result = nil
+    1.upto(times) do
+      result = ResultService.create(game, params)
+    end
+    slack_message.save_after_rating
+    SlackService.notify(slack_message, nil) if notify_slack
+
+    result[:message] = slack_message.message
+    return result
+  end
+
   def self.create(game, params)
     result = game.results.build
 
