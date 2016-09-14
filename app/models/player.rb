@@ -71,6 +71,10 @@ class Player < ActiveRecord::Base
     results.order("created_at DESC").limit(5)
   end
 
+  def n_most_recent_results(n)
+    results.order("created_at DESC").limit(n)
+  end
+
   def rewind_rating!(game)
     rating = ratings.where(game_id: game.id).first
     rating.rewind!

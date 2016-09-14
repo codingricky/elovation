@@ -52,6 +52,14 @@ class Result < ActiveRecord::Base
     teams.count == teams.winners.count
   end
 
+  def winner
+    winners.first
+  end
+
+  def loser
+    losers.first
+  end
+
   def as_json(options = {})
     {
       winner: winners.first.name,
