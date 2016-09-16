@@ -123,6 +123,10 @@ class Player < ActiveRecord::Base
     end
   end
 
+  def losses(game, opponent)
+    results.where(game_id: game).where.not(teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).count
+  end
+
   def win_loss_ratio(game)
     total_games = results.for_game(game).size
     return 0 if total_games == 0

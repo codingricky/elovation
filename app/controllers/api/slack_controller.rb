@@ -6,6 +6,7 @@ class Api::SlackController < ActionController::API
     end
 
     text = params[:text]
+
     if text == "help"
       help
     elsif text == "show_leaderboard"
@@ -17,7 +18,22 @@ class Api::SlackController < ActionController::API
     elsif text.starts_with?("lookup ")
       lookup text
     else
-      create_from_txt
+      split = text.split(' ')
+      first_token = split.first
+      if (is_player?(first_token))
+        handle_player_commands(split)
+      else
+        render json: {text: "command not recognised\n"}
+      end
+    end
+  end
+
+  def handle_player_commands(split)
+    second_token = split.second
+    if (second_token == "h2h")
+      show_head_to_head(split)
+    else
+      create_result_from_txt
     end
   end
 
@@ -49,7 +65,7 @@ class Api::SlackController < ActionController::API
     render json: {text: players, response_type: "in_channel"}
   end
 
-  def create_from_txt
+  def create_result_from_txt
     message = create_result; return if performed?
     render json: {text: message, response_type: "in_channel"}
   end
@@ -90,4 +106,22 @@ class Api::SlackController < ActionController::API
     render json: {text: ""}
   end
 
+  private
+
+  def is_player?(name)
+    Player.with_name(name)
+  end
+
+  def show_head_to_head(split)
+    first_player_name = split.first
+    second_player_name = split[2]
+
+    first_player = Player.with_name(first_player_name)
+    second_player = Player.with_name(second_player_name)
+
+    wins = first_player.wins(Game.default, second_player)
+    losses = first_player.losses(Game.default, second_player)
+    ratio = ActionController::Base.helpers.number_to_percentage((wins.to_f/(wins + losses)) * 100, precision: 0)
+    render json: {text: "*#{first_player.name}* H2H *#{second_player.name}* #{wins} wins #{losses} losses #{ratio}", response_type: "in_channel"}
+  end
 end
