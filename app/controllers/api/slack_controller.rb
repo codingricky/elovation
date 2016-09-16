@@ -1,43 +1,25 @@
 class Api::SlackController < ActionController::API
 
+  COMMANDS = {/[hH]elp/ => :help,
+             /show leaderboard/ => :show_leaderboard,
+             /show/ => :show,
+             /if [a-zA-Z]+ [a-zA-Z]+ [a-zA-Z]+( [0-9] time(s)?)?/ => :if_player_defeats_another_player,
+             /[a-zA-Z]+ [a-zA-Z]+ [a-zA-Z]+( [0-9] time(s)?)?/ => :player_defeats_another_player,
+             /[a-zA-Z]+ h2h [a-zA-Z]+/ => :player_h2h_another_player,
+             /lookup [a-zA-Z]+/ => :lookup_player}
+
   def slack
     if Rails.env != "development"
     render json: "invalid token", status: :unauthorized unless ENV["SLACK_TOKEN"] == params[:token]; return if performed?
     end
 
-    text = params[:text]
+    command = COMMANDS.keys.find{|c| c =~ params[:text]}
+    render json: {text: "`#{command}` not recognised"} unless command; return if performed?
 
-    if text == "help"
-      help
-    elsif text == "show_leaderboard"
-      show_leaderboard
-    elsif text =="show"
-      show
-    elsif text.starts_with?("if ")
-      if_create_from_txt
-    elsif text.starts_with?("lookup ")
-      lookup text
-    else
-      split = text.split(' ')
-      first_token = split.first
-      if (is_player?(first_token))
-        handle_player_commands(split)
-      else
-        render json: {text: "command not recognised"}
-      end
-    end
+    self.send(COMMANDS[command], params[:text])
   end
 
-  def handle_player_commands(split)
-    second_token = split.second
-    if (second_token == "h2h")
-      show_head_to_head(split)
-    else
-      create_result_from_txt
-    end
-  end
-
-  def help
+  def help(text)
     help_text = <<-FOO
     usage: /tt [command]
           *show*                                         shows the leaderboard
@@ -52,27 +34,23 @@ class Api::SlackController < ActionController::API
     render json: {text: help_text, response_type: "in_channel"}
   end
 
-  def lookup(text)
-    player = Player.with_name(text.sub("lookup ", ""))
-    render json: {text: "player not found", response_type: "in_channel"} if player.nil?; return if performed?
-
-    player_string = player.as_string
-    results = player.n_most_recent_results(10).collect{|r| "*#{r.winner.name}* defeated *#{r.loser.name}*"}.join("\n")
-    render json: {text: "#{player_string}\n*Last 10 results*\n#{results}", response_type: "in_channel"}
-  end
-
-  def show
+  def show(text)
     players = Game.default.all_ratings_with_active_players.collect{|r| r.player.as_string}.join("\n")
     render json: {text: players, response_type: "in_channel"}
   end
 
-  def create_result_from_txt
-    message = create_result; return if performed?
+  def show_leaderboard(text)
+    SlackService.show_leaderboard(url_for(controller: '/leaderboard', action: 'show_image'))
+    render json: {text: ""}
+  end
+
+  def player_defeats_another_player(text)
+    message = create_result(text); return if performed?
     render json: {text: message, response_type: "in_channel"}
   end
 
-  def create_result
-    split_text = params[:text].split
+  def create_result(text)
+    split_text = text.split
     winner = Player.with_name(split_text[0])
     render json: {text: "winner can not be found"} unless winner; return if performed?
     winner_id = winner.id
@@ -88,32 +66,20 @@ class Api::SlackController < ActionController::API
     ResultService.create_times_without_slack(winner_id, loser_id, times).message
   end
 
-  def if_create_from_txt
+  def if_player_defeats_another_player(text)
     begin
       ActiveRecord::Base.transaction do
-        params[:text] = params[:text].sub("if ", "")
-        @slack_message = create_result
+        @slack_message = create_result(text.sub("if ", ""))
         raise ActiveRecord::RecordNotFound
       end
     rescue
     end
 
     render json: {text: ">>> *IF* #{@slack_message}", response_type: "in_channel"}
-
   end
 
-  def show_leaderboard
-    SlackService.show_leaderboard(url_for(controller: '/leaderboard', action: 'show_image'))
-    render json: {text: ""}
-  end
-
-  private
-
-  def is_player?(name)
-    Player.with_name(name)
-  end
-
-  def show_head_to_head(split)
+  def player_h2h_another_player(text)
+    split = text.split(" ")
     first_player_name = split.first
     second_player_name = split[2]
 
@@ -124,5 +90,14 @@ class Api::SlackController < ActionController::API
     losses = first_player.losses(Game.default, second_player)
     ratio = ActionController::Base.helpers.number_to_percentage((wins.to_f/(wins + losses)) * 100, precision: 0)
     render json: {text: "*#{first_player.name}* H2H *#{second_player.name}* #{wins} wins #{losses} losses #{ratio}", response_type: "in_channel"}
+  end
+
+  def lookup_player(text)
+    player = Player.with_name(text.sub("lookup ", ""))
+    render json: {text: "player not found", response_type: "in_channel"} if player.nil?; return if performed?
+
+    player_string = player.as_string
+    results = player.n_most_recent_results(10).collect{|r| "*#{r.winner.name}* defeated *#{r.loser.name}*"}.join("\n")
+    render json: {text: "#{player_string}\n*Last 10 results*\n#{results}", response_type: "in_channel"}
   end
 end

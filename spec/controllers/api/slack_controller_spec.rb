@@ -28,7 +28,7 @@ describe Api::SlackController do
         post :slack, params: {token: token, text: "John defeats #{loser_name}"}
 
         expect(response).to have_http_status(:success)
-        expect_json(text: "command not recognised")
+        expect_json(text: "winner can not be found")
       end
 
       it 'loser does not exist' do
