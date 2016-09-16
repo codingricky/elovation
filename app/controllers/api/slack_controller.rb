@@ -1,5 +1,8 @@
 class Api::SlackController < ActionController::API
 
+
+  COMMANDS = {}
+
   def slack
     if Rails.env != "development"
     render json: "invalid token", status: :unauthorized unless ENV["SLACK_TOKEN"] == params[:token]; return if performed?
@@ -23,7 +26,7 @@ class Api::SlackController < ActionController::API
       if (is_player?(first_token))
         handle_player_commands(split)
       else
-        render json: {text: "command not recognised\n"}
+        render json: {text: "command not recognised"}
       end
     end
   end
