@@ -12,10 +12,10 @@ RSpec.describe "Slack", :type => :request do
 
   before do
     ENV["SLACK_TOKEN"] = token
+    allow(SlackService).to receive(:notify)
   end
 
   it "creates a result" do
-    allow(SlackService).to receive(:notify)
 
     slack_message = "#{winner.name} defeats #{loser.name} 3 times"
     post '/api/slack', params: {text: slack_message, token: token}
@@ -26,6 +26,24 @@ RSpec.describe "Slack", :type => :request do
     expect(winner.total_losses(game)).to be(0)
     expect(loser.total_wins(game)).to be(0)
     expect(loser.total_losses(game)).to be(3)
+
+    post '/api/slack', params: {text: "#{winner.name} h2h #{loser.name}", token: token}
+    expect(response).to have_http_status(:success)
+    expect(JSON.parse(response.body)["text"]).not_to be_nil
+  end
+
+  it "shows help" do
+    post '/api/slack', params: {text: "help", token: token}
+
+    expect(response).to have_http_status(:success)
+    expect(JSON.parse(response.body)["text"]).not_to be_nil
+  end
+
+  it "shows leaderboard" do
+    post '/api/slack', params: {text: "show", token: token}
+
+    expect(response).to have_http_status(:success)
+    expect(JSON.parse(response.body)["text"]).not_to be_nil
   end
 
 end
