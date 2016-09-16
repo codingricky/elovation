@@ -44,7 +44,8 @@ class Api::SlackController < ActionController::API
           *show_leaderboard*                             shows the leaderboard image
           *if [winner] defeats [loser] n [times]*        hypothesise a result
           *[winner] defeats [loser] n [times]*           creates a result
-          *lookup [player]*                               looks up a player
+          *[winner] h2h [loser]*                         shows the h2h record between two players
+          *lookup [player]*                              looks up a player
           *help*                                         this message
     FOO
 
