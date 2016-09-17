@@ -96,7 +96,7 @@ class Api::SlackController < ActionController::API
     player = Player.with_name(text.sub("lookup ", ""))
     render json: {text: "player not found", response_type: "in_channel"} if player.nil?; return if performed?
 
-    attachments = [PlayerSlackAttachment.create_slack_attachment_from(player)]
+    attachments = [Api::PlayerSlackAttachment.create_slack_attachment_from(player)]
     render json: {response_type: "in_channel", attachments: attachments}
   end
 end
