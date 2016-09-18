@@ -25,10 +25,10 @@ RSpec.describe "Slack", :type => :request do
     post '/api/slack', params: {text: "lookup #{winner.name}", token: token}
     expect(response).to have_http_status(:success)
     attachment = JSON.parse(response.body)["attachments"].first
-    expect(attachment["text"]).to include("*Last 10 results*
-*Roger* defeated *Rafa*
-*Roger* defeated *Rafa*
-*Roger* defeated *Rafa*")
+    last_10_results = attachment["fields"].last
+    expect(last_10_results['value']).to include("Roger defeated Rafa
+Roger defeated Rafa
+Roger defeated Rafa")
   end
 
   it "creates a result" do

@@ -91,9 +91,7 @@ describe Api::SlackController do
         post :slack, params: {token: token, text: defeats_txt_multiple}
 
         expect(response).to have_http_status(:success)
-
         expect(Result.all.count).to eql(5)
-
         expect_json(text: @slack_message.message)
       end
     end
