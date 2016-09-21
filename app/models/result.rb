@@ -75,4 +75,8 @@ class Result < ActiveRecord::Base
       end
     end
   end
+
+  def day
+    created_at.strftime("%A")
+  end
 end

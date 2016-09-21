@@ -90,10 +90,14 @@ class Player < ActiveRecord::Base
 
   def total_wins(game)
     if game.allow_ties
-      results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).to_a.count { |r| !r.tie? }
+      total_wins_results(game).to_a.count { |r| !r.tie? }
     else
-      results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).count
+      total_wins_results(game).count
     end
+  end
+
+  def total_wins_results(game)
+    results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK})
   end
 
   def total_losses(game)
@@ -106,20 +110,18 @@ class Player < ActiveRecord::Base
 
   def total_wins_for_today(game)
     if game.allow_ties
-      results.where(game_id: game,
-                    teams: {rank: Team::FIRST_PLACE_RANK}).today.to_a.count { |r| !r.tie? }
+      total_wins_results(game).today.to_a.count { |r| !r.tie? }
     else
-      results.where(game_id: game,
-                    teams: {rank: Team::FIRST_PLACE_RANK}).today.count
+      total_wins_results(game).today.count
     end
 
   end
 
   def wins(game, opponent)
     if game.allow_ties
-      results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).to_a.count { |r| !r.tie? }
+      total_wins_results(game).against(opponent).to_a.count { |r| !r.tie? }
     else
-      results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK}).against(opponent).count
+      total_wins_results(game).against(opponent).count
     end
   end
 
@@ -187,5 +189,19 @@ class Player < ActiveRecord::Base
 
   def rating
     Rating.find_by_player_id(id)
+  end
+
+  def wins_by_day_of_the_week
+    total_wins = current_wins
+    results = total_wins_results(Game.default)
+    wins_by_day = results.inject({}) do |hash, result|
+      hash[result.day] = 0 unless hash.has_key?(result.day)
+      hash[result.day] = hash[result.day] + 1
+      hash
+    end
+
+    wins_by_day.each do |key, value|
+      wins_by_day[key] = wins_by_day[key].to_f/total_wins
+    end
   end
 end
