@@ -201,7 +201,7 @@ class Player < ActiveRecord::Base
     end
 
     wins_by_day.each do |key, value|
-      wins_by_day[key] = wins_by_day[key].to_f/total_wins
+      wins_by_day[key] = (wins_by_day[key].to_f/total_wins) * 100
     end
   end
 end
