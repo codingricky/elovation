@@ -7,7 +7,7 @@ class Api::PlayerSlackAttachment
 
     attachment['fields'] = [create_field('wins', player.total_wins(Game.default), true),
                             create_field('losses', player.total_losses(Game.default), true),
-                            create_field('ratio', ActionController::Base.helpers.number_to_percentage(player.win_loss_ratio(Game.default)), true),
+                            create_field('winning %', ActionController::Base.helpers.number_to_percentage(player.win_loss_ratio(Game.default)), true),
                             create_field('winning % by day', winning_percentage_by_day(player), false),
                             create_field('last 10 results', last_10_results, false)]
     return attachment

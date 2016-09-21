@@ -101,8 +101,8 @@ class Player < ActiveRecord::Base
   end
 
   def winning_percentage_by_day(day)
-    wins_on_day = total_wins_results(Game.default).select {|result| result.day == day}.count
-    losses_on_day = total_losses_results(Game.default).select {|result| result.day == day}.count
+    wins_on_day = total_wins_results(Game.default).select {|result| result.day == day}.count.to_i
+    losses_on_day = total_losses_results(Game.default).select {|result| result.day == day}.count.to_i
     (wins_on_day.to_f/(wins_on_day + losses_on_day)) * 100
   end
 
