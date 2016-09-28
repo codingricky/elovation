@@ -4,6 +4,8 @@ gem 'omniauth-google-oauth2'
 gem 'devise'
 gem 'puma'
 gem 'rack-mini-profiler', :require => false
+gem 'slack-ruby-bot'
+gem 'celluloid-io'
 
 group :development do
   gem 'rails_real_favicon'
