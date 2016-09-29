@@ -12,7 +12,6 @@ class TableTennis < SlackRubyBot::Commands::Base
     client.say(channel: data.channel, text: HELP)
   end
 
-
   match /show/ do |client, data, match|
     players = Game.default.all_ratings_with_active_players.collect{|r| r.player.as_string}.join("\n")
     client.say(channel: data.channel, text: players)
@@ -68,13 +67,11 @@ class TableTennis < SlackRubyBot::Commands::Base
   def self.create_result(text)
     split_text = text.split
     winner = Player.with_name(split_text[0])
-    puts winner
     return "winner can not be found" unless winner
 
     winner_id = winner.id
 
     loser = Player.with_name(split_text[2])
-    puts loser
     return "loser can not be found" unless loser
     loser_id = loser.id
 
