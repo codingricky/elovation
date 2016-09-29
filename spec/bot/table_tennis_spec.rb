@@ -54,10 +54,17 @@ describe 'Table Tennis' do
       expect(message: "NOTANAME defeats #{loser_name}", user: 'user').to respond_with_slack_message("winner can not be found")
       expect(Result.all.count).to eql(0)
     end
+
     it 'does not create a result when loser not found' do
       expect(message: "#{winner_name} defeats notaname", user: 'user').to respond_with_slack_message("loser can not be found")
       expect(Result.all.count).to eql(0)
     end
+
+    it 'hypothesise result' do
+      expect(message: "if #{defeats_txt_multiple}", user: 'user').to respond_with_slack_message(">>> *IF* #{@slack_message.message}")
+      expect(Result.all.count).to eql(0)
+    end
   end
+
 
 end

@@ -19,8 +19,14 @@ class TableTennis < SlackRubyBot::Commands::Base
     client.say(channel: data.channel, text: players)
   end
 
+  match /if [a-zA-Z]+ defeats [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|
+    logger.info 'matched if create a result'
+    message = if_player_defeats_another_player(match.to_s)
+    client.say(channel: data.channel, text: message)
+  end
+
    match /[a-zA-Z]+ (defeats|beats|kills|destroys|b) [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|
-     logger.info 'matched create a result'
+     logger.info "matched create a result #{match.to_s}"
      message = create_result(match.to_s)
     client.say(channel: data.channel, text: message)
    end
@@ -35,6 +41,8 @@ class TableTennis < SlackRubyBot::Commands::Base
   end
 
   match /[a-zA-Z]+ h2h [a-zA-Z]+/ do |client, data, match|
+    logger.info 'matched h2h'
+
     split = match.to_s.split(" ")
     first_player_name = split.first
     second_player_name = split[2]
@@ -46,11 +54,6 @@ class TableTennis < SlackRubyBot::Commands::Base
     losses = first_player.losses(Game.default, second_player)
     ratio = ActionController::Base.helpers.number_to_percentage((wins.to_f/(wins + losses)) * 100, precision: 0)
     message = "*#{first_player.name}* H2H *#{second_player.name}* #{wins} wins #{losses} losses #{ratio}"
-    client.say(channel: data.channel, text: message)
-  end
-
-  match /if [a-zA-Z]+ defeats [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|
-    message = if_player_defeats_another_player(match.to_s)
     client.say(channel: data.channel, text: message)
   end
 
