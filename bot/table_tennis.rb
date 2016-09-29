@@ -8,12 +8,12 @@ class TableTennis < SlackRubyBot::Commands::Base
           *help*                                         this message
   FOO
 
-  command 'help' do |client, data, match|
+  match /help/ do |client, data, match|
     client.say(channel: data.channel, text: HELP)
   end
 
 
-  command 'show' do |client, data, match|
+  match /show/ do |client, data, match|
     players = Game.default.all_ratings_with_active_players.collect{|r| r.player.as_string}.join("\n")
     client.say(channel: data.channel, text: players)
   end
