@@ -24,19 +24,30 @@ describe 'Table Tennis' do
     expect(message: "show", user: 'user').to respond_with_slack_message(leaderboard)
   end
 
-  describe 'creating results' do
-    it 'creates one result' do
-      slack_message = double("slack").as_null_object
-      allow(slack_message).to receive(:message).and_return("message")
-      allow(SlackMessage).to receive(:new).and_return(slack_message)
-      allow(SlackService).to receive(:notify)
+  it 'responds to help' do
+    expect(message: 'help', user: 'user').to respond_with_slack_message(TableTennis::HELP )
+  end
 
-      expect(message: defeats_txt, user: 'user').to respond_with_slack_message(slack_message.message)
+  describe 'creating results' do
+    before do
+      @slack_message = double("slack").as_null_object
+      allow(@slack_message).to receive(:message).and_return("message")
+      allow(SlackMessage).to receive(:new).and_return(@slack_message)
+      allow(SlackService).to receive(:notify)
+    end
+
+    it 'creates one result' do
+      expect(message: defeats_txt, user: 'user').to respond_with_slack_message(@slack_message.message)
 
       expect(Result.all.count).to eql(1)
       result = Result.first
       expect(result.winners.first).to eql(winner)
       expect(result.losers.first).to eql(loser)
+    end
+
+    it 'creates multiple results' do
+      expect(message: defeats_txt_multiple, user: 'user').to respond_with_slack_message(@slack_message.message)
+      expect(Result.all.count).to eql(5)
     end
   end
 
