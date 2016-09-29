@@ -25,7 +25,7 @@ describe 'Table Tennis' do
   end
 
   it 'responds to help' do
-    expect(message: 'help', user: 'user').to respond_with_slack_message(TableTennis::HELP )
+    expect(message: 'help', user: 'user').to respond_with_slack_message(TableTennis::HELP)
   end
 
   describe 'creating results' do
@@ -48,6 +48,11 @@ describe 'Table Tennis' do
     it 'creates multiple results' do
       expect(message: defeats_txt_multiple, user: 'user').to respond_with_slack_message(@slack_message.message)
       expect(Result.all.count).to eql(5)
+    end
+
+    it 'does not create a result when winner not found' do
+      expect(message: "NOTANAME defeats #{loser_name}", user: 'user').to respond_with_slack_message("winner can not be found")
+      expect(Result.all.count).to eql(0)
     end
   end
 

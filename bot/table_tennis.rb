@@ -9,16 +9,19 @@ class TableTennis < SlackRubyBot::Commands::Base
   FOO
 
   match /help/ do |client, data, match|
+    logger.info 'matched help'
     client.say(channel: data.channel, text: HELP)
   end
 
   match /show/ do |client, data, match|
+    logger.info 'matched show'
     players = Game.default.all_ratings_with_active_players.collect{|r| r.player.as_string}.join("\n")
     client.say(channel: data.channel, text: players)
   end
 
    match /[a-zA-Z]+ (defeats|beats|kills|destroys|b) [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|
-    message = create_result(match.to_s)
+     logger.info 'matched create a result'
+     message = create_result(match.to_s)
     client.say(channel: data.channel, text: message)
    end
 
@@ -64,6 +67,8 @@ class TableTennis < SlackRubyBot::Commands::Base
   end
 
   def self.create_result(text)
+    logger.info "creating result with #{text}"
+
     split_text = text.split
     winner = Player.with_name(split_text[0])
     return "winner can not be found" unless winner
