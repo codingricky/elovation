@@ -65,6 +65,4 @@ describe 'Table Tennis' do
       expect(Result.all.count).to eql(0)
     end
   end
-
-
 end

@@ -34,10 +34,12 @@ class TableTennis < SlackRubyBot::Commands::Base
   match /lookup [a-zA-Z]+/ do |client, data, match|
     text = match.to_s
     player = Player.with_name(text.sub("lookup ", ""))
-    return "player not found" if player.nil?
-
-    attachments = [Api::PlayerSlackAttachment.create_slack_attachment_from(player)]
-    client.web_client.chat_postMessage(channel: data.channel, attachments: attachments)
+    if player.nil?
+      client.say(channel: data.channel, text: message)
+    else
+      attachments = [Api::PlayerSlackAttachment.create_slack_attachment_from(player)]
+      client.web_client.chat_postMessage(channel: data.channel, attachments: attachments)
+    end
   end
 
   match /[a-zA-Z]+ h2h [a-zA-Z]+/ do |client, data, match|
