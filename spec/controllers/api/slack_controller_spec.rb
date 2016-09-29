@@ -5,11 +5,11 @@ describe Api::SlackController do
   describe 'slack' do
     let!(:game) { FactoryGirl.create(:game) }
 
-    let!(:winner) { FactoryGirl.create(:player) }
+    let!(:winner) { FactoryGirl.create(:player, name: "John") }
     let!(:winner_rating) {FactoryGirl.create(:rating, player: winner, game: game)}
     let!(:winner_name) { winner.name.split[0] }
 
-    let!(:loser) { FactoryGirl.create(:player) }
+    let!(:loser) { FactoryGirl.create(:player, name: "Garry") }
     let!(:loser_rating) {FactoryGirl.create(:rating, player: loser, game: game)}
     let!(:loser_name) { loser.name.split[0] }
 
@@ -25,14 +25,14 @@ describe Api::SlackController do
       end
 
       it 'winner does not exist' do
-        post :slack, params: {token: token, text: "John defeats #{loser_name}"}
+        post :slack, params: {token: token, text: "NOTANAME defeats #{loser_name}"}
 
         expect(response).to have_http_status(:success)
         expect_json(text: "winner can not be found")
       end
 
       it 'loser does not exist' do
-        post :slack, params: {token: token, text: "#{winner_name} defeats John"}
+        post :slack, params: {token: token, text: "#{winner_name} defeats NOTANAME"}
 
         expect(response).to have_http_status(:success)
         expect_json(text: "loser can not be found")

@@ -31,7 +31,7 @@ class TableTennis < SlackRubyBot::Commands::Base
     client.web_client.chat_postMessage(channel: data.channel, attachments: attachments)
   end
 
-  match /[a-zA-Z]+ h2h [a-zA-Z]/ do |client, data, match|
+  match /[a-zA-Z]+ h2h [a-zA-Z]+/ do |client, data, match|
     split = match.to_s.split(" ")
     first_player_name = split.first
     second_player_name = split[2]
@@ -62,7 +62,6 @@ class TableTennis < SlackRubyBot::Commands::Base
 
     return ">>> *IF* #{@slack_message}"
   end
-
 
   def self.create_result(text)
     split_text = text.split
