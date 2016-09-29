@@ -44,6 +44,7 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    addressable (2.4.0)
     airborne (0.2.5)
       activesupport (>= 3.0.0)
       rack-test (~> 0.6, >= 0.6.2)
@@ -102,6 +103,8 @@ GEM
     concurrent-ruby (1.0.2)
     coolline (0.5.0)
       unicode_utils (~> 1.4)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
     debug_inspector (0.0.2)
     devise (4.2.0)
       bcrypt (~> 3.0)
@@ -134,6 +137,7 @@ GEM
     gli (2.14.0)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
+    hashdiff (0.3.0)
     hashie (3.4.4)
     hitimes (1.2.4)
     http-cookie (1.0.2)
@@ -280,6 +284,7 @@ GEM
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
     rubyzip (1.2.0)
+    safe_yaml (1.0.4)
     sass (3.4.22)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
@@ -338,8 +343,13 @@ GEM
     unicorn (5.1.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
+    vcr (3.0.3)
     warden (1.2.6)
       rack (>= 1.0)
+    webmock (2.1.0)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
     websocket-driver (0.6.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
@@ -392,6 +402,8 @@ DEPENDENCIES
   trueskill!
   uglifier
   unicorn
+  vcr
+  webmock
 
 BUNDLED WITH
    1.13.1

@@ -1,4 +1,7 @@
 require 'simplecov'
+require 'slack-ruby-bot/rspec'
+require ::File.expand_path('../../bot/table_tennis', __FILE__)
+
 SimpleCov.start
 
 TEST_EMAIL = 'rspec@dius.com.au'

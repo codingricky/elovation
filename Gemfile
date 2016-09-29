@@ -62,4 +62,6 @@ group :test do
   gem 'simplecov'
   gem 'rails-controller-testing'
   gem 'airborne'
+  gem 'vcr'
+  gem 'webmock'
 end
