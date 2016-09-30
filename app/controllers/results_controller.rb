@@ -18,7 +18,6 @@ class ResultsController < ApplicationController
     slack_message = SlackMessage.new(winner_id, loser_id, @game, multiplier.to_i)
     response = ResultService.create_times_with_slack(winner_id, loser_id, multiplier.to_i)
     slack_message.save_after_rating
-    SlackService.notify(slack_message, url_for(controller: 'leaderboard', action: 'show_image'))
 
     if response.success?
       redirect_to dashboard_path
