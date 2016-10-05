@@ -60,8 +60,8 @@ describe 'Table Tennis' do
       create_win
     end
 
-    expect(message: "what's the best day to play #{winner_name}?", user: 'user').to respond_with_slack_message("Wednesday")
-    expect(message: "what is the best day to play #{winner_name}?", user: 'user').to respond_with_slack_message("Wednesday")
+    expect(message: "what's the best day to play #{winner_name}?", user: 'user').to respond_with_slack_message("The best day to play #{winner_name} is Wednesday")
+    expect(message: "what is the best day to play #{winner_name}?", user: 'user').to respond_with_slack_message("The best day to play #{winner_name} is Wednesday")
   end
 
   describe 'creating results' do
