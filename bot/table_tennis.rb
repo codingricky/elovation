@@ -5,7 +5,7 @@ class TableTennis < SlackRubyBot::Commands::Base
           *[winner] defeats [loser] n [times]*           creates a result
           *[winner] h2h [loser]*                         shows the h2h record between two players
           *lookup [player]*                              looks up a player
-          *what's the best day to play [player]?*        tells you the best day to play a player
+          *what's the best day to play [player]?*        tells you the best day to play a player to maximise your chances
           *help*                                         this message
   FOO
 
