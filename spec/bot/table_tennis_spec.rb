@@ -1,5 +1,15 @@
 require 'spec_helper'
 
+def create_win
+  FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [winner]),
+                                                  FactoryGirl.create(:team, rank: 2, players: [loser])])
+end
+
+def create_loss
+  FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 2, players: [winner]),
+                                                  FactoryGirl.create(:team, rank: 1, players: [loser])])
+end
+
 describe 'Table Tennis' do
   let!(:game) { FactoryGirl.create(:game) }
 
@@ -17,8 +27,7 @@ describe 'Table Tennis' do
   it "show the leaderboard" do
     # 20 games to make players active
     1.upto(20) do
-      FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [winner]),
-                                                      FactoryGirl.create(:team, rank: 2, players: [loser])])
+      create_win
     end
     leaderboard = [winner.as_string, loser.as_string].join("\n")
     expect(message: "show", user: 'user').to respond_with_slack_message(leaderboard)
@@ -27,6 +36,32 @@ describe 'Table Tennis' do
 
   it 'responds to help' do
     expect(message: 'help', user: 'user').to respond_with_slack_message(TableTennis::HELP)
+  end
+
+  it 'responds to best day' do
+    monday = Date.new(2016, 10, 3)
+    Timecop.freeze(monday) do
+      create_win
+    end
+    tuesday = monday + 1
+    Timecop.freeze(tuesday) do
+      create_win
+    end
+    wednesday = tuesday + 1
+    Timecop.freeze(wednesday) do
+      create_loss
+    end
+    thursday = wednesday + 1
+    Timecop.freeze(thursday) do
+      create_win
+    end
+    friday = thursday + 1
+    Timecop.freeze(friday) do
+      create_win
+    end
+
+    expect(message: "what's the best day to play #{winner_name}?", user: 'user').to respond_with_slack_message("Wednesday")
+    expect(message: "what is the best day to play #{winner_name}?", user: 'user').to respond_with_slack_message("Wednesday")
   end
 
   describe 'creating results' do

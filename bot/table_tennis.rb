@@ -5,6 +5,7 @@ class TableTennis < SlackRubyBot::Commands::Base
           *[winner] defeats [loser] n [times]*           creates a result
           *[winner] h2h [loser]*                         shows the h2h record between two players
           *lookup [player]*                              looks up a player
+          *what's the best day to play [player]?*        tells you the best day to play a player
           *help*                                         this message
   FOO
 
@@ -17,6 +18,13 @@ class TableTennis < SlackRubyBot::Commands::Base
     logger.info 'matched show'
     players = Game.default.all_ratings_with_active_players.collect{|r| r.player.as_string}.join("\n")
     client.say(channel: data.channel, text: players)
+  end
+
+
+  match /(?i)what('s| is) the best day to play [a-zA-Z]+/ do |client, data, match|
+    logger.info 'best day'
+    player = Player.with_name(match.to_s.split(' ').last)
+    client.say(channel: data.channel, text: player.day_with_lowest_winning_percentage)
   end
 
   match /(?i)if [a-zA-Z]+ (?i)(defeats|beats|kills|destroys|b|defeated|beat) [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|

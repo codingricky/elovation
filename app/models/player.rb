@@ -100,10 +100,18 @@ class Player < ActiveRecord::Base
     results.where(game_id: game, teams: {rank: Team::FIRST_PLACE_RANK})
   end
 
+  def day_with_lowest_winning_percentage
+    days_of_the_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    days_of_the_week.inject {|largest_day, current| winning_percentage_by_day(largest_day) < winning_percentage_by_day(current) ?
+           largest_day : current }
+  end
+
   def winning_percentage_by_day(day)
     wins_on_day = total_wins_results(Game.default).select {|result| result.day == day}.count.to_i
     losses_on_day = total_losses_results(Game.default).select {|result| result.day == day}.count.to_i
-    (wins_on_day.to_f/(wins_on_day + losses_on_day)) * 100
+    total_games = wins_on_day + losses_on_day
+    return 0 if total_games == 0
+    (wins_on_day.to_f/total_games) * 100
   end
 
   def total_losses(game)

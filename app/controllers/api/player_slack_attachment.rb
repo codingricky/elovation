@@ -18,7 +18,6 @@ class Api::PlayerSlackAttachment
     days_of_the_week.collect do |day|
       "#{day} - #{ActionController::Base.helpers.number_to_percentage(player.winning_percentage_by_day(day))}"
     end.join("\n")
-
   end
 
   def self.create_field(title, value, short)
