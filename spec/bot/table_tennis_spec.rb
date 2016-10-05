@@ -22,6 +22,7 @@ describe 'Table Tennis' do
     end
     leaderboard = [winner.as_string, loser.as_string].join("\n")
     expect(message: "show", user: 'user').to respond_with_slack_message(leaderboard)
+    expect(message: "SHoW", user: 'user').to respond_with_slack_message(leaderboard)
   end
 
   it 'responds to help' do

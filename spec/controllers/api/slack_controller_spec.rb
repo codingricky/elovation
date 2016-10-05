@@ -50,14 +50,15 @@ describe Api::SlackController do
     end
 
     context 'show' do
-      it 'should display leaderboard' do
-
+      before do
         # 20 games to make players active
         1.upto(20) do
           FactoryGirl.create(:result, game: game, teams: [FactoryGirl.create(:team, rank: 1, players: [winner]),
                                                           FactoryGirl.create(:team, rank: 2, players: [loser])])
         end
+      end
 
+      it 'should display leaderboard' do
         post :slack, params: {token: token, text: "show"}
 
         expect(response).to have_http_status(:success)
