@@ -24,7 +24,11 @@ class TableTennis < SlackRubyBot::Commands::Base
   match /(?i)what('s| is) the best day to play [a-zA-Z]+/ do |client, data, match|
     logger.info 'best day'
     player = Player.with_name(match.to_s.split(' ').last)
-    client.say(channel: data.channel, text: player.day_with_lowest_winning_percentage)
+    if player.nil?
+      client.say(channel: data.channel, text: "Player not found")
+    else
+      client.say(channel: data.channel, text: "The best day to play #{player.name} is #{player.day_with_lowest_winning_percentage}")
+    end
   end
 
   match /(?i)if [a-zA-Z]+ (?i)(defeats|beats|kills|destroys|b|defeated|beat) [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|
@@ -43,7 +47,7 @@ class TableTennis < SlackRubyBot::Commands::Base
     text = match.to_s
     player = Player.with_name(text.sub("lookup ", ""))
     if player.nil?
-      client.say(channel: data.channel, text: message)
+      client.say(channel: data.channel, text: "Player not found")
     else
       attachments = [Api::PlayerSlackAttachment.create_slack_attachment_from(player)]
       client.web_client.chat_postMessage(channel: data.channel, attachments: attachments)
@@ -62,7 +66,8 @@ class TableTennis < SlackRubyBot::Commands::Base
 
     wins = first_player.wins(Game.default, second_player)
     losses = first_player.losses(Game.default, second_player)
-    ratio = ActionController::Base.helpers.number_to_percentage((wins.to_f/(wins + losses)) * 100, precision: 0)
+    total = wins + losses
+    ratio = ActionController::Base.helpers.number_to_percentage(wins.to_f/total * 100, precision: 0)
     message = "*#{first_player.name}* H2H *#{second_player.name}* #{wins} wins #{losses} losses #{ratio}"
     client.say(channel: data.channel, text: message)
   end
