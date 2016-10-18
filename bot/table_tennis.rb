@@ -9,19 +9,19 @@ class TableTennis < SlackRubyBot::Commands::Base
           *help*                                         this message
   FOO
 
-  match /(?i)help/ do |client, data, match|
+  match /^(?i)help/ do |client, data, match|
     logger.info 'matched help'
     client.say(channel: data.channel, text: HELP)
   end
 
-  match /(?i)show/ do |client, data, match|
+  match /^(?i)show/ do |client, data, match|
     logger.info 'matched show'
     players = Game.default.all_ratings_with_active_players.collect{|r| r.player.as_string}.join("\n")
     client.say(channel: data.channel, text: players)
   end
 
 
-  match /(?i)what('s| is) the best day to play [a-zA-Z]+/ do |client, data, match|
+  match /^(?i)what('s| is) the best day to play [a-zA-Z]+/ do |client, data, match|
     logger.info 'best day'
     player = Player.with_name(match.to_s.split(' ').last)
     if player.nil?
@@ -31,19 +31,19 @@ class TableTennis < SlackRubyBot::Commands::Base
     end
   end
 
-  match /(?i)if [a-zA-Z]+ (?i)(defeats|beats|kills|destroys|b|defeated|beat) [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|
+  match /^(?i)if [a-zA-Z]+ (?i)(defeats|beats|kills|destroys|b|defeated|beat) [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|
     logger.info 'matched if create a result'
     message = if_player_defeats_another_player(match.to_s)
     client.say(channel: data.channel, text: message)
   end
 
-   match /[a-zA-Z]+ (?i)(defeats|beats|kills|destroys|b|defeated|beat) [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|
+   match /^[a-zA-Z]+ (?i)(defeats|beats|kills|destroys|b|defeated|beat) [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|
      logger.info "matched create a result #{match.to_s}"
      message = create_result(match.to_s)
     client.say(channel: data.channel, text: message)
    end
 
-  match /(?i)lookup [a-zA-Z]+/ do |client, data, match|
+  match /^(?i)lookup [a-zA-Z]+/ do |client, data, match|
     text = match.to_s
     player = Player.with_name(text.sub("lookup ", ""))
     if player.nil?
@@ -54,7 +54,7 @@ class TableTennis < SlackRubyBot::Commands::Base
     end
   end
 
-  match /[a-zA-Z]+ (?i)h2h [a-zA-Z]+/ do |client, data, match|
+  match /^[a-zA-Z]+ (?i)h2h [a-zA-Z]+/ do |client, data, match|
     logger.info 'matched h2h'
 
     split = match.to_s.split(" ")
