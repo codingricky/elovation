@@ -24,7 +24,5 @@ Elovation::Application.routes.draw do
     get '/show' => 'slack#show_leaderboard', as: :api_show
   end
 
-  mount SwaggerEngine::Engine, at: "/api-docs"
-
   root to: 'dashboard#show'
 end

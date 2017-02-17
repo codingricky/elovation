@@ -28,9 +28,6 @@ gem 'elo'
 gem 'trueskill', github: 'saulabs/trueskill', require: 'saulabs/trueskill'
 gem 'faker'
 gem 'gastly'
-gem 'swagger-docs'
-gem 'swagger-ui_rails'
-gem 'swagger_engine'
 gem 'okcomputer'
 
 group :production do

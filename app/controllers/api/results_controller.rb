@@ -1,38 +1,7 @@
 class Api::ResultsController < Api::ApiBaseController
 
-  swagger_controller :api, "Results Controller"
-
-  swagger_api :create do
-    summary "Creates a result"
-    param :header, 'Authorization', :string, :required, 'Authorization token in the form of "Token token=XXXX"'
-    param :form, :winner, :string, :required, "winner of the match"
-    param :form, :loser, :string, :required, "loser of the match"
-    param :form, :times, :integer, :optional, "times the winner has won"
-    response :success
-    response :bad_request
-  end
-
-  swagger_api :active_players do
-    summary "Gets active players"
-    param :header, 'Authorization', :string, :required, 'Authorization token in the form of "Token token=XXXX"'
-    response :success
-  end
 
   before_action :authenticate, only: [:create, :active_players]
-
-
-  include Swagger::Docs::ImpotentMethods
-
-  swagger_controller :api_results, "Results Management"
-
-  swagger_api :create do
-    summary "Creates results"
-    param :winner, :string, "Winner's name"
-    param :loser, :string, "Loser's name"
-    param :times, :int, :optional, "Times that someone has won"
-    response :success
-    response :bad_request
-  end
 
   def create
     winner_name = params[:winner]
