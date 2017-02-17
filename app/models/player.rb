@@ -174,6 +174,8 @@ class Player < ActiveRecord::Base
   end
 
   def self.with_name(name)
+    return nil unless name
+
     results = where("name like ?", "#{name}%")
     return nil if results.count == 0
     return results.first if results.count == 1

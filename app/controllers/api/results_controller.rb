@@ -40,7 +40,6 @@ class Api::ResultsController < Api::ApiBaseController
     loser_name = params[:loser]
     loser_name ||= params[:parameters][:loser] if params[:parameters]
 
-
     winner = Player.with_name(winner_name)
     render json: {message: "winner can not be found"}, status: :bad_request unless winner; return if performed?
     winner_id = winner.id
