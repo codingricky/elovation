@@ -5,9 +5,9 @@ class Api::ResultsController < Api::ApiBaseController
 
   def create
     winner_name = params[:winner]
-    winner_name ||= params[:parameters][:winner] if params[:parameters]
+    winner_name ||= result_params[:winner] if result_params
     loser_name = params[:loser]
-    loser_name ||= params[:parameters][:loser] if params[:parameters]
+    loser_name ||= result_params[:loser] if result_params
 
     winner = Player.with_name(winner_name)
     logger.info "winner=#{winner}"
@@ -29,6 +29,12 @@ class Api::ResultsController < Api::ApiBaseController
   def active_players
     game = Game.first
     render json: game.all_ratings_with_active_players.collect
+  end
+
+  private
+
+  def result_params
+    params[:result][:parameters] if params[:result] && params[:result][:parameters]
   end
 
 end
