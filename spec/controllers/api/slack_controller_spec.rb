@@ -62,7 +62,7 @@ describe Api::SlackController do
         post :slack, params: {token: token, text: "show"}
 
         expect(response).to have_http_status(:success)
-        expect_json(text: [winner.as_string, loser.as_string].join("\n"))
+        expect_json(text: ['1.' + winner.as_string, '2.' + loser.as_string].join("\n"))
       end
     end
 

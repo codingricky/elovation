@@ -35,7 +35,7 @@ class Api::SlackController < ActionController::API
   end
 
   def show(text)
-    players = Game.default.all_ratings_with_active_players.collect{|r| r.player.as_string}.join("\n")
+    players = Game.default.all_ratings_with_active_players.enum_for(:each_with_index).collect{|r, index| "#{index + 1}." + r.player.as_string}.join("\n")
     render json: {text: players, response_type: "in_channel"}
   end
 
