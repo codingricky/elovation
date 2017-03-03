@@ -10,7 +10,7 @@ class Api::SlackController < ActionController::API
 
   def slack
     if Rails.env != "development"
-    render json: "invalid token", status: :unauthorized unless ENV["SLACK_TOKEN"] == params[:token]; return if performed?
+     render json: "invalid token", status: :unauthorized unless ENV["SLACK_TOKEN"] == params[:token]; return if performed?
     end
 
     command = COMMANDS.keys.find{|c| c =~ params[:text]}
@@ -23,7 +23,6 @@ class Api::SlackController < ActionController::API
     help_text = <<-FOO
     usage: /tt [command]
           *show*                                         shows the leaderboard
-          *show_leaderboard*                             shows the leaderboard image
           *if [winner] defeats [loser] n [times]*        hypothesise a result
           *[winner] defeats [loser] n [times]*           creates a result
           *[winner] h2h [loser]*                         shows the h2h record between two players
@@ -37,11 +36,6 @@ class Api::SlackController < ActionController::API
   def show(text)
     players = Game.default.all_ratings_with_active_players.enum_for(:each_with_index).collect{|r, index| "#{index + 1}." + r.player.as_string}.join("\n")
     render json: {text: players, response_type: "in_channel"}
-  end
-
-  def show_leaderboard(text)
-    SlackService.show_leaderboard(url_for(controller: '/leaderboard', action: 'show_image'))
-    render json: {text: ""}
   end
 
   def player_defeats_another_player(text)

@@ -85,7 +85,6 @@ describe Api::SlackController do
         expect(result.losers.first).to eql(loser)
 
         expect_json(text: @slack_message.message)
-
       end
 
       it 'creates multiple results' do

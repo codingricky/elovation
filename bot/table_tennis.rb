@@ -1,7 +1,9 @@
 class TableTennis < SlackRubyBot::Commands::Base
+  VICTORY_WORDS = %w(defeats beats kills destroys b defeated beat)
+
+
   HELP = <<-FOO
                *show*                                         shows the leaderboard
-          *if [winner] defeats [loser] n [times]*        hypothesise a result
           *[winner] defeats [loser] n [times]*           creates a result
           *[winner] h2h [loser]*                         shows the h2h record between two players
           *lookup [player]*                              looks up a player
@@ -31,17 +33,13 @@ class TableTennis < SlackRubyBot::Commands::Base
     end
   end
 
-  match /^(?i)if [a-zA-Z]+ (?i)(defeats|beats|kills|destroys|b|defeated|beat) [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|
-    logger.info 'matched if create a result'
-    message = if_player_defeats_another_player(match.to_s)
+
+  match /^([a-zA-Z ]+) (defeats|beats|kills|destroys|b|defeated|beat) ([a-zA-Z ]+)([0-9] time(s)?)?/ do |client, data, match|
+    logger.info "matched create a result #{match.to_s}"
+
+    message = create_result(match)
     client.say(channel: data.channel, text: message)
   end
-
-   match /^[a-zA-Z]+ (?i)(defeats|beats|kills|destroys|b|defeated|beat) [a-zA-Z]+( [0-9] time(s)?)?/ do |client, data, match|
-     logger.info "matched create a result #{match.to_s}"
-     message = create_result(match.to_s)
-    client.say(channel: data.channel, text: message)
-   end
 
   match /^(?i)lookup [a-zA-Z]+/ do |client, data, match|
     text = match.to_s
@@ -57,7 +55,7 @@ class TableTennis < SlackRubyBot::Commands::Base
   match /^[a-zA-Z]+ (?i)h2h [a-zA-Z]+/ do |client, data, match|
     logger.info 'matched h2h'
 
-    split = match.to_s.split(" ")
+    split = match.to_s.split(' ')
     first_player_name = split.first
     second_player_name = split[2]
 
@@ -72,36 +70,37 @@ class TableTennis < SlackRubyBot::Commands::Base
     client.say(channel: data.channel, text: message)
   end
 
-  def self.if_player_defeats_another_player(text)
-    begin
-      ActiveRecord::Base.transaction do
-        @slack_message = create_result(text.sub("if ", ""))
-        raise ActiveRecord::RecordNotFound
-      end
-    rescue
-    end
+  def self.create_result(match)
+    logger.info "creating result with #{match}"
 
-    return ">>> *IF* #{@slack_message}"
-  end
+    winner_name = match[1]
+    loser_name = match[3]
+    multiplier = match[4]
 
-  def self.create_result(text)
-    logger.info "creating result with #{text}"
-
-    split_text = text.split
-    winner = Player.with_name(split_text[0])
+    winner = Player.with_name(winner_name.strip)
     return "winner can not be found" unless winner
 
     winner_id = winner.id
-
-    loser = Player.with_name(split_text[2])
+    loser = Player.with_name(loser_name.strip)
     return "loser can not be found" unless loser
     loser_id = loser.id
 
-    times = split_text.count >= 3 ? split_text[3].to_i : 1
+    times = multiplier.to_i
     times = times <= 0 ? 1 : times
     times = times > 5 ? 5 : times
 
     ResultService.create_times_without_slack(winner_id, loser_id, times).message
+  end
+
+
+  def self.parse_times(text)
+    matched_text = text.match(/[0-9]+ time/)
+    return 1 unless matched_text
+
+    times = matched_text.split(' ').to_i
+    times = times <= 0 ? 1 : times
+    times = times > 5 ? 5 : times
+    return times
   end
 
 

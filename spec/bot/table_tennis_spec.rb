@@ -81,6 +81,20 @@ describe 'Table Tennis' do
       expect(result.losers.first).to eql(loser)
     end
 
+    it 'creates one result with a long name' do
+      name = 'John Smith'
+      player = FactoryGirl.create(:player, name: name)
+      message = "#{name} defeats #{loser_name}"
+
+      expect(message: message, user: 'user').to respond_with_slack_message(@slack_message.message)
+
+      expect(Result.all.count).to eql(1)
+
+      result = Result.first
+      expect(result.winners.first).to eql(player)
+      expect(result.losers.first).to eql(loser)
+    end
+
     it 'creates multiple results' do
       expect(message: defeats_txt_multiple, user: 'user').to respond_with_slack_message(@slack_message.message)
       expect(Result.all.count).to eql(5)
@@ -96,9 +110,5 @@ describe 'Table Tennis' do
       expect(Result.all.count).to eql(0)
     end
 
-    it 'hypothesise result' do
-      expect(message: "if #{defeats_txt_multiple}", user: 'user').to respond_with_slack_message(">>> *IF* #{@slack_message.message}")
-      expect(Result.all.count).to eql(0)
-    end
   end
 end
