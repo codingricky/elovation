@@ -3,6 +3,7 @@ require "spec_helper"
 describe PlayersController do
 
   before(:each) do
+    FactoryGirl.create(:game)
     sign_in_user
   end
 
