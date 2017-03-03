@@ -18,7 +18,7 @@ class TableTennis < SlackRubyBot::Commands::Base
 
   match /^(?i)show/ do |client, data, match|
     logger.info 'matched show'
-    players = Game.default.all_ratings_with_active_players.collect{|r| r.player.as_string}.join("\n")
+    players = Game.default.all_ratings_with_active_players.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
     client.say(channel: data.channel, text: players)
   end
 

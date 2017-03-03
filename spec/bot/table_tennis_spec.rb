@@ -29,7 +29,7 @@ describe 'Table Tennis' do
     1.upto(20) do
       create_win
     end
-    leaderboard = [winner.as_string, loser.as_string].join("\n")
+    leaderboard = ["1. #{winner.as_string}", "2. #{loser.as_string}"].join("\n")
     expect(message: "show", user: 'user').to respond_with_slack_message(leaderboard)
     expect(message: "SHoW", user: 'user').to respond_with_slack_message(leaderboard)
   end
