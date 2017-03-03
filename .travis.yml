@@ -10,3 +10,14 @@ deploy:
     on:
      repo: codingricky/elovation
      branch: table-tennis
+  - provider: elasticbeanstalk
+    access_key_id: AKIAJJDQBTHUQYJPLG3Q
+    secret_access_key:
+      secure: KzZ7xnRs5vSItXuEmVAQD2ib2RtoP9bhTh+aRp8QJNqQdqShP3Ovy0a4NX4foQgKA0tOenExJOTBIaXjZSdcu0aXykaIkl+AEcnbwwIKAentKyOEwEUx7usBOK4/aPHchoaJOci27AmZRRssZlCgUzTUkSPqOT7+YPLbQbY9ovz/Q6mJMafY0i7BXWRIw3ojWIh55MNz/E67fMpbItGJPxbnvRcrDZ3kNbGEs7teCnjEQIr5QljF0lNTp+wI3rz2CUnN6RBpwIxeGI4qNj+fHRiojb8na5worz1krG6ibp22Ae2bInDH3IhQFdC3HauJ6e+KuhJnzipz8PMGAJ8nzRkO/Wn5sgzukLUcPPD1QfPHP6OCPpK4o+cj0POGrhMDJqOTiZ/SuFwKvCrNd02x3AVPwpVOqfkstj3KhUO6EAjY3B7ngs38LdOOabe9oU/ZOFW4gPCNgcu51GiUQWZwZoCj1IoXrpdL4IRsAOvqYvwkRuC3vQAZGYLVu2K9MjwbTtbFOBlZ5ky0G6AharFzp9Tod2pwo37vXmxBY0zy+xQoo95sE+hcp8Ci6kzdumKgetdETXHgukcsFn6mTzG1QQlVckhoiNufEh1oyIjRe1/0JxTiPOKYZYuKTgjvL9q+knAL0cMwTPgvTXx4+guJueUAJzJEs43ZcUxh07Ntaa0=
+    region: ap-southeast-2
+    app: dius-table-tennis
+    env: dius-tt-prod
+    bucket_name: rickys-builds
+    on:
+      repo: codingricky/elovation
+      branch: production
