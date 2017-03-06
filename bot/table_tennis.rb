@@ -55,9 +55,8 @@ class TableTennis < SlackRubyBot::Commands::Base
   match /^[a-zA-Z]+ (?i)h2h [a-zA-Z]+/ do |client, data, match|
     logger.info 'matched h2h'
 
-    split = match.to_s.split(' ')
-    first_player_name = split.first
-    second_player_name = split[2]
+    first_player_name = match[0]
+    second_player_name = match[2]
 
     first_player = Player.with_name(first_player_name)
     second_player = Player.with_name(second_player_name)
@@ -66,7 +65,7 @@ class TableTennis < SlackRubyBot::Commands::Base
     losses = first_player.losses(Game.default, second_player)
     total = wins + losses
     ratio = ActionController::Base.helpers.number_to_percentage(wins.to_f/total * 100, precision: 0)
-    message = "*#{first_player.name}* H2H *#{second_player.name}* #{wins} wins #{losses} losses #{ratio}"
+    message = "*#{first_player.name}* h2h *#{second_player.name}* #{wins} wins #{losses} losses #{ratio}"
     client.say(channel: data.channel, text: message)
   end
 
