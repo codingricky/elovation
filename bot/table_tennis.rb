@@ -3,7 +3,8 @@ class TableTennis < SlackRubyBot::Commands::Base
 
 
   HELP = <<-FOO
-               *show*                                         shows the leaderboard
+               *show*                                    shows the leaderboard
+               *reverse show*                            shows the leaderboard in reverse
           *[winner] defeats [loser] n [times]*           creates a result
           *[winner] h2h [loser]*                         shows the h2h record between two players
           *lookup [player]*                              looks up a player
@@ -18,8 +19,19 @@ class TableTennis < SlackRubyBot::Commands::Base
 
   match /^(?i)show/ do |client, data, match|
     logger.info 'matched show'
-    players = Game.default.all_ratings_with_active_players.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
+    players = list_of_players.collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
     client.say(channel: data.channel, text: players)
+  end
+
+
+  match /^(?i)reverse show/ do |client, data, match|
+    logger.info 'matched reverse show'
+    players = list_of_players.reverse.collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
+    client.say(channel: data.channel, text: players)
+  end
+
+  def list_of_players
+    Game.default.all_ratings_with_active_players.enum_for(:each_with_index)
   end
 
 

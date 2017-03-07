@@ -23,6 +23,7 @@ class Api::SlackController < ActionController::API
     help_text = <<-FOO
     usage: /tt [command]
           *show*                                         shows the leaderboard
+          *reverse show*                                 shows the leaderboard in reverse
           *if [winner] defeats [loser] n [times]*        hypothesise a result
           *[winner] defeats [loser] n [times]*           creates a result
           *[winner] h2h [loser]*                         shows the h2h record between two players
@@ -34,8 +35,12 @@ class Api::SlackController < ActionController::API
   end
 
   def show(text)
-    players = Game.default.all_ratings_with_active_players.enum_for(:each_with_index).collect{|r, index| "#{index + 1}." + r.player.as_string}.join("\n")
+    players = list_of_players.join("\n")
     render json: {text: players, response_type: "in_channel"}
+  end
+
+  def list_of_players
+    Game.default.all_ratings_with_active_players.enum_for(:each_with_index).collect{|r, index| "#{index + 1}." + r.player.as_string}
   end
 
   def player_defeats_another_player(text)
