@@ -30,10 +30,9 @@ class TableTennis < SlackRubyBot::Commands::Base
     client.say(channel: data.channel, text: players)
   end
 
-  def list_of_players
+  def self.list_of_players
     Game.default.all_ratings_with_active_players.enum_for(:each_with_index)
   end
-
 
   match /^(?i)what('s| is) the best day to play [a-zA-Z]+/ do |client, data, match|
     logger.info 'best day'
