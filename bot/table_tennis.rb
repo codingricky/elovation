@@ -26,12 +26,12 @@ class TableTennis < SlackRubyBot::Commands::Base
 
   match /^(?i)reverse show/ do |client, data, match|
     logger.info 'matched reverse show'
-    reverse_show(client)
+    reverse_show(client, data)
   end
 
   match /^(?i)woes/ do |client, data, match|
     logger.info 'matched woes'
-    reverse_show(client)
+    reverse_show(client, data)
   end
 
   match /^(?i)what('s| is) the best day to play [a-zA-Z]+/ do |client, data, match|
@@ -120,7 +120,7 @@ class TableTennis < SlackRubyBot::Commands::Base
     client.say(channel: data.channel, text: user)
   end
 
-  def self.reverse_show(client)
+  def self.reverse_show(client, data)
     players = Game.default.all_ratings_with_active_players.reverse.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
     client.say(channel: data.channel, text: players)
   end
