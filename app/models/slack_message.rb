@@ -22,7 +22,7 @@ class SlackMessage
   private
 
   def taco_message
-    "Here's a :taco: for winning *#{winner_name}*" + taco_multipler_message
+    "Here's a :taco: for winning #{winner_name}" + taco_multipler_message
   end
 
   def taco_multipler_message
