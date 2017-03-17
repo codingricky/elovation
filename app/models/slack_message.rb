@@ -16,13 +16,13 @@ class SlackMessage
 
 
   def message
-    ":table_tennis_paddle_and_ball: #{winner_message} defeated #{loser_message} #{multiplier_message} #{Faker::SlackEmoji.food_and_drink}" + "\n#{taco_message}"
+    ":table_tennis_paddle_and_ball: #{winner_message} defeated #{loser_message} #{multiplier_message}" + "\n#{taco_message}"
   end
 
   private
 
   def taco_message
-    "Here's a :taco: for winning #{winner_name}" + taco_multipler_message
+    "Here's a #{Faker::SlackEmoji.food_and_drink} for winning #{winner_name}" + taco_multipler_message
   end
 
   def taco_multipler_message
