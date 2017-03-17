@@ -17,12 +17,17 @@ class TableTennis < SlackRubyBot::Commands::Base
     client.say(channel: data.channel, text: HELP)
   end
 
+  match /^(?i)show full/ do |client, data, match|
+    logger.info 'matched show full'
+    players = Game.default.all_ratings.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
+    client.say(channel: data.channel, text: players)
+  end
+
   match /^(?i)show/ do |client, data, match|
     logger.info 'matched show'
     players = Game.default.all_ratings_with_active_players.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
     client.say(channel: data.channel, text: players)
   end
-
 
   match /^(?i)reverse show/ do |client, data, match|
     logger.info 'matched reverse show'
@@ -44,7 +49,6 @@ class TableTennis < SlackRubyBot::Commands::Base
     end
   end
 
-
   match /^([a-zA-Z ]+) (defeats|beats|kills|destroys|b|defeated|beat) ([a-zA-Z ]+)([0-9] time(s)?)?/ do |client, data, match|
     logger.info "matched create a result #{match.to_s}"
 
@@ -63,22 +67,29 @@ class TableTennis < SlackRubyBot::Commands::Base
     end
   end
 
-  match /^[a-zA-Z]+ (?i)h2h [a-zA-Z]+/ do |client, data, match|
+  match /^([a-zA-Z ]+) (h2h|H2H) ([a-zA-Z ]+)/ do |client, data, match|
     logger.info 'matched h2h'
-
-    split = match.to_s.split(' ')
-    first_player_name = split.first
-    second_player_name = split[2]
+    first_player_name = match[1]
+    second_player_name = match[3]
 
     first_player = Player.with_name(first_player_name)
-    second_player = Player.with_name(second_player_name)
+    if first_player.nil?
+      client.say(channel: data.channel, text: "#{first_player_name} not found")
+    end
 
-    wins = first_player.wins(Game.default, second_player)
-    losses = first_player.losses(Game.default, second_player)
-    total = wins + losses
-    ratio = ActionController::Base.helpers.number_to_percentage(wins.to_f/total * 100, precision: 0)
-    message = "*#{first_player.name}* h2h *#{second_player.name}* #{wins} wins #{losses} losses #{ratio}"
-    client.say(channel: data.channel, text: message)
+    second_player = Player.with_name(second_player_name)
+    if second_player.nil?
+      client.say(channel: data.channel, text: "#{second_player_name} ot found")
+    end
+
+    if first_player && second_player
+      wins = first_player.wins(Game.default, second_player)
+      losses = first_player.losses(Game.default, second_player)
+      total = wins + losses
+      ratio = ActionController::Base.helpers.number_to_percentage(wins.to_f/total * 100, precision: 0)
+      message = "*#{first_player.name}* h2h *#{second_player.name}* #{wins} wins #{losses} losses #{ratio}"
+      client.say(channel: data.channel, text: message)
+    end
   end
 
   def self.create_result(match)
@@ -103,7 +114,6 @@ class TableTennis < SlackRubyBot::Commands::Base
     ResultService.create_times_without_slack(winner_id, loser_id, times).message
   end
 
-
   def self.parse_times(text)
     matched_text = text.match(/[0-9]+ time/)
     return 1 unless matched_text
@@ -113,7 +123,6 @@ class TableTennis < SlackRubyBot::Commands::Base
     times = times > 5 ? 5 : times
     return times
   end
-
 
   command 'lookup' do |client, data, match|
     user = client.lookup(data.user)

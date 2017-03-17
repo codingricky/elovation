@@ -14,15 +14,15 @@ describe 'Table Tennis' do
   let!(:game) { FactoryGirl.create(:game) }
 
   let!(:winner) { FactoryGirl.create(:player, name: "John") }
-  let!(:winner_rating) {FactoryGirl.create(:rating, player: winner, game: game)}
+  let!(:winner_rating) { FactoryGirl.create(:rating, player: winner, game: game) }
   let!(:winner_name) { winner.name.split[0] }
 
   let!(:loser) { FactoryGirl.create(:player, name: "Garry") }
-  let!(:loser_rating) {FactoryGirl.create(:rating, player: loser, game: game)}
+  let!(:loser_rating) { FactoryGirl.create(:rating, player: loser, game: game) }
   let!(:loser_name) { loser.name.split[0] }
 
-  let!(:defeats_txt) {"#{winner_name} defeats #{loser_name}"}
-  let!(:defeats_txt_multiple) {"#{defeats_txt} 5 times"}
+  let!(:defeats_txt) { "#{winner_name} defeats #{loser_name}" }
+  let!(:defeats_txt_multiple) { "#{defeats_txt} 5 times" }
 
   it "show the leaderboard" do
     # 20 games to make players active
@@ -32,6 +32,12 @@ describe 'Table Tennis' do
     leaderboard = ["1. #{winner.as_string}", "2. #{loser.as_string}"].join("\n")
     expect(message: "show", user: 'user').to respond_with_slack_message(leaderboard)
     expect(message: "SHoW", user: 'user').to respond_with_slack_message(leaderboard)
+  end
+
+  it 'show the full leaderboard with inactive players too' do
+    create_win
+    leaderboard = ["1. #{winner.as_string}", "2. #{loser.as_string}"].join("\n")
+    expect(message: "show full", user: 'user').to respond_with_slack_message(leaderboard)
   end
 
   it 'responds to help' do
@@ -72,6 +78,19 @@ describe 'Table Tennis' do
       allow(SlackService).to receive(:notify)
     end
 
+    it 'h2h' do
+      create_win
+      expect(message: "#{winner_name} h2h #{loser_name}", user: 'user').to respond_with_slack_message("*#{winner_name}* h2h *#{loser_name}* 1 wins 0 losses 100%")
+    end
+
+    it 'h2h with a long name' do
+      winner.name = 'John Smith'
+      winner.save!
+      create_win
+
+      expect(message: "#{winner.name} h2h #{loser_name}", user: 'user').to respond_with_slack_message("*#{winner.name}* h2h *#{loser_name}* 1 wins 0 losses 100%")
+    end
+
     it 'creates one result' do
       expect(message: defeats_txt, user: 'user').to respond_with_slack_message(@slack_message.message)
 
@@ -80,6 +99,7 @@ describe 'Table Tennis' do
       expect(result.winners.first).to eql(winner)
       expect(result.losers.first).to eql(loser)
     end
+
 
     it 'creates one result with a long name' do
       name = 'John Smith'

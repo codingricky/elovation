@@ -16,10 +16,18 @@ class SlackMessage
 
 
   def message
-    ":table_tennis_paddle_and_ball: #{winner_message} defeated #{loser_message} #{multiplier_message} #{Faker::SlackEmoji.food_and_drink}"
+    ":table_tennis_paddle_and_ball: #{winner_message} defeated #{loser_message} #{multiplier_message} #{Faker::SlackEmoji.food_and_drink}" + "\n#{taco_message}"
   end
 
   private
+
+  def taco_message
+    "Here's a :taco: for winning *#{winner_name} " + taco_multipler_message
+  end
+
+  def taco_multipler_message
+    @multiplier > 1 ? "Sorry you only get 1..." : ""
+  end
 
   def winner_message
     "*#{winner_name}* (~#{@winner_rating_before}~ - #{@winner_rating_after})"
