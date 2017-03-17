@@ -4,6 +4,7 @@ class TableTennis < SlackRubyBot::Commands::Base
 
   HELP = <<-FOO
                *show*                                    shows the leaderboard
+               *show full*                                    shows the full leaderboard
                *reverse show*                            shows the leaderboard in reverse
           *[winner] defeats [loser] n [times]*           creates a result
           *[winner] h2h [loser]*                         shows the h2h record between two players
