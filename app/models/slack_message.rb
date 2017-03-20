@@ -1,3 +1,5 @@
+require 'chuck'
+
 class SlackMessage
 
   def initialize(winner_id, loser_id, game, multiplier)
@@ -22,7 +24,7 @@ class SlackMessage
   private
 
   def taco_message
-    "Here's a #{Faker::SlackEmoji.food_and_drink} for winning #{winner_name}"
+    "Here's a #{Faker::SlackEmoji.food_and_drink} for winning #{winner_name}. #{Chuck.say}"
   end
 
   def winner_message

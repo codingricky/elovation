@@ -16,6 +16,7 @@ gem 'paperclip'
 gem 'aws-sdk', '~> 2.3'
 
 gem 'rails', '5.0.0.1'
+gem 'chucksay'
 
 gem 'sass-rails'
 gem 'jquery-rails'
