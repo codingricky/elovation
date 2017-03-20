@@ -22,11 +22,7 @@ class SlackMessage
   private
 
   def taco_message
-    "Here's a #{Faker::SlackEmoji.food_and_drink} for winning #{winner_name}" + taco_multipler_message
-  end
-
-  def taco_multipler_message
-    @multiplier > 1 ? "Sorry you only get 1..." : ""
+    "Here's a #{Faker::SlackEmoji.food_and_drink} for winning #{winner_name}"
   end
 
   def winner_message
