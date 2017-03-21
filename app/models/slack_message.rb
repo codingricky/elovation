@@ -1,4 +1,3 @@
-require 'chuck'
 
 class SlackMessage
 
@@ -24,7 +23,7 @@ class SlackMessage
   private
 
   def taco_message
-    "Here's a #{Faker::SlackEmoji.food_and_drink} for winning #{winner_name}. #{Chuck.say}"
+    "Here's a #{Faker::SlackEmoji.food_and_drink} for winning #{winner_name}."
   end
 
   def winner_message
