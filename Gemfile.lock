@@ -88,7 +88,6 @@ GEM
     celluloid-supervision (0.20.6)
       timers (>= 4.1.1)
     chartkick (2.0.2)
-    chucksay (0.0.3)
     climate_control (0.0.3)
       activesupport (>= 3.0)
     cocaine (0.5.8)
@@ -360,7 +359,6 @@ DEPENDENCIES
   binding_of_caller
   celluloid-io
   chartkick
-  chucksay
   coffee-rails
   devise
   dynamic_form
