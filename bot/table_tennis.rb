@@ -80,7 +80,7 @@ class TableTennis < SlackRubyBot::Commands::Base
 
     second_player = Player.with_name(second_player_name)
     if second_player.nil?
-      client.say(channel: data.channel, text: "#{second_player_name} ot found")
+      client.say(channel: data.channel, text: "#{second_player_name} not found")
     end
 
     if first_player && second_player
