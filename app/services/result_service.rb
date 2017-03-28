@@ -1,5 +1,9 @@
 class ResultService
 
+  def self.notify(message)
+    SlackService.notify(message, nil)
+  end
+
   def self.create_times_without_slack(winner_id, loser_id, times)
     create_times(winner_id, loser_id, times, false)
   end
@@ -19,6 +23,7 @@ class ResultService
 
     slack_message = SlackMessage.new(winner_id, loser_id, game, times)
     result = nil
+    times = times > 5 ? 5 : times
     1.upto(times) do
       result = ResultService.create(game, params)
     end
