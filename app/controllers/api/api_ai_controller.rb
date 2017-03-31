@@ -22,7 +22,5 @@ class Api::ApiAiController < Api::ApiBaseController
       slack_message = ResultService.create_times_with_slack(winner_id, loser_id, times).message
       render json: slack_message
     end
-
-
   end
 end

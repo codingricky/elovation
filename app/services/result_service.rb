@@ -30,6 +30,14 @@ class ResultService
     slack_message.save_after_rating
     SlackService.notify(slack_message, nil) if notify_slack
 
+    result[:winner_name] = slack_message.winner_name
+    result[:winner_rating_before] = slack_message.winner_rating_before
+    result[:winner_rating_after] = slack_message.winner_rating_after
+
+    result[:loser_name] = slack_message.loser_name
+    result[:loser_rating_before] = slack_message.loser_rating_before
+    result[:loser_rating_after] = slack_message.loser_rating_after
+
     result[:message] = slack_message.message
     return result
   end

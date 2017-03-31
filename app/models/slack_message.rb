@@ -1,6 +1,8 @@
 
 class SlackMessage
 
+  attr_accessor :winner_rating_after, :winner_rating_before, :loser_rating_before, :loser_rating_after
+
   def initialize(winner_id, loser_id, game, multiplier)
     @winner_id = winner_id
     @loser_id = loser_id
@@ -18,6 +20,14 @@ class SlackMessage
 
   def message
     ":table_tennis_paddle_and_ball: #{winner_message} defeated #{loser_message} #{multiplier_message}" + "\n#{taco_message}"
+  end
+
+  def winner_name
+    Player.find(@winner_id).name
+  end
+
+  def loser_name
+    Player.find(@loser_id).name
   end
 
   private
@@ -38,11 +48,4 @@ class SlackMessage
     @multiplier > 1 ? "#{@multiplier} times" : ""
   end
 
-  def winner_name
-    Player.find(@winner_id).name
-  end
-
-  def loser_name
-    Player.find(@loser_id).name
-  end
 end
