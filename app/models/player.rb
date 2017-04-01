@@ -212,7 +212,7 @@ class Player < ActiveRecord::Base
   end
 
   def ranking
-    Game.leaderboard.index(rating)
+    Game.leaderboard.index(rating) + 1
   end
 
   def points
