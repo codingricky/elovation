@@ -94,4 +94,20 @@ class Game < ActiveRecord::Base
       rater.update_ratings self, result.teams.order("rank ASC")
     end
   end
+
+  def self.full_leaderboard
+    self.default.all_ratings
+  end
+
+  def self.full_leaderboard_as_string
+    self.full_leaderboard.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
+  end
+
+  def self.leaderboard
+    self.default.all_ratings_with_active_players
+  end
+
+  def self.leaderboard_as_string
+    self.leaderboard.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
+  end
 end

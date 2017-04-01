@@ -20,13 +20,13 @@ class TableTennis < SlackRubyBot::Commands::Base
 
   match /^(?i)show full/ do |client, data, match|
     logger.info 'matched show full'
-    players = Game.default.all_ratings.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
+    players = Game.full_leaderboard_as_string
     client.say(channel: data.channel, text: players)
   end
 
   match /^(?i)show/ do |client, data, match|
     logger.info 'matched show'
-    players = Game.default.all_ratings_with_active_players.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
+    players = Game.leaderboard_as_string
     client.say(channel: data.channel, text: players)
   end
 
@@ -131,7 +131,7 @@ class TableTennis < SlackRubyBot::Commands::Base
   end
 
   def self.reverse_show(client, data)
-    players = Game.default.all_ratings_with_active_players.reverse.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
+    players = Game.leaderboard.reverse.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
     client.say(channel: data.channel, text: players)
   end
 
