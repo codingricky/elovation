@@ -23,7 +23,5 @@ class Api::ApiAiController < Api::ApiBaseController
       result = {speech: slack_message, displayText: slack_message}
       render json: result
     end
-
-
   end
 end

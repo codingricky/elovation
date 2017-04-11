@@ -42,6 +42,12 @@ describe Api::ResultsController do
 
     context 'creating results' do
 
+      it 'should send a message' do
+        post :create, params: {winner: winner.name, loser: loser.name}
+
+        expect_json(message: "#{winner.name} has 788 points now. #{loser.name} has -91 points now.")
+      end
+
       it 'should be a success' do
         post :create, params: {winner: winner.name, loser: loser.name, times: 1}
 

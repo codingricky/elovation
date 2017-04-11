@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe ResultsController do
   before(:each) do
-    slack_message = double("slack_message")
+    slack_message = double('slack_message').as_null_object
     allow(slack_message).to receive(:save_after_rating)
     allow(slack_message).to receive(:message)
     allow(SlackMessage).to receive(:new).and_return(slack_message)

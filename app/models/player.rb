@@ -210,4 +210,12 @@ class Player < ActiveRecord::Base
   def rating
     Rating.find_by_player_id(id)
   end
+
+  def ranking
+    Game.leaderboard.index(rating) + 1
+  end
+
+  def points
+    rating.value
+  end
 end
