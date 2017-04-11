@@ -7,10 +7,24 @@ class Api::ApiAiController < Api::ApiBaseController
     times ||= 1
 
     winner = Player.with_name(winner_name)
+    unless winner
+      message = "#{winner_name} not found."
+      json_result = {speech: message, displayText: message, data: {google: {expect_user_response: true}}}
+      render json: json_result
+      return
+    end
+
     logger.info "winner=#{winner}"
     winner_id = winner.id
 
     loser = Player.with_name(loser_name)
+    unless loser
+      message = "#{loser_name} not found."
+      json_result = {speech: message, displayText: message, data: {google: {expect_user_response: true}}}
+      render json: json_result
+      return
+    end
+
     logger.info "loser=#{loser}"
     loser_id = loser.id
 
