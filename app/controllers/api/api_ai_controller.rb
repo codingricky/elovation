@@ -8,7 +8,7 @@ class Api::ApiAiController < Api::ApiBaseController
 
     winner = Player.with_name(winner_name)
     unless winner
-      message = "#{winner_name} not found."
+      message = "#{winner_name} not found. Who won the match?"
       json_result = {speech: message, displayText: message, data: {google: {expect_user_response: true}}}
       render json: json_result
       return
@@ -19,7 +19,7 @@ class Api::ApiAiController < Api::ApiBaseController
 
     loser = Player.with_name(loser_name)
     unless loser
-      message = "#{loser_name} not found."
+      message = "#{loser_name} not found. Who lost the match?"
       json_result = {speech: message, displayText: message, data: {google: {expect_user_response: true}}}
       render json: json_result
       return
