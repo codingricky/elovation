@@ -1,3 +1,5 @@
+require 'csv'
+
 class Result < ActiveRecord::Base
   has_many :teams
   belongs_to :game, touch: true
@@ -80,15 +82,20 @@ class Result < ActiveRecord::Base
     created_at.strftime("%A")
   end
 
+  def to_hash
+    {winner: result.winner.name, loser: result.loser.name, day: result.day}
+  end
+
   def self.to_csv
     header = %w{winner loser day}
     CSV.generate(headers: true) do |csv|
       csv << header
+      csv << ['Ricky', 'John', 'Tuesday']
+      csv << ['Ricky', 'John', 'Tuesday']
 
       all.each do |result|
-        csv << {winner: result.winner, loser: result.loser, day: result.day}
+        csv << [result.winner.name, result.loser.name, result.d]
       end
-
     end
   end
 end
