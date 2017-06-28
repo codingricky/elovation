@@ -16,6 +16,8 @@ Elovation::Application.routes.draw do
   get '/leaderboard' => 'leaderboard#show', as: :leaderboard
   get '/leaderboard_image' => 'leaderboard#show_image', as: :leaderboard_show_image
 
+  get '/results' => 'results_export#export', as: :export
+
   namespace :api do
     post '/api_ai/' => 'api_ai#create', as: :apiai_create
 

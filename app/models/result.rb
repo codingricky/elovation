@@ -79,4 +79,16 @@ class Result < ActiveRecord::Base
   def day
     created_at.strftime("%A")
   end
+
+  def self.to_csv
+    header = %w{winner loser day}
+    CSV.generate(headers: true) do |csv|
+      csv << header
+
+      all.each do |result|
+        csv << {winner: result.winner, loser: result.loser, day: result.day}
+      end
+
+    end
+  end
 end

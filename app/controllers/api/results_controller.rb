@@ -1,5 +1,6 @@
-class Api::ResultsController < Api::ApiBaseController
+require 'csv'
 
+class Api::ResultsController < Api::ApiBaseController
 
   before_action :authenticate, only: [:create, :active_players]
 
