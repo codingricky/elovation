@@ -90,11 +90,8 @@ class Result < ActiveRecord::Base
     header = %w{winner loser day}
     CSV.generate(headers: true) do |csv|
       csv << header
-      csv << ['Ricky', 'John', 'Tuesday']
-      csv << ['Ricky', 'John', 'Tuesday']
-
       all.each do |result|
-        csv << [result.winner.name, result.loser.name, result.d]
+        csv << [result.winner.name, result.loser.name, result.day]
       end
     end
   end
