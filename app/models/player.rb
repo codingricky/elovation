@@ -212,7 +212,11 @@ class Player < ActiveRecord::Base
   end
 
   def ranking
-    Game.leaderboard.index(rating) + 1
+    if Game.leaderboard
+      Game.leaderboard.index(rating) + 1
+    else
+      NaN
+    end
   end
 
   def points
