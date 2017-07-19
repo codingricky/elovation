@@ -215,7 +215,7 @@ class Player < ActiveRecord::Base
     if Game.leaderboard
       Game.leaderboard.index(rating) + 1
     else
-      NaN
+      "N/A"
     end
   end
 
