@@ -62,7 +62,7 @@ class Game < ActiveRecord::Base
     {
       name: name,
       ratings: top_ratings.map(&:as_json),
-      results: recent_results.map(&:as_json)
+      results: recent_results.map(&:as_json),
     }
   end
 

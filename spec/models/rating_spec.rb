@@ -29,7 +29,8 @@ describe Rating do
           wins: 0,
           losses: 0,
           win_loss_ratio: 0,
-          streak: 0
+          streak: 0,
+          color: 'green'
         },
         value: 1000
       })

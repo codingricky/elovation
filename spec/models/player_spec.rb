@@ -12,7 +12,8 @@ describe Player do
         losses: 0,
         wins: 0,
         win_loss_ratio: 0,
-        streak: 0
+        streak: 0,
+        color: 'green'
       })
     end
   end

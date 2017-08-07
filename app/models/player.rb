@@ -50,7 +50,8 @@ class Player < ActiveRecord::Base
       wins: current_wins,
       losses: current_losses,
       win_loss_ratio:  current_win_loss_ratio,
-      streak: current_streak
+      streak: current_streak,
+      color: color
     }
   end
 
