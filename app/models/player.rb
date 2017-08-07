@@ -185,7 +185,7 @@ class Player < ActiveRecord::Base
   def create_default_rating
     rating = Rating.new
     rating.player = self
-    rating.game = Game.first
+    rating.game = Game.default
     rating.pro = false
     rating.value = Rater::EloRater::DefaultValue
     rating.save!

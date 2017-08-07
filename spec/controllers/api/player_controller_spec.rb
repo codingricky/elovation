@@ -19,10 +19,12 @@ describe Api::PlayerController do
       allow(Player).to receive(:with_name).and_return(winner)
       allow(winner).to receive(:ranking).and_return(1)
       allow(winner).to receive(:points).and_return(1000)
+      allow(winner).to receive(:color).and_return('green')
+
 
       get :lookup, params: {player: winner.name}
 
-      expect_json(points: 1000, ranking: 1)
+      expect_json(points: 1000, ranking: 1, color: 'green ')
     end
 
     it 'return an error if not found' do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160910033911) do
+ActiveRecord::Schema.define(version: 20170807013151) do
 
   create_table "games", force: :cascade do |t|
     t.string   "name",                           null: false
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 20160910033911) do
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
+    t.string   "color"
   end
 
   create_table "players_teams", force: :cascade do |t|
