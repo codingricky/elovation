@@ -8,6 +8,13 @@
           <%= link_to rating.player.name, player_game_path(rating.player, game) %>
         </div>
       </td>
+      <td>
+        <div>
+          <svg height="20" width="20">
+            <circle cx="10" cy="10" r="5" stroke="black" stroke-width="1" fill="<%= rating.player.color%>" />
+          </svg>
+        </div>
+      </td>
 
       <td><%= rating.value %></td>
       <td><%= rating.player.total_wins(rating.game) %></td>
