@@ -24,7 +24,7 @@ describe Api::PlayerController do
 
       get :lookup, params: {player: winner.name}
 
-      expect_json(points: 1000, ranking: 1, color: 'green   ')
+      expect_json(points: 1000, ranking: 1, color: 'green')
     end
 
     it 'return an error if not found' do
