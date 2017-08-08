@@ -11,6 +11,7 @@ class TableTennis < SlackRubyBot::Commands::Base
           *[winner] h2h [loser]*                         shows the h2h record between two players
           *lookup [player]*                              looks up a player
           *what's the best day to play [player]?*        tells you the best day to play a player to maximise your chances
+          *change [player]'s colour to [new colour]*     change a player's colour
           *help*                                         this message
   FOO
 
@@ -25,10 +26,10 @@ class TableTennis < SlackRubyBot::Commands::Base
     SlackService.create_notifier.ping('', attachments: leaderboard)
   end
 
-  match /^(?i)change ([a-zA-Z ]+)'s colour to be ([a-zA-Z ]+)/ do |client, data, match|
+  match /^(?i)(change|update) ([a-zA-Z ]+)'s (colour|color) to ([a-zA-Z ]+)/ do |client, data, match|
     logger.info 'matched show colours'
-    player_name = match[1]
-    colour = match[2]
+    player_name = match[2]
+    colour = match[4]
     player = Player.with_name(player_name)
     if !player
       client.say(channel: data.channel, text: "#{player_name} could not be found")

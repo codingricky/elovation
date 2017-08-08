@@ -40,6 +40,12 @@ describe 'Table Tennis' do
     expect(message: "show full", user: 'user').to respond_with_slack_message(leaderboard)
   end
 
+  it 'responds to changes in colour' do
+    change_colour_message = "change #{winner_name}'s colour to white"
+    response_message = "updated #{winner_name}'s colour to white"
+    expect(message: change_colour_message, user: 'user').to respond_with_slack_message(response_message)
+  end
+
   it 'responds to help' do
     expect(message: 'help', user: 'user').to respond_with_slack_message(TableTennis::HELP)
   end
