@@ -12,7 +12,8 @@ class Api::PlayerSlackAttachment
                             create_field('last 10 results', last_10_results, false)]
 
     attachment['fields'] << Player.order(:name).all.collect do |current|
-      create_field("h2h with #{current.name}", player.head_to_head(current), false) if player != current
+      result = player.head_to_head(current)
+      create_field("h2h with #{current.name}", "wins #{result[:wins]} losses #{result[:losses]} % #{result[:ratio]}", false) if player != current
     end
     return attachment
   end
