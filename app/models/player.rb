@@ -1,3 +1,5 @@
+require 'color/css'
+
 class Player < ActiveRecord::Base
 
   has_attached_file :avatar, styles: {
@@ -56,7 +58,11 @@ class Player < ActiveRecord::Base
   end
 
   def as_string
-    "*#{name}* #{current_wins}-#{current_losses} #{rating.value} points #{current_win_loss_ratio.round(0).to_i}% #{current_streak}"
+    "*#{name}* #{rankings_as_string}"
+  end
+
+  def rankings_as_string
+    "#{current_wins}-#{current_losses} #{rating.value} points #{current_win_loss_ratio.round(0).to_i}% #{current_streak}"
   end
 
   def is_active?
@@ -222,5 +228,14 @@ class Player < ActiveRecord::Base
 
   def points
     rating.value
+  end
+
+  def create_slack_message_attachment(position)
+    player_as_hash = {}
+    color_code = Color::CSS[self.color].html
+    player_as_hash[:color] = color_code
+    player_as_hash[:title] = "#{position + 1}. #{self.name}"
+    player_as_hash[:text] = rankings_as_string
+    return player_as_hash
   end
 end

@@ -110,4 +110,8 @@ class Game < ActiveRecord::Base
   def self.leaderboard_as_string
     self.leaderboard.enum_for(:each_with_index).collect {|r, i| "#{i+1}. #{r.player.as_string}"}.join("\n")
   end
+
+  def self.leaderboard_as_slack_attachments
+    self.full_leaderboard.enum_for(:each_with_index).collect {|r, i| r.player.create_slack_message_attachment(i)}
+  end
 end

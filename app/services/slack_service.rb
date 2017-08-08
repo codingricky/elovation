@@ -1,6 +1,6 @@
 class SlackService
 
-  def self.notify(slack_message, image_url)
+  def self.notify(slack_message, image_url=nil)
     if slack_web_url && !slack_web_url.blank?
       notifier = create_notifier
 
@@ -18,7 +18,6 @@ class SlackService
       notifier.ping "", attachments: [{image_url:  image_url}]
     end
   end
-
 
   def self.create_notifier
     Slack::Notifier.new slack_web_url, channel: Rails.configuration.slack_channel,

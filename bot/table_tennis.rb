@@ -4,6 +4,7 @@ class TableTennis < SlackRubyBot::Commands::Base
 
   HELP = <<-FOO
                *show*                                    shows the leaderboard
+               *show colours*                            shows the the colours
                *show full*                                    shows the full leaderboard
                *reverse show*                            shows the leaderboard in reverse
           *[winner] defeats [loser] n [times]*           creates a result
@@ -16,6 +17,12 @@ class TableTennis < SlackRubyBot::Commands::Base
   match /^(?i)help/ do |client, data, match|
     logger.info 'matched help'
     client.say(channel: data.channel, text: HELP)
+  end
+
+  match /^(?i)show colours/ do |client, data, match|
+    logger.info 'matched show colours'
+    leaderboard = Game.leaderboard_as_slack_attachments
+    SlackService.create_notifier.ping('', attachments: leaderboard)
   end
 
   match /^(?i)show full/ do |client, data, match|

@@ -29,6 +29,7 @@ gem 'trueskill', github: 'saulabs/trueskill', require: 'saulabs/trueskill'
 gem 'faker'
 gem 'gastly'
 gem 'health-monitor-rails'
+gem 'color'
 
 group :production do
   gem 'pg'
