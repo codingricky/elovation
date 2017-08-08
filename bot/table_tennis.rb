@@ -108,16 +108,8 @@ class TableTennis < SlackRubyBot::Commands::Base
     end
 
     if first_player && second_player
-      wins = first_player.wins(Game.default, second_player)
-      losses = first_player.losses(Game.default, second_player)
-      total = wins + losses
-      if total > 0
-        ratio = ActionController::Base.helpers.number_to_percentage(wins.to_f/total * 100, precision: 0)
-      else
-        ratio = '0%'
-      end
-
-      message = "*#{first_player.name}* h2h *#{second_player.name}* #{wins} wins #{losses} losses #{ratio}"
+      results = first_player.head_to_head(second_player)
+      message = "*#{first_player.name}* h2h *#{second_player.name}* #{results[:wins]} wins #{results[:losses]} losses #{results[:ratio]}"
       client.say(channel: data.channel, text: message)
     end
   end

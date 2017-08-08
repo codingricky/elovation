@@ -45,6 +45,19 @@ class Player < ActiveRecord::Base
   validates :name, uniqueness: true, presence: true
   validates :email, allow_blank: true, format: /@/
 
+  def head_to_head(second_player)
+    result = {}
+    result[:wins] = wins(Game.default, second_player)
+    result[:losses] = losses(Game.default, second_player)
+    result[:total] = result[:wins] + result[:losses]
+    if result[:total] > 0
+      result[:ratio] = ActionController::Base.helpers.number_to_percentage(result[:wins].to_f/result[:total] * 100, precision: 0)
+    else
+      result[:ratio] = '0%'
+    end
+    result
+  end
+
   def as_json()
     {
       name: name,
