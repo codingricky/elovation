@@ -6,6 +6,9 @@ class PlayersController < ApplicationController
     @player = Player.new(player_params)
     if @player.save
       @player.create_default_rating
+      User.find_or_create_by(email: @player.email) do |user|
+        user.password = Devise.friendly_token[0,20]
+      end
       redirect_to dashboard_path
     else
       render :new

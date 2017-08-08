@@ -6,4 +6,4 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-Game.create(name: 'Table Tennis', rating_type: 'trueskill', min_number_of_teams: 2, max_number_of_teams: 2, min_number_of_players_per_team: 1, max_number_of_players_per_team: 1, allow_ties: false)
+Game.create(name: 'Table Tennis', rating_type: 'elo', min_number_of_teams: 2, max_number_of_teams: 2, min_number_of_players_per_team: 1, max_number_of_players_per_team: 1, allow_ties: false)

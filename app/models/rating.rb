@@ -13,7 +13,7 @@ class Rating < ActiveRecord::Base
 
   def as_json(option = {})
     {
-      player: player.as_json,
+      player: player.as_json(),
       value: value
     }
   end

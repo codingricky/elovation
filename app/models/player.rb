@@ -45,7 +45,7 @@ class Player < ActiveRecord::Base
   validates :name, uniqueness: true, presence: true
   validates :email, allow_blank: true, format: /@/
 
-  def as_json
+  def as_json()
     {
       name: name,
       email: email,

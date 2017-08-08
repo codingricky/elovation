@@ -28,6 +28,7 @@ Elovation::Application.routes.draw do
 
     post '/slack' => 'slack#slack', as: :api_slack
     get '/show' => 'slack#show_leaderboard', as: :api_show
+    get '/lights' => 'lights#index', as: :api_lights
 
     get '/player/:player' => 'player#lookup', as: :api_lookup
   end
