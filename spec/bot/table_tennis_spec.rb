@@ -78,6 +78,10 @@ describe 'Table Tennis' do
       allow(SlackService).to receive(:notify)
     end
 
+    it 'h2h with no games' do
+      expect(message: "#{winner_name} h2h #{loser_name}", user: 'user').to respond_with_slack_message("*#{winner_name}* h2h *#{loser_name}* 0 wins 0 losses 0%")
+    end
+
     it 'h2h' do
       create_win
       expect(message: "#{winner_name} h2h #{loser_name}", user: 'user').to respond_with_slack_message("*#{winner_name}* h2h *#{loser_name}* 1 wins 0 losses 100%")
