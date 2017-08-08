@@ -1,6 +1,6 @@
 class TableTennis < SlackRubyBot::Commands::Base
   VICTORY_WORDS = %w(defeats beats kills destroys b defeated beat)
-
+  SUPPORTED_COLOURS = %w(green purple red yellow black pink white cyan blue)
 
   HELP = <<-FOO
                *show*                                    shows the leaderboard
@@ -24,6 +24,22 @@ class TableTennis < SlackRubyBot::Commands::Base
     leaderboard = Game.leaderboard_as_slack_attachments
     SlackService.create_notifier.ping('', attachments: leaderboard)
   end
+
+  match /^(?i)change ([a-zA-Z ]+)'s colour to be ([a-zA-Z ]+)/ do |client, data, match|
+    logger.info 'matched show colours'
+    player_name = match[1]
+    colour = match[2]
+    player = Player.with_name(player_name)
+    if !player
+      client.say(channel: data.channel, text: "#{player_name} could not be found")
+    elsif !SUPPORTED_COLOURS.include?(colour)
+      client.say(channel: data.channel, text: "Colour must be one of #{SUPPORTED_COLOURS.join(', ')}")
+    else
+      player.update_attribute(:color, colour)
+      client.say(channel: data.channel, text: "updated #{player_name}'s' colour to #{colour}")
+    end
+  end
+
 
   match /^(?i)show full/ do |client, data, match|
     logger.info 'matched show full'
