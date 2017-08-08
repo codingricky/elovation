@@ -36,7 +36,7 @@ class TableTennis < SlackRubyBot::Commands::Base
       client.say(channel: data.channel, text: "Colour must be one of #{SUPPORTED_COLOURS.join(', ')}")
     else
       player.update_attribute(:color, colour)
-      client.say(channel: data.channel, text: "updated #{player_name}'s' colour to #{colour}")
+      client.say(channel: data.channel, text: "updated #{player_name}'s colour to #{colour}")
     end
   end
 
