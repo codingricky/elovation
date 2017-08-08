@@ -13,7 +13,8 @@ class Api::PlayerSlackAttachment
 
     attachment['fields'] << Player.order(:name).all.collect do |current|
       result = player.head_to_head(current)
-      create_field("h2h with #{current.name}", "wins #{result[:wins]} losses #{result[:losses]} % #{result[:ratio]}", false) if player != current
+      include_result = player != current && current.is_active? && result[:total] > 0
+      create_field("h2h with #{current.name}", "wins #{result[:wins]} losses #{result[:losses]} % #{result[:ratio]}", false) if include_result
     end.compact
     attachment['fields'].flatten!
     return attachment

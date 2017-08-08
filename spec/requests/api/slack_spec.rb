@@ -26,7 +26,7 @@ RSpec.describe "Slack", :type => :request do
     expect(response).to have_http_status(:success)
     attachment = JSON.parse(response.body)["attachments"].first
 
-    last_10_results = attachment['fields'][-2]
+    last_10_results = attachment['fields'].last
     expect(last_10_results['value']).to include("Roger defeated Rafa
 Roger defeated Rafa
 Roger defeated Rafa")
