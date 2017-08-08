@@ -28,7 +28,7 @@ gem 'elo'
 gem 'trueskill', github: 'saulabs/trueskill', require: 'saulabs/trueskill'
 gem 'faker'
 gem 'gastly'
-gem 'okcomputer'
+gem 'health-monitor-rails'
 
 group :production do
   gem 'pg'

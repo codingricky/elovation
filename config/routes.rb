@@ -1,4 +1,6 @@
 Elovation::Application.routes.draw do
+  mount HealthMonitor::Engine, at: '/'
+
   devise_for :users, :skip => :registrations, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" } do
   end
 
@@ -28,7 +30,6 @@ Elovation::Application.routes.draw do
     get '/show' => 'slack#show_leaderboard', as: :api_show
 
     get '/player/:player' => 'player#lookup', as: :api_lookup
-
   end
 
   root to: 'dashboard#show'
