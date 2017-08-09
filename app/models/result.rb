@@ -89,11 +89,11 @@ class Result < ActiveRecord::Base
   end
 
   def loser_points_after
-    RatingHistoryEvent.rating_after(winner, self)
+    RatingHistoryEvent.rating_after(loser, self)
   end
 
   def loser_points_before
-    RatingHistoryEvent.rating_before(winner, self)
+    RatingHistoryEvent.rating_before(loser, self)
   end
 
   def as_json(options = {})

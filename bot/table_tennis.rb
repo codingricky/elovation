@@ -33,7 +33,7 @@ class TableTennis < SlackRubyBot::Commands::Base
     player = Player.with_name(player_name)
     points_table = player.points_table
     points_table = points_table.sort_by {|k,v| v}.reverse
-    message = points_table.select{|name, points| points > 0}.collect {|name, points| "#{name} #{points} points"}.join('\n')
+    message = points_table.select{|name, points| points > 0}.collect {|name, points| "#{name} #{points} points"}.join("\n")
     client.say(channel: data.channel, text: message)
   end
 
