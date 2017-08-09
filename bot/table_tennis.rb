@@ -10,6 +10,7 @@ class TableTennis < SlackRubyBot::Commands::Base
           *[winner] defeats [loser] n [times]*           creates a result
           *[winner] h2h [loser]*                         shows the h2h record between two players
           *lookup [player]*                              looks up a player
+          *who does [player] mine?*                      see which player does this player mine the most
           *what's the best day to play [player]?*        tells you the best day to play a player to maximise your chances
           *change [player]'s colour to [new colour]*     change a player's colour
           *help*                                         this message
@@ -24,6 +25,16 @@ class TableTennis < SlackRubyBot::Commands::Base
     logger.info 'matched show colours'
     leaderboard = Game.leaderboard_as_slack_attachments
     SlackService.create_notifier.ping('', attachments: leaderboard)
+  end
+
+  match /^(?i)who does ([a-zA-Z ]+) mine?/ do |client, data, match|
+    logger.info 'mine'
+    player_name = match[1]
+    player = Player.with_name(player_name)
+    points_table = player.points_table
+    points_table = points_table.sort_by {|k,v| v}.reverse
+    message = points_table.select{|name, points| points > 0}.collect {|name, points| "#{name} #{points} points"}.join('\n')
+    client.say(channel: data.channel, text: message)
   end
 
   match /^(?i)(change|update) ([a-zA-Z ]+)'s (colour|color) to ([a-zA-Z ]+)/ do |client, data, match|

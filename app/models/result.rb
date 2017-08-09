@@ -62,6 +62,40 @@ class Result < ActiveRecord::Base
     losers.first
   end
 
+  def is_winner?(player)
+    winner == player
+  end
+
+  def points_difference(player)
+    return winner_points_difference if player == winner
+    return loser_points_difference if player == loser
+    return 0
+  end
+
+  def loser_points_difference
+    loser_points_after - loser_points_before
+  end
+
+  def winner_points_difference
+    winner_points_after - winner_points_before
+  end
+
+  def winner_points_after
+    RatingHistoryEvent.rating_after(winner, self)
+  end
+
+  def winner_points_before
+    RatingHistoryEvent.rating_before(winner, self)
+  end
+
+  def loser_points_after
+    RatingHistoryEvent.rating_after(winner, self)
+  end
+
+  def loser_points_before
+    RatingHistoryEvent.rating_before(winner, self)
+  end
+
   def as_json(options = {})
     {
       winner: winners.first.name,
