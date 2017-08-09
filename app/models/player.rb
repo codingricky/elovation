@@ -247,7 +247,7 @@ class Player < ActiveRecord::Base
     points_by_person = {}
     results.each do |result|
       opponent = result.is_winner?(self) ? result.loser : result.winner
-      points_by_person[opponent.name] = 0 unless points_by_person.key?(opponent)
+      points_by_person[opponent.name] = 0 unless points_by_person.key?(opponent.name)
       points_by_person[opponent.name] += result.points_difference(self)
     end
     points_by_person
