@@ -12,7 +12,12 @@ class SlackMessage
                  "More like regression",
                  "I thought it was the opposite. The last time Elliott king of the hill'd he got sick after 4 games" ,
                  "we had a dude once that panted from exhaustion after 1 game",
-                 "He lives near me. Wants to hang out. I should invite him over to play tt"]
+                 "He lives near me. Wants to hang out. I should invite him over to play tt",
+                "I think your algorithm needs more data for the calculation. Like number of faulty serves and taper off with more challenges/fatigue. All of it offset by likeliness to troll",
+                 "And colors should be based on ELO",
+  "It should blink to indicate that you are close to changing ELO",
+  "Where i lack in points, i offset it with Troll skills",
+  "CDD, colour driven development"]
 
   attr_accessor :winner_rating_after, :winner_rating_before, :loser_rating_before, :loser_rating_after
 
