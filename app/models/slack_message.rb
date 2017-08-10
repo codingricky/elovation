@@ -19,7 +19,7 @@ class SlackMessage
 
 
   def message
-    ":table_tennis_paddle_and_ball: #{winner_message} defeated #{loser_message} #{multiplier_message}" + "\n#{taco_message}"
+    ":table_tennis_paddle_and_ball: #{winner_message} defeated #{loser_message} #{multiplier_message}" + "\n#{SlackMessage.random_tony_quote}"
   end
 
   def winner_name
@@ -30,13 +30,10 @@ class SlackMessage
     Player.find(@loser_id).name
   end
 
-  def taco_message
-    ":tony: says _#{random_tony_quote}_"
+  def self.random_tony_quote
+    ":tony: says _#{Quote.all.sample().try(:quote)}_"
   end
 
-  def random_tony_quote
-    Quote.all.sample().try(:quote)
-  end
 
   def winner_message
     "*#{winner_name}* (~#{@winner_rating_before}~ - #{@winner_rating_after})"

@@ -129,6 +129,15 @@ class TableTennis < SlackRubyBot::Commands::Base
     end
   end
 
+  match 'what would Tony say?' do |client, data, match|
+    client.say(channel: data.channel, text: SlackMessage.random_tony_quote)
+  end
+
+  match /.*/ do |client, data, match|
+    is_bad_word = DETECTOR.find(data.text)
+    Quote.create(quote: data.text) if (data.user == TONY_USER_ID && !is_bad_word)
+  end
+
   def self.create_result(match)
     logger.info "creating result with #{match}"
 
@@ -164,11 +173,6 @@ class TableTennis < SlackRubyBot::Commands::Base
   command 'lookup' do |client, data, match|
     user = client.lookup(data.user)
     client.say(channel: data.channel, text: user)
-  end
-
-  match /.*/ do |client, data, match|
-    is_bad_word = DETECTOR.find(data.text)
-    Quote.create(quote: data.text) if (data.user == TONY_USER_ID && !is_bad_word)
   end
 
   def self.reverse_show(client, data)
