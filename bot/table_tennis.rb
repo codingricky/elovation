@@ -1,3 +1,5 @@
+require 'bad_word_detector'
+
 class TableTennis < SlackRubyBot::Commands::Base
   TONY_USER_ID = 'U1ULH4DQS'
   VICTORY_WORDS = %w(defeats beats kills destroys b defeated beat)
@@ -127,11 +129,6 @@ class TableTennis < SlackRubyBot::Commands::Base
     end
   end
 
-  match /.*/ do |client, data, match|
-    is_bad_word = DETECTOR.find(data.text)
-    Quote.create(quote: data.text) if (data.user == TONY_USER_ID && !is_bad_word)
-  end
-
   def self.create_result(match)
     logger.info "creating result with #{match}"
 
@@ -167,6 +164,11 @@ class TableTennis < SlackRubyBot::Commands::Base
   command 'lookup' do |client, data, match|
     user = client.lookup(data.user)
     client.say(channel: data.channel, text: user)
+  end
+
+  match /.*/ do |client, data, match|
+    is_bad_word = DETECTOR.find(data.text)
+    Quote.create(quote: data.text) if (data.user == TONY_USER_ID && !is_bad_word)
   end
 
   def self.reverse_show(client, data)
