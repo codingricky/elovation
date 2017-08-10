@@ -1,6 +1,19 @@
 
 class SlackMessage
 
+  TONY_QUOTES = ["Holy crap Elliott getting so good now",
+                 "nice play bro. Getting on the principle consultant's good side to get better projects",
+                 "Dont expose my strategy man",
+                 "The next time you get an awesome project, don't forget that you beat me at tt all the time",
+                 "Sounds like what you did to me actually. Those were good rounds",
+                 "It's extremely satisfying to be able to continuously smash",
+                 "I think he's using machine learning to defeat us",
+                 "I didn't say it was deep learning",
+                 "More like regression",
+                 "I thought it was the opposite. The last time Elliott king of the hill'd he got sick after 4 games" ,
+                 "we had a dude once that panted from exhaustion after 1 game",
+                 "He lives near me. Wants to hang out. I should invite him over to play tt"]
+
   attr_accessor :winner_rating_after, :winner_rating_before, :loser_rating_before, :loser_rating_after
 
   def initialize(winner_id, loser_id, game, multiplier)
@@ -30,10 +43,12 @@ class SlackMessage
     Player.find(@loser_id).name
   end
 
-  private
-
   def taco_message
-    "Here's a #{Faker::SlackEmoji.food_and_drink} for winning #{winner_name}."
+    ":tony: says #{random_tony_quote}"
+  end
+
+  def random_tony_quote
+    TONY_QUOTES.sample
   end
 
   def winner_message
