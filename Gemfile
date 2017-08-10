@@ -11,6 +11,7 @@ group :development do
   gem 'rails_real_favicon'
 end
 gem 'slack-notifier'
+gem 'bad_word_detector'
 
 gem 'paperclip'
 gem 'aws-sdk', '~> 2.3'

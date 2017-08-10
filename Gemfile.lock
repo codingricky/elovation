@@ -57,6 +57,7 @@ GEM
       jmespath (~> 1.0)
     aws-sdk-resources (2.5.11)
       aws-sdk-core (= 2.5.11)
+    bad_word_detector (0.0.5)
     bcrypt (3.1.11)
     better_errors (2.1.1)
       coderay (>= 1.0.0)
@@ -357,6 +358,7 @@ PLATFORMS
 DEPENDENCIES
   airborne
   aws-sdk (~> 2.3)
+  bad_word_detector
   better_errors
   binding_of_caller
   celluloid-io

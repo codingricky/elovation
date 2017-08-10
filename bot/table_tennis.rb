@@ -1,8 +1,8 @@
 class TableTennis < SlackRubyBot::Commands::Base
-  # TONY_USER_ID = 'U1ULH4DQS'
-  TONY_USER_ID = 'U0SF510BZ'
+  TONY_USER_ID = 'U1ULH4DQS'
   VICTORY_WORDS = %w(defeats beats kills destroys b defeated beat)
   SUPPORTED_COLOURS = %w(green purple red yellow black pink white cyan blue)
+  DETECTOR = BadWordDetector.new
 
   HELP = <<-FOO
                *show*                                    shows the leaderboard
@@ -128,8 +128,8 @@ class TableTennis < SlackRubyBot::Commands::Base
   end
 
   match /.*/ do |client, data, match|
-    puts data.user
-    Quote.create(quote: data.text) if (data.user == TONY_USER_ID)
+    is_bad_word = DETECTOR.find(data.text)
+    Quote.create(quote: data.text) if (data.user == TONY_USER_ID && !is_bad_word)
   end
 
   def self.create_result(match)
