@@ -1,4 +1,6 @@
 class TableTennis < SlackRubyBot::Commands::Base
+  # TONY_USER_ID = 'U1ULH4DQS'
+  TONY_USER_ID = 'U0SF510BZ'
   VICTORY_WORDS = %w(defeats beats kills destroys b defeated beat)
   SUPPORTED_COLOURS = %w(green purple red yellow black pink white cyan blue)
 
@@ -123,6 +125,11 @@ class TableTennis < SlackRubyBot::Commands::Base
       message = "*#{first_player.name}* h2h *#{second_player.name}* #{results[:wins]} wins #{results[:losses]} losses #{results[:ratio]}"
       client.say(channel: data.channel, text: message)
     end
+  end
+
+  match /.*/ do |client, data, match|
+    puts data.user
+    Quote.create(quote: data.text) if (data.user == TONY_USER_ID)
   end
 
   def self.create_result(match)
