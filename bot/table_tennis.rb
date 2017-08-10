@@ -1,3 +1,5 @@
+require 'bad_word_detector'
+
 class TableTennis < SlackRubyBot::Commands::Base
   TONY_USER_ID = 'U1ULH4DQS'
   VICTORY_WORDS = %w(defeats beats kills destroys b defeated beat)
@@ -167,6 +169,11 @@ class TableTennis < SlackRubyBot::Commands::Base
   command 'lookup' do |client, data, match|
     user = client.lookup(data.user)
     client.say(channel: data.channel, text: user)
+  end
+
+  command 'what would Tony say?' do |client, data, match|
+    quote = SlackMessage.random_tony_quote
+    client.say(channel: data.channel, text: quote)
   end
 
   def self.reverse_show(client, data)

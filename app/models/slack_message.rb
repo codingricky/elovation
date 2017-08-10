@@ -31,10 +31,10 @@ class SlackMessage
   end
 
   def taco_message
-    ":tony: says _#{random_tony_quote}_"
+    ":tony: says _#{SlackMessage.random_tony_quote}_"
   end
 
-  def random_tony_quote
+  def self.random_tony_quote
     Quote.all.sample().try(:quote)
   end
 
