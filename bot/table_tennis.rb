@@ -29,6 +29,10 @@ class TableTennis < SlackRubyBot::Commands::Base
     client.say(channel: data.channel, text: SlackMessage.random_tony_quote)
   end
 
+  match /what would I say?/ do |client, data, match|
+    client.say(channel: data.channel, text: SlackMessage.random_tony_quote) if is_tony?(data)
+  end
+
   match /^(?i)show colours/ do |client, data, match|
     logger.info 'matched show colours'
     leaderboard = Game.leaderboard_as_slack_attachments
@@ -134,11 +138,14 @@ class TableTennis < SlackRubyBot::Commands::Base
   end
 
   match /.*/ do |client, data, match|
-    is_tony = data.user == TONY_USER_ID
-    if is_tony
+    if is_tony?(data)
       is_bad_word = DETECTOR.find(data.text)
       Quote.create(quote: data.text) if !is_bad_word
     end
+  end
+
+  def self.is_tony?(data)
+    data.user == TONY_USER_ID
   end
 
   def self.create_result(match)
