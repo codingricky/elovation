@@ -130,6 +130,7 @@ class TableTennis < SlackRubyBot::Commands::Base
   end
 
   match 'what would Tony say?' do |client, data, match|
+    logger.info 'what would Tony say?'
     client.say(channel: data.channel, text: SlackMessage.random_tony_quote)
   end
 
