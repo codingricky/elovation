@@ -31,7 +31,11 @@ class SlackMessage
   end
 
   def self.random_tony_quote
-    ":tony: says _#{Quote.all.sample().try(:quote)}_"
+    ":tony: says _#{just_the_quote}_"
+  end
+
+  def self.just_the_quote
+    Quote.all.sample().try(:quote)
   end
 
 

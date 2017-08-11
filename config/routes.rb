@@ -23,6 +23,8 @@ Elovation::Application.routes.draw do
   namespace :api do
     post '/api_ai/' => 'api_ai#create', as: :apiai_create
 
+    get '/quote' => 'quote#index', as: :quote
+
     post '/results' => 'results#create', as: :api_create
     get '/active_players' => 'results#active_players', as: :api_active_players
 
