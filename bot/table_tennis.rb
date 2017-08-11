@@ -26,10 +26,12 @@ class TableTennis < SlackRubyBot::Commands::Base
   end
 
   match /what would Tony say?/ do |client, data, match|
+    logger.info 'what would Tony say'
     client.say(channel: data.channel, text: SlackMessage.random_tony_quote)
   end
 
   match /what would I say?/ do |client, data, match|
+    logger.info 'what would I say'
     client.say(channel: data.channel, text: SlackMessage.random_tony_quote) if is_tony?(data)
   end
 
@@ -138,9 +140,11 @@ class TableTennis < SlackRubyBot::Commands::Base
   end
 
   match /.*/ do |client, data, match|
+    logger.info 'trying to store quote'
     if is_tony?(data)
       is_bad_word = DETECTOR.find(data.text)
-      Quote.create(quote: data.text) if !is_bad_word
+      quote_exists = Quote.find_by_quote(data.text)
+      Quote.create(quote: data.text) if !is_bad_word && !quote_exists
     end
   end
 
