@@ -253,6 +253,10 @@ class Player < ActiveRecord::Base
     points_by_person
   end
 
+  def user
+    User.find_by_email(self.email)
+  end
+
   def create_slack_message_attachment(position)
     player_as_hash = {}
     color_code = Color::CSS[self.color].html

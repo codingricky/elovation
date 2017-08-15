@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable,
          :omniauthable, :omniauth_providers => [:google_oauth2]
 
+  has_many :quotes
 
   before_create do |user|
     user.api_key = user.generate_api_key
@@ -19,6 +20,10 @@ class User < ActiveRecord::Base
       token = SecureRandom.base64.tr('+/=', 'Qrt')
       break token unless User.exists?(api_key: token)
     end
+  end
+
+  def random_quote
+    quotes.sample()
   end
 
 end
