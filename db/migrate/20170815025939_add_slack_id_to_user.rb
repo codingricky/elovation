@@ -16,7 +16,7 @@ class AddSlackIdToUser < ActiveRecord::Migration[5.0]
       player = Player.with_name(name)
       if player
         user = User.find_by_email(player.email)
-        user.update_attribute(:slack_id, slack_id)
+        user.update_attribute(:slack_id, slack_id) if user
       end
     end
   end
