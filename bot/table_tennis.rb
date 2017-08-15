@@ -25,14 +25,15 @@ class TableTennis < SlackRubyBot::Commands::Base
     client.say(channel: data.channel, text: HELP)
   end
 
-  match /what would Tony say?/ do |client, data, match|
-    logger.info 'what would Tony say'
-    client.say(channel: data.channel, text: SlackMessage.random_tony_quote)
-  end
-
-  match /what would I say?/ do |client, data, match|
-    logger.info 'what would I say'
-    client.say(channel: data.channel, text: SlackMessage.random_tony_quote) if is_tony?(data)
+  match /what would ([a-zA-Z ]+) say?/ do |client, data, match|
+    logger.info 'what would someone say'
+    player_name = match[1]
+    player = Player.with_name(player_name)
+    user = player.user
+    if (player && user.slack_id)
+      quote = user.random_quote.quote
+      client.say(channel: data.channel, text: "*#{player_name}* says _#{quote}_")
+    end
   end
 
   match /^(?i)show colours/ do |client, data, match|
@@ -138,17 +139,13 @@ class TableTennis < SlackRubyBot::Commands::Base
     end
   end
 
-  match /.*/ do |client, data, match|
-    logger.info 'trying to store quote'
-    if is_tony?(data)
-      is_bad_word = DETECTOR.find(data.text)
-      quote_exists = Quote.find_by_quote(data.text)
-      Quote.create(quote: data.text) if !is_bad_word && !quote_exists
-    end
-  end
 
-  def self.is_tony?(data)
-    data.user == TONY_USER_ID
+  match /.*/ do |client, data, match|
+    logger.info "trying to store quote"
+    slack_id = data.user
+    user  = User.find_by_slack_id(slack_id)
+    is_bad_word = DETECTOR.find(data.text)
+    Quote.create(quote: data.text, user_id: user.id) if (user && !is_bad_word)
   end
 
   def self.create_result(match)
@@ -181,11 +178,6 @@ class TableTennis < SlackRubyBot::Commands::Base
     times = times <= 0 ? 1 : times
     times = times > 5 ? 5 : times
     return times
-  end
-
-  match /.*/ do |client, data, match|
-    is_bad_word = DETECTOR.find(data.text)
-    Quote.create(quote: data.text) if (data.user == TONY_USER_ID && !is_bad_word)
   end
 
   def self.reverse_show(client, data)

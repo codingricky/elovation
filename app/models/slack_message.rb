@@ -35,7 +35,7 @@ class SlackMessage
   end
 
   def self.just_the_quote
-    Quote.all.sample().try(:quote)
+    Player.with_name('Tony').try(:user).try(:random_quote).try(:quote)
   end
 
 
