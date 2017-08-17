@@ -52,10 +52,10 @@ class TableTennis < SlackRubyBot::Commands::Base
     client.say(channel: data.channel, text: message)
   end
 
-  match /^(?i)(change|update) ([a-zA-Z ]+)'s (colour|color) to ([a-zA-Z ]+)/ do |client, data, match|
+  match /^(?i)(change|update) ([a-zA-Z ]+)('|’)s (colour|color) to ([a-zA-Z ]+)/ do |client, data, match|
     logger.info 'matched show colours'
     player_name = match[2]
-    colour = match[4]
+    colour = match[5]
     player = Player.with_name(player_name)
     if !player
       client.say(channel: data.channel, text: "#{player_name} could not be found")
