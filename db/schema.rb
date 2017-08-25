@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 20170815025939) do
     t.string   "quote",      null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "user_id"
+    t.integer  "user_id",    null: false
   end
 
   create_table "rating_history_events", force: :cascade do |t|
